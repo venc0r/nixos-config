@@ -62,10 +62,9 @@
             layout = "us";
             variant = "altgr-intl";
         };
-    };
-
-    services.displayManager.sddm = {
-        enable = true;
+        displayManager.sddm = {
+            enable = true;
+        };
     };
 
     # Define a user account. Don't forget to set a password with ‘passwd’.
