@@ -24,6 +24,13 @@
  			inputs.home-manager.nixosModules.default
                     ];
                 };
+                cubi = nixpkgs.lib.nixosSystem {
+                    specialArgs = { inherit system; inherit inputs; };
+                    modules = [
+                        ./hosts/cubi/configuration.nix
+ 			inputs.home-manager.nixosModules.default
+                    ];
+                };
             };
         };
 }
