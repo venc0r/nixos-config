@@ -117,15 +117,13 @@
         };
     };
 
-
-    # xsession.windowManager.i3 = {
-    #     enable = true;
-    #     config = {
-    #         modifier = "Mod4";
-    #         # See home-manager documentation for everything you can add here.
-    #     };
-    # };
-
+    xsession.windowManager.i3 = {
+        enable = true;
+        config = {
+            modifier = "Mod4";
+            # See home-manager documentation for everything you can add here.
+        };
+    };
 
     # Let Home Manager install and manage itself.
     programs.home-manager.enable = true;
