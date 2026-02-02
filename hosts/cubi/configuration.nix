@@ -48,9 +48,20 @@
     };
 
     # Configure keymap in X11
-    services.xserver.xkb = {
-        layout = "us";
-        variant = "altgr-intl";
+    services.xserver = {
+        enable = true;
+        windowManager.i3 = {
+            enable = true;
+            extraPackages = with pkgs; [
+                dmenu
+                i3status
+                i3lock
+            ];
+        };
+        xkb  = {
+            layout = "us";
+            variant = "altgr-intl";
+        };
     };
 
     # Define a user account. Don't forget to set a password with ‘passwd’.
