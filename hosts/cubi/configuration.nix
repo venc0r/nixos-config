@@ -49,15 +49,15 @@
 
     # Configure keymap in X11
     services.xserver = {
-        enable = true;
-        windowManager.i3 = {
-            enable = true;
-            extraPackages = with pkgs; [
-                dmenu
-                i3status
-                i3lock
-            ];
-        };
+        # enable = true;
+        # windowManager.i3 = {
+        #     enable = true;
+        #     extraPackages = with pkgs; [
+        #         dmenu
+        #         i3status
+        #         i3lock
+        #     ];
+        # };
         xkb  = {
             layout = "us";
             variant = "altgr-intl";
