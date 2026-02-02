@@ -97,16 +97,16 @@
             }
         ];
         initContent =
-            let
-                zshConfigEarlyInit = lib.mkOrder 500 ''
-            source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme
-            source $HOME/.p10k.zsh
-            if [[ -r "''${XDG_CACHE_HOME:-''$HOME/.cache}/p10k-instant-prompt-''${(%):-%n}.zsh" ]]; then
-              source "''${XDG_CACHE_HOME:-''$HOME/.cache}/p10k-instant-prompt-''${(%):-%n}.zsh"
-            fi '';
-                zshConfig = lib.mkOrder 1000 "# create my custom configs";
-            in
-                lib.mkMerge [ zshConfigEarlyInit zshConfig ];
+        let
+            zshConfigEarlyInit = lib.mkOrder 500 ''
+                source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme
+                source $HOME/.p10k.zsh
+                if [[ -r "''${XDG_CACHE_HOME:-''$HOME/.cache}/p10k-instant-prompt-''${(%):-%n}.zsh" ]]; then
+                  source "''${XDG_CACHE_HOME:-''$HOME/.cache}/p10k-instant-prompt-''${(%):-%n}.zsh"
+                fi '';
+            zshConfig = lib.mkOrder 1000 "# create my custom configs";
+        in
+            lib.mkMerge [ zshConfigEarlyInit zshConfig ];
     };
 
     programs.git = {
