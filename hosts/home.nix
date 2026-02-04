@@ -181,9 +181,17 @@ in
     instance=Capture
     interval=1
 
+    [simple-2]
+    full_text=: :
+    color=#717171
+
     [time]
     command=date '+%a %d %b %H:%M:%S'
     interval=1
+
+    [simple-2]
+    full_text=: :
+    color=#717171
   '';
 
   xsession.windowManager.i3 = {
