@@ -293,7 +293,6 @@ let
   block-bandwidth = pkgs.writeShellScriptBin "block-bandwidth" ''
     #!/bin/sh
     export LC_ALL=C
-    exec 2>>/tmp/i3blocks-error.log
 
     IP="${pkgs.iproute2}/bin/ip"
     SAR="${pkgs.sysstat}/bin/sar"
@@ -303,19 +302,13 @@ let
     # Get default interface
     IF=$($IP route get 1.1.1.1 | $AWK '{print $5}')
 
-    echo "Interface: $IF" >> /tmp/i3blocks-bw-debug.log
-
     if [ -z "$IF" ]; then
         echo "No Net"
         exit 0
     fi
 
     # Measure
-    # Log raw output
-    $SAR -n DEV 1 1 > /tmp/i3blocks-sar.log
-
-    # Process
-    cat /tmp/i3blocks-sar.log | $GREP "Average.*$IF" | $AWK '{printf "%.0f/%.0f kB/s", $5, $6}'
+    $SAR -n DEV 1 1 | $GREP "Average.*$IF" | $AWK '{printf "%.0f/%.0f kB/s\n", $5, $6}'
   '';
 
 in
