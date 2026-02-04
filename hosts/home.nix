@@ -45,7 +45,7 @@ in
     iproute2
 
     # Applications mentioned in config
-    alacritty
+    # alacritty # Configured via programs.alacritty
     # zen-browser # Requires flake input or overlay
     # supersonic # Check exact package name (supersonic-wayland?)
     thunar
