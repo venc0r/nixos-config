@@ -68,6 +68,72 @@ in
     ".p10k.zsh".source = ./dotfiles/.p10k.zsh;
   };
 
+  xdg.configFile."alacritty/gruvbox-dark.toml".text = ''
+    # Colors (Gruvbox dark)
+    [colors.cursor]
+    cursor = '#FF9800'
+
+    # Default colors
+    [colors.primary]
+    background = '#282828'
+    foreground = "#839496"
+
+    # Normal colors
+    [colors.normal]
+    black   = '#282828'
+    red     = '#cc241d'
+    green   = '#98971a'
+    yellow  = '#d79921'
+    blue    = '#458588'
+    magenta = '#b16286'
+    cyan    = '#689d6a'
+    white   = '#a89984'
+
+    # Bright colors
+    [colors.bright]
+    black   = '#928374'
+    red     = '#fb4934'
+    green   = '#b8bb26'
+    yellow  = '#fabd2f'
+    blue    = '#83a598'
+    magenta = '#d3869b'
+    cyan    = '#8ec07c'
+    white   = '#ebdbb2'
+  '';
+
+  xdg.configFile."alacritty/gruvbox-light.toml".text = ''
+    # Colors (Gruvbox light)
+
+    # Default colors
+    [colors.primary]
+    # hard contrast background = = '#f9f5d7'
+    background = '#fbf1c7'
+    # soft contrast background = = '#f2e5bc'
+    foreground = '#3c3836'
+
+    # Normal colors
+    [colors.normal]
+    black   = '#fbf1c7'
+    red     = '#cc241d'
+    green   = '#98971a'
+    yellow  = '#d79921'
+    blue    = '#458588'
+    magenta = '#b16286'
+    cyan    = '#689d6a'
+    white   = '#7c6f64'
+
+    # Bright colors
+    [colors.bright]
+    black   = '#928374'
+    red     = '#9d0006'
+    green   = '#79740e'
+    yellow  = '#b57614'
+    blue    = '#076678'
+    magenta = '#8f3f71'
+    cyan    = '#427b58'
+    white   = '#3c3836'
+  '';
+
   home.sessionVariables = {
     EDITOR = "nvim";
   };
@@ -133,6 +199,59 @@ in
     settings.user = {
       Email = "venc0r@live.com";
       Name = "Jörg Markert";
+    };
+  };
+
+  programs.alacritty = {
+    enable = true;
+    settings = {
+      general.import = [
+        "~/.config/alacritty/gruvbox-dark.toml"
+        # "~/.config/alacritty/gruvbox-light.toml"
+      ];
+
+      env = {
+        TERM = "xterm-256color";
+        WINIT_X11_SCALE_FACTOR = "1.5";
+      };
+
+      font = {
+        size = 10.0;
+        normal = {
+          family = "MesloLGS Nerd Font";
+          style = "Regular";
+        };
+        bold = {
+          family = "MesloLGS Nerd Font";
+          style = "Bold";
+        };
+        italic = {
+          family = "MesloLGS Nerd Font";
+          style = "Italic";
+        };
+        offset = {
+          x = 0;
+          y = 0;
+        };
+      };
+
+      scrolling = {
+        history = 1000;
+        multiplier = 3;
+      };
+
+      selection = {
+        semantic_escape_chars = "=,│`|:\\\"' ()[]{}<>";
+      };
+
+      window = {
+        decorations = "none";
+        opacity = 0.9;
+        padding = {
+          x = 2;
+          y = 2;
+        };
+      };
     };
   };
 
