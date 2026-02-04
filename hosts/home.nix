@@ -61,6 +61,7 @@ in
     scripts.block-memory
     scripts.block-disk
     scripts.block-temperature
+    scripts.block-bandwidth
   ];
 
   home.file = {
@@ -162,11 +163,12 @@ in
 
     [temperature]
     label=
-    command=${pkgs.lm_sensors}/bin/sensors 2>/dev/null | ${pkgs.gnugrep}/bin/grep -E "^(Package id 0|Tdie|Tctl):" | ${pkgs.gawk}/bin/awk '{print $4}' | ${pkgs.coreutils}/bin/head -n 1 | ${pkgs.coreutils}/bin/tr -d '+' || echo "N/A"
+    command=${scripts.block-temperature}/bin/block-temperature
     interval=30
 
     [bandwidth]
-    command=export LC_ALL=C; IF=$(${pkgs.iproute2}/bin/ip route get 1.1.1.1 | ${pkgs.gawk}/bin/awk '{print $5}'); ${pkgs.sysstat}/bin/sar -n DEV 1 1 | ${pkgs.gnugrep}/bin/grep "Average.*$IF" | ${pkgs.gawk}/bin/awk '{printf "%.0f/%.0f kB/s", $5, $6}'
+    label= 
+    command=${scripts.block-bandwidth}/bin/block-bandwidth
     interval=5
 
     [battery]

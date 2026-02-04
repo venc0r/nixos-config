@@ -267,20 +267,42 @@ let
     SENSORS="${pkgs.lm_sensors}/bin/sensors"
     GREP="${pkgs.gnugrep}/bin/grep"
     AWK="${pkgs.gawk}/bin/awk"
+    HEAD="${pkgs.coreutils}/bin/head"
+    TR="${pkgs.coreutils}/bin/tr"
 
     # Try common CPU temp labels
-    TEMP=$($SENSORS | $GREP -E "^(Package id 0|Tdie|Tctl):" | $AWK '{print $4}' | head -n 1)
+    TEMP=$($SENSORS 2>/dev/null | $GREP -E "^(Package id 0|Tdie|Tctl):" | $AWK '{print $4}' | $HEAD -n 1)
 
-    # Fallback to anything with C
+    # Fallback to anything with C if specific label not found
     if [ -z "$TEMP" ]; then
-        TEMP=$($SENSORS | $GREP "°C" | head -n 1 | $AWK '{print $2}')
+        TEMP=$($SENSORS 2>/dev/null | $GREP "°C" | $HEAD -n 1 | $AWK '{print $2}')
     fi
 
     if [ -z "$TEMP" ]; then
         echo "N/A"
     else
-        echo "$TEMP" | tr -d '+'
+        echo "$TEMP" | $TR -d '+'
     fi
+  '';
+
+  block-bandwidth = pkgs.writeShellScriptBin "block-bandwidth" ''
+    #!/bin/sh
+    export LC_ALL=C
+    IP="${pkgs.iproute2}/bin/ip"
+    SAR="${pkgs.sysstat}/bin/sar"
+    AWK="${pkgs.gawk}/bin/awk"
+    GREP="${pkgs.gnugrep}/bin/grep"
+
+    # Get default interface
+    IF=$($IP route get 1.1.1.1 | $AWK '{print $5}')
+
+    if [ -z "$IF" ]; then
+        echo "No Net"
+        exit 0
+    fi
+
+    # Measure
+    $SAR -n DEV 1 1 | $GREP "Average.*$IF" | $AWK '{printf "%.0f/%.0f kB/s", $5, $6}'
   '';
 
 in
@@ -294,5 +316,6 @@ in
     block-memory
     block-disk
     block-temperature
+    block-bandwidth
     ;
 }
