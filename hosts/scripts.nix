@@ -264,6 +264,11 @@ let
 
   block-temperature = pkgs.writeShellScriptBin "block-temperature" ''
     #!/bin/sh
+    export LC_ALL=C
+    # Debug logging
+    exec 2>>/tmp/i3blocks-error.log
+    # echo "Temp script running" >> /tmp/i3blocks-debug.log
+
     SENSORS="${pkgs.lm_sensors}/bin/sensors"
     GREP="${pkgs.gnugrep}/bin/grep"
     AWK="${pkgs.gawk}/bin/awk"
@@ -288,6 +293,8 @@ let
   block-bandwidth = pkgs.writeShellScriptBin "block-bandwidth" ''
     #!/bin/sh
     export LC_ALL=C
+    exec 2>>/tmp/i3blocks-error.log
+
     IP="${pkgs.iproute2}/bin/ip"
     SAR="${pkgs.sysstat}/bin/sar"
     AWK="${pkgs.gawk}/bin/awk"
