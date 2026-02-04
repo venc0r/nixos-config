@@ -38,6 +38,11 @@ in
     copyq
     polkit_gnome
 
+    # System monitoring
+    sysstat
+    lm_sensors
+    acpi
+
     # Applications mentioned in config
     alacritty
     # zen-browser # Requires flake input or overlay
@@ -149,6 +154,11 @@ in
     label=
     command=${pkgs.i3blocks}/libexec/i3blocks/cpu_usage
     interval=2
+
+    [temperature]
+    label=
+    command=${pkgs.i3blocks}/libexec/i3blocks/temperature
+    interval=30
 
     [bandwidth]
     command=${pkgs.i3blocks}/libexec/i3blocks/bandwidth
