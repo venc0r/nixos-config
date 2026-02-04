@@ -166,10 +166,8 @@ let
     volume | format
   '';
 
-  block-battery = pkgs.writers.writePython3Bin "block-battery" {
-    libraries = [ ];
-    flakeIgnore = [ "E501" ]; # Ignore line length warnings
-  } ''
+  block-battery = pkgs.writeScriptBin "block-battery" ''
+    #!${pkgs.python3}/bin/python3
     import os
     import re
     import subprocess
