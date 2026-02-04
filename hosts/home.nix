@@ -144,18 +144,18 @@ in
     color=#717171
 
     [disk]
-    label=
+    label= 
     instance=/
     command=${scripts.block-disk}/bin/block-disk
     interval=30
 
     [memory]
-    label=
+    label= 
     command=${scripts.block-memory}/bin/block-memory
     interval=2
 
     [cpu_usage]
-    label=
+    label= 
     command=${scripts.block-cpu}/bin/block-cpu
     interval=2
 

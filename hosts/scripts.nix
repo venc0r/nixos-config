@@ -251,7 +251,8 @@ let
     #!/bin/sh
     FREE="${pkgs.procps}/bin/free"
     AWK="${pkgs.gawk}/bin/awk"
-    $FREE -h | $AWK '/^Mem:/ {print $3 "/" $2}'
+    # Print used percentage
+    $FREE | $AWK '/^Mem:/ {printf "%.1f%%", $3/$2 * 100}'
   '';
 
   block-disk = pkgs.writeShellScriptBin "block-disk" ''
@@ -265,11 +266,17 @@ let
     #!/bin/sh
     SENSORS="${pkgs.lm_sensors}/bin/sensors"
     GREP="${pkgs.gnugrep}/bin/grep"
-    HEAD="${pkgs.coreutils}/bin/head"
+    AWK="${pkgs.gawk}/bin/awk"
 
-    # Try to grab a temperature. Priority: Tdie, Package id 0, Core 0
-    TEMP=$($SENSORS | $GREP -e "Tdie" -e "Package id 0" -e "Core 0" | $HEAD -n 1 | $GREP -o '+[0-9]*\.[0-9]*°C')
-    echo "$TEMP"
+    # Try common CPU temp labels
+    TEMP=$($SENSORS | $GREP -E "^(Package id 0|Tdie|Tctl):" | $AWK '{print $4}' | head -n 1)
+
+    # Fallback to anything with C
+    if [ -z "$TEMP" ]; then
+        TEMP=$($SENSORS | $GREP "°C" | head -n 1 | $AWK '{print $2}')
+    fi
+
+    echo "$TEMP" | tr -d '+'
   '';
 
 in
