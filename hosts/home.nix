@@ -162,11 +162,11 @@ in
 
     [temperature]
     label=
-    command=${pkgs.lm_sensors}/bin/sensors | ${pkgs.gnugrep}/bin/grep -E "^(Package id 0|Tdie|Tctl):" | ${pkgs.gawk}/bin/awk '{print $4}' | ${pkgs.coreutils}/bin/head -n 1 | ${pkgs.coreutils}/bin/tr -d '+'
+    command=${pkgs.lm_sensors}/bin/sensors 2>/dev/null | ${pkgs.gnugrep}/bin/grep -E "^(Package id 0|Tdie|Tctl):" | ${pkgs.gawk}/bin/awk '{print $4}' | ${pkgs.coreutils}/bin/head -n 1 | ${pkgs.coreutils}/bin/tr -d '+' || echo "N/A"
     interval=30
 
     [bandwidth]
-    command=IF=$(${pkgs.iproute2}/bin/ip route get 1.1.1.1 | ${pkgs.gawk}/bin/awk '{print $5}'); ${pkgs.sysstat}/bin/sar -n DEV 1 1 | ${pkgs.gnugrep}/bin/grep "Average.*$IF" | ${pkgs.gawk}/bin/awk '{printf "%.0f/%.0f kB/s", $5, $6}'
+    command=export LC_ALL=C; IF=$(${pkgs.iproute2}/bin/ip route get 1.1.1.1 | ${pkgs.gawk}/bin/awk '{print $5}'); ${pkgs.sysstat}/bin/sar -n DEV 1 1 | ${pkgs.gnugrep}/bin/grep "Average.*$IF" | ${pkgs.gawk}/bin/awk '{printf "%.0f/%.0f kB/s", $5, $6}'
     interval=5
 
     [battery]
