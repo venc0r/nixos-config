@@ -383,7 +383,7 @@ in
       bars = [
         {
           position = "bottom";
-          statusCommand = "${pkgs.i3blocks}/bin/i3blocks";
+          statusCommand = "${pkgs.i3blocks}/bin/i3blocks -c ${config.xdg.configHome}/i3/i3blocks.conf";
           fonts = {
             names = [ "Noto Sans" ];
             size = 10.0;
