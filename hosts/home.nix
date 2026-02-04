@@ -42,6 +42,7 @@ in
     sysstat
     lm_sensors
     acpi
+    iproute2
 
     # Applications mentioned in config
     alacritty
@@ -146,27 +147,27 @@ in
     [disk]
     label= 
     instance=/
-    command=${scripts.block-disk}/bin/block-disk
+    command=${pkgs.coreutils}/bin/df -h / | ${pkgs.gawk}/bin/awk '/\// {print $4}'
     interval=30
 
     [memory]
     label= 
-    command=${scripts.block-memory}/bin/block-memory
+    command=${pkgs.procps}/bin/free -m | ${pkgs.gawk}/bin/awk '/^Mem:/ {printf "%.1f%%\n", $3/$2 * 100}'
     interval=2
 
     [cpu_usage]
     label= 
-    command=${scripts.block-cpu}/bin/block-cpu
+    command=${pkgs.sysstat}/bin/mpstat 1 1 | ${pkgs.coreutils}/bin/tail -n 1 | ${pkgs.gawk}/bin/awk '{print 100 - $NF "%"}'
     interval=2
 
     [temperature]
     label=
-    command=${scripts.block-temperature}/bin/block-temperature
+    command=${pkgs.lm_sensors}/bin/sensors | ${pkgs.gnugrep}/bin/grep -E "^(Package id 0|Tdie|Tctl):" | ${pkgs.gawk}/bin/awk '{print $4}' | ${pkgs.coreutils}/bin/head -n 1 | ${pkgs.coreutils}/bin/tr -d '+'
     interval=30
 
     [bandwidth]
-    command=${pkgs.i3blocks}/libexec/i3blocks/bandwidth
-    interval=persist
+    command=IF=$(${pkgs.iproute2}/bin/ip route get 1.1.1.1 | ${pkgs.gawk}/bin/awk '{print $5}'); ${pkgs.sysstat}/bin/sar -n DEV 1 1 | ${pkgs.gnugrep}/bin/grep "Average.*$IF" | ${pkgs.gawk}/bin/awk '{printf "%.0f/%.0f kB/s", $5, $6}'
+    interval=5
 
     [battery]
     command=${scripts.block-battery}/bin/block-battery

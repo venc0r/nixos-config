@@ -252,7 +252,7 @@ let
     FREE="${pkgs.procps}/bin/free"
     AWK="${pkgs.gawk}/bin/awk"
     # Print used percentage
-    $FREE | $AWK '/^Mem:/ {printf "%.1f%%", $3/$2 * 100}'
+    $FREE -m | $AWK '/^Mem:/ {printf "%.1f%%\n", $3/$2 * 100}'
   '';
 
   block-disk = pkgs.writeShellScriptBin "block-disk" ''
@@ -276,7 +276,11 @@ let
         TEMP=$($SENSORS | $GREP "°C" | head -n 1 | $AWK '{print $2}')
     fi
 
-    echo "$TEMP" | tr -d '+'
+    if [ -z "$TEMP" ]; then
+        echo "N/A"
+    else
+        echo "$TEMP" | tr -d '+'
+    fi
   '';
 
 in
