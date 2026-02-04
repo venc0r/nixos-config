@@ -265,6 +265,9 @@ in
         # Menus
         "Mod4+space" = "exec --no-startup-id i3-dmenu-desktop";
 
+        # Resize mode
+        "Mod4+r" = "mode \"resize\"";
+
         # RBW / Rofi
         "Mod4+p" = "exec rofi-rbw --action type --target password";
         "Mod4+u" = "exec rofi-rbw --action type --target username";
@@ -314,6 +317,18 @@ in
 
         # Lock
         "Mod4+Escape" = "exec --no-startup-id ${pkgs.i3lock}/bin/i3lock";
+      };
+
+      # Resize modes
+      modes = {
+        "resize" = lib.mkOptionDefault {
+          "h" = "resize shrink width 10 px or 10 ppt";
+          "j" = "resize grow height 10 px or 10 ppt";
+          "k" = "resize shrink height 10 px or 10 ppt";
+          "l" = "resize grow width 10 px or 10 ppt";
+          "Return" = "mode \"default\"";
+          "Escape" = "mode \"default\"";
+        };
       };
 
       # Assigns
