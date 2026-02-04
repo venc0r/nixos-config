@@ -5,6 +5,9 @@
   ...
 }:
 
+let
+  scripts = import ./scripts.nix { inherit pkgs; };
+in
 {
   home.username = "jma";
   home.homeDirectory = "/home/jma";
@@ -42,6 +45,12 @@
     thunar
     discord
     qalculate-gtk
+
+    # Custom Scripts
+    scripts.volume-brightness
+    scripts.blurlock
+    scripts.block-volume
+    scripts.block-battery
   ];
 
   home.file = {
@@ -115,6 +124,67 @@
       Name = "Jörg Markert";
     };
   };
+
+  xdg.configFile."i3/i3blocks.conf".text = ''
+    # i3blocks config
+    separator=false
+    markup=pango
+
+    [simple-2]
+    full_text=: :
+    color=#717171
+
+    [disk]
+    label=
+    instance=/
+    command=${pkgs.i3blocks}/libexec/i3blocks/disk
+    interval=30
+
+    [memory]
+    label=
+    command=${pkgs.i3blocks}/libexec/i3blocks/memory
+    interval=2
+
+    [cpu_usage]
+    label=
+    command=${pkgs.i3blocks}/libexec/i3blocks/cpu_usage
+    interval=2
+
+    [bandwidth]
+    command=${pkgs.i3blocks}/libexec/i3blocks/bandwidth
+    interval=persist
+
+    [battery]
+    command=${scripts.block-battery}/bin/block-battery
+    label=
+    interval=30
+
+    [simple-2]
+    full_text=: :
+    color=#717171
+
+    [pavucontrol]
+    full_text=
+    command=${pkgs.pavucontrol}/bin/pavucontrol
+
+    [volume-pulseaudio]
+    command=${scripts.block-volume}/bin/block-volume
+    instance=Master
+    interval=1
+
+    [pavucontrol-mic]
+    full_text=🎤
+    command=${pkgs.pavucontrol}/bin/pavucontrol
+
+    [volume-mic]
+    command=${scripts.block-volume}/bin/block-volume
+    instance=Capture
+    interval=1
+
+    [time]
+    command=date '+%a %d %b %H:%M:%S'
+    interval=1
+  '';
 
   xsession.windowManager.i3 = {
     enable = true;
@@ -209,14 +279,13 @@
         "XF86MonBrightnessUp" = "exec xbacklight -inc 1";
         "XF86MonBrightnessDown" = "exec xbacklight -dec 1";
 
-        # Volume (Referencing the script from original config - ensure it exists or replace with pactl)
-        "XF86AudioRaiseVolume" = "exec --no-startup-id ~/.config/i3/scripts/volume_brightness.sh volume_up";
+        # Volume
+        "XF86AudioRaiseVolume" =
+          "exec --no-startup-id ${scripts.volume-brightness}/bin/volume-brightness volume_up";
         "XF86AudioLowerVolume" =
-          "exec --no-startup-id ~/.config/i3/scripts/volume_brightness.sh volume_down";
-        "XF86AudioMute" = "exec --no-startup-id ~/.config/i3/scripts/volume_brightness.sh volume_mute";
-
-        # Power Menu
-        "Mod4+Shift+o" = "exec --no-startup-id ~/.config/i3/scripts/powermenu";
+          "exec --no-startup-id ${scripts.volume-brightness}/bin/volume-brightness volume_down";
+        "XF86AudioMute" =
+          "exec --no-startup-id ${scripts.volume-brightness}/bin/volume-brightness volume_mute";
 
         # Lock
         "Mod4+Escape" = "exec --no-startup-id ${pkgs.i3lock}/bin/i3lock";
@@ -314,7 +383,7 @@
       bars = [
         {
           position = "bottom";
-          statusCommand = "i3blocks -c ~/.config/i3/i3blocks.conf";
+          statusCommand = "${pkgs.i3blocks}/bin/i3blocks";
           fonts = {
             names = [ "Noto Sans" ];
             size = 10.0;
@@ -387,7 +456,7 @@
           notification = false;
         }
         {
-          command = "--no-startup-id xautolock -time 10 -locker \"\${HOME}/.local/bin/scripts/blurlock\"";
+          command = "--no-startup-id xautolock -time 10 -locker \"${scripts.blurlock}/bin/blurlock\"";
           notification = false;
         }
       ];
