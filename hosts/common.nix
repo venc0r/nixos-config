@@ -83,6 +83,8 @@
   };
 
   home-manager = {
+    useGlobalPkgs = true;
+    useUserPackages = true;
     extraSpecialArgs = { inherit inputs; };
     # User config is imported in per-host configuration
     users = { };
