@@ -303,13 +303,19 @@ let
     # Get default interface
     IF=$($IP route get 1.1.1.1 | $AWK '{print $5}')
 
+    echo "Interface: $IF" >> /tmp/i3blocks-bw-debug.log
+
     if [ -z "$IF" ]; then
         echo "No Net"
         exit 0
     fi
 
     # Measure
-    $SAR -n DEV 1 1 | $GREP "Average.*$IF" | $AWK '{printf "%.0f/%.0f kB/s", $5, $6}'
+    # Log raw output
+    $SAR -n DEV 1 1 > /tmp/i3blocks-sar.log
+
+    # Process
+    cat /tmp/i3blocks-sar.log | $GREP "Average.*$IF" | $AWK '{printf "%.0f/%.0f kB/s", $5, $6}'
   '';
 
 in
