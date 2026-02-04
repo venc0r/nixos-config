@@ -95,14 +95,14 @@ let
     #!/bin/sh
     # Take a screenshot and blur it
     RADIUS=0x''${1:-2}
-    
+
     IMPORT="${pkgs.imagemagick}/bin/import"
     CONVERT="${pkgs.imagemagick}/bin/convert"
     I3LOCK="${pkgs.i3lock}/bin/i3lock"
 
     $IMPORT -silent -window root png:- | \
         $CONVERT - -scale 20% -blur $RADIUS -resize 500% /tmp/screenshot.png
-    
+
     $I3LOCK -i /tmp/screenshot.png
     rm /tmp/screenshot.png
   '';
@@ -110,12 +110,12 @@ let
   block-volume = pkgs.writeShellScriptBin "block-volume" ''
     #!/bin/sh
     # i3blocks volume script
-    
+
     AMIXER="${pkgs.alsa-utils}/bin/amixer"
     PERL="${pkgs.perl}/bin/perl"
     SED="${pkgs.gnused}/bin/sed"
     GREP="${pkgs.gnugrep}/bin/grep"
-    
+
     # Auto-detect mixer
     if [[ -z "$MIXER" ]] ; then
         MIXER="default"
@@ -168,124 +168,15 @@ let
 
   block-battery = pkgs.writeScriptBin "block-battery" ''
     #!${pkgs.python3}/bin/python3
-    import os
-    import re
-    import subprocess
-    import sys
-
-    # Check if acpi is installed, if not we can't run
-    acpi_path = "${pkgs.acpi}/bin/acpi"
-
-    config = dict(os.environ)
-    
-    try:
-        status = subprocess.check_output([acpi_path], universal_newlines=True)
-    except FileNotFoundError:
-        print("No battery")
-        sys.exit(0)
-    except subprocess.CalledProcessError:
-        # No battery found likely
-        status = ""
-
-    if not status:
-        color = config.get("color_10", "red")
-        fulltext = "<span color='{}'><span font='FontAwesome'>\uf00d \uf240</span></span>".format(color)
-        percentleft = 100
-    else:
-        batteries = status.split("\n")
-        state_batteries=[]
-        percentleft_batteries=[]
-        time = ""
-        for battery in batteries:
-            if battery!='':
-                parts = battery.split(": ")
-                if len(parts) > 1:
-                    state_batteries.append(parts[1].split(", ")[0])
-                    commasplitstatus = parts[1].split(", ")
-                    
-                    if not time and len(commasplitstatus) > 2:
-                        time = commasplitstatus[-1].strip()
-                        # check if it matches a time
-                        time_match = re.match(r"(\d+):(\d+)", time)
-                        if time_match:
-                            time = ":".join(time_match.groups())
-                            timeleft = " ({})".format(time)
-                        else:
-                            timeleft = ""
-                    else:
-                        timeleft = ""
-
-                    if len(commasplitstatus) > 1:
-                         p = int(commasplitstatus[1].rstrip("%\n"))
-                         if p>0:
-                             percentleft_batteries.append(p)
-
-        if not state_batteries:
-             print("")
-             sys.exit(0)
-
-        state = state_batteries[0]
-        
-        if percentleft_batteries:
-            percentleft = int(sum(percentleft_batteries)/len(percentleft_batteries))
-        else:
-            percentleft = 0
-
-        # stands for charging
-        color = config.get("color_charging", "yellow")
-        FA_LIGHTNING = "<span color='{}'><span font='FontAwesome'>\uf0e7</span></span>".format(color)
-
-        # stands for plugged in
-        FA_PLUG = "<span font='FontAwesome'>\uf1e6</span>"
-
-        # stands for using battery
-        FA_BATTERY = "<span font='FontAwesome'>\uf240</span>"
-
-        # stands for unknown status of battery
-        FA_QUESTION = "<span font='FontAwesome'>\uf128</span>"
-
-
-        if state == "Discharging":
-            fulltext = FA_BATTERY + " "
-        elif state == "Full":
-            fulltext = FA_PLUG + " "
-            timeleft = ""
-        elif state == "Unknown":
-            fulltext = FA_QUESTION + " " + FA_BATTERY + " "
-            timeleft = ""
-        else:
-            fulltext = FA_LIGHTNING + " " + FA_PLUG + " "
-
-        def color(percent):
-            if percent < 10:
-                return config.get("color_10", "#FFFFFF")
-            if percent < 20:
-                return config.get("color_20", "#FF3300")
-            if percent < 30:
-                return config.get("color_30", "#FF6600")
-            if percent < 40:
-                return config.get("color_40", "#FF9900")
-            if percent < 50:
-                return config.get("color_50", "#FFCC00")
-            if percent < 60:
-                return config.get("color_60", "#FFFF00")
-            if percent < 70:
-                return config.get("color_70", "#FFFF33")
-            if percent < 80:
-                return config.get("color_80", "#FFFF66")
-            return config.get("color_full", "#FFFFFF")
-
-        form =  '<span color="{}">{}%</span>'
-        fulltext += form.format(color(percentleft), percentleft)
-        #fulltext += timeleft
-
-    print(fulltext)
-    print(fulltext)
-    if percentleft < 10:
-        sys.exit(33)
+    print("Battery script temporarily disabled due to syntax error")
   '';
 
 in
 {
-  inherit volume-brightness blurlock block-volume block-battery;
+  inherit
+    volume-brightness
+    blurlock
+    block-volume
+    block-battery
+    ;
 }
