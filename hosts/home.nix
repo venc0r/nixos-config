@@ -56,6 +56,10 @@ in
     scripts.blurlock
     scripts.block-volume
     scripts.block-battery
+    scripts.block-cpu
+    scripts.block-memory
+    scripts.block-disk
+    scripts.block-temperature
   ];
 
   home.file = {
@@ -142,22 +146,22 @@ in
     [disk]
     label=
     instance=/
-    command=${pkgs.i3blocks}/libexec/i3blocks/disk
+    command=${scripts.block-disk}/bin/block-disk
     interval=30
 
     [memory]
     label=
-    command=${pkgs.i3blocks}/libexec/i3blocks/memory
+    command=${scripts.block-memory}/bin/block-memory
     interval=2
 
     [cpu_usage]
     label=
-    command=${pkgs.i3blocks}/libexec/i3blocks/cpu_usage
+    command=${scripts.block-cpu}/bin/block-cpu
     interval=2
 
     [temperature]
     label=
-    command=${pkgs.i3blocks}/libexec/i3blocks/temperature
+    command=${scripts.block-temperature}/bin/block-temperature
     interval=30
 
     [bandwidth]

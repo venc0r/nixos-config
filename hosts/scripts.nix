@@ -227,11 +227,49 @@ let
         color = "#FFFF00"
 
     # Format output
-    # Nix string interpolation: we must escape the dollar sign if we used it, but here we use python f-string or format
     print(f"<span color='{color}'>{icon} {percent}%</span>")
 
     if percent < 10 and is_discharging:
         sys.exit(33)
+  '';
+
+  block-cpu = pkgs.writeShellScriptBin "block-cpu" ''
+    #!/bin/sh
+    MPSTAT="${pkgs.sysstat}/bin/mpstat"
+    AWK="${pkgs.gawk}/bin/awk"
+
+    # Get idle percentage and calculate usage
+    IDLE=$($MPSTAT 1 1 | tail -n 1 | $AWK '{print $NF}')
+    USAGE=$($AWK -v idle="$IDLE" 'BEGIN {print 100 - idle}')
+
+    # Format to 2 decimal places? mpstat usually gives 2.
+    # Just print it.
+    echo "$USAGE%"
+  '';
+
+  block-memory = pkgs.writeShellScriptBin "block-memory" ''
+    #!/bin/sh
+    FREE="${pkgs.procps}/bin/free"
+    AWK="${pkgs.gawk}/bin/awk"
+    $FREE -h | $AWK '/^Mem:/ {print $3 "/" $2}'
+  '';
+
+  block-disk = pkgs.writeShellScriptBin "block-disk" ''
+    #!/bin/sh
+    DF="${pkgs.coreutils}/bin/df"
+    AWK="${pkgs.gawk}/bin/awk"
+    $DF -h / | $AWK '/\// {print $4}'
+  '';
+
+  block-temperature = pkgs.writeShellScriptBin "block-temperature" ''
+    #!/bin/sh
+    SENSORS="${pkgs.lm_sensors}/bin/sensors"
+    GREP="${pkgs.gnugrep}/bin/grep"
+    HEAD="${pkgs.coreutils}/bin/head"
+
+    # Try to grab a temperature. Priority: Tdie, Package id 0, Core 0
+    TEMP=$($SENSORS | $GREP -e "Tdie" -e "Package id 0" -e "Core 0" | $HEAD -n 1 | $GREP -o '+[0-9]*\.[0-9]*°C')
+    echo "$TEMP"
   '';
 
 in
@@ -241,5 +279,9 @@ in
     blurlock
     block-volume
     block-battery
+    block-cpu
+    block-memory
+    block-disk
+    block-temperature
     ;
 }
