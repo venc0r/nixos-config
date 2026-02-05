@@ -194,13 +194,7 @@ in
       ];
   };
 
-  programs.git = {
-    enable = true;
-    settings.user = {
-      Email = "venc0r@live.com";
-      Name = "Jörg Markert";
-    };
-  };
+  imports = [ ./programs/git.nix ];
 
   programs.alacritty = {
     enable = true;
@@ -265,28 +259,28 @@ in
     color=#717171
 
     [disk]
-    label= 
+    label=" "
     instance=/
     command=${pkgs.coreutils}/bin/df -h / | ${pkgs.gawk}/bin/awk '/\// {print $4}'
     interval=30
 
     [memory]
-    label= 
+    label=" "
     command=${pkgs.procps}/bin/free -m | ${pkgs.gawk}/bin/awk '/^Mem:/ {printf "%.1f%%\n", $3/$2 * 100}'
     interval=2
 
     [cpu_usage]
-    label= 
+    label=" "
     command=${pkgs.sysstat}/bin/mpstat 1 1 | ${pkgs.coreutils}/bin/tail -n 1 | ${pkgs.gawk}/bin/awk '{print 100 - $NF "%"}'
     interval=2
 
     [temperature]
-    label=
+    label=""
     command=${scripts.block-temperature}/bin/block-temperature
     interval=30
 
     [bandwidth]
-    label= 
+    label=" "
     command=${scripts.block-bandwidth}/bin/block-bandwidth
     interval=5
 
