@@ -336,46 +336,6 @@ in
     };
   };
 
-      font = {
-        size = 10.0;
-        normal = {
-          family = "MesloLGS NF";
-          style = "Regular";
-        };
-        bold = {
-          family = "MesloLGS NF";
-          style = "Bold";
-        };
-        italic = {
-          family = "MesloLGS NF";
-          style = "Italic";
-        };
-        offset = {
-          x = 0;
-          y = 0;
-        };
-      };
-
-      scrolling = {
-        history = 1000;
-        multiplier = 3;
-      };
-
-      selection = {
-        semantic_escape_chars = "=,│`|:\"' ()[]{}<>";
-      };
-
-      window = {
-        decorations = "none";
-        opacity = 0.9;
-        padding = {
-          x = 2;
-          y = 2;
-        };
-      };
-    };
-  };
-
   xdg.configFile."i3/i3blocks.conf".text = ''
     # i3blocks config
     separator=false
