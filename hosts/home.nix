@@ -241,7 +241,7 @@ in
       };
 
       selection = {
-        semantic_escape_chars = ''=,│`|:\"' ()[]{}<>'';
+        semantic_escape_chars = "=,│`|:\"' ()[]{}<>";
       };
 
       window = {
