@@ -218,15 +218,15 @@ in
       font = {
         size = 10.0;
         normal = {
-          family = "MesloLGS Nerd Font";
+          family = "MesloLGS NF";
           style = "Regular";
         };
         bold = {
-          family = "MesloLGS Nerd Font";
+          family = "MesloLGS NF";
           style = "Bold";
         };
         italic = {
-          family = "MesloLGS Nerd Font";
+          family = "MesloLGS NF";
           style = "Italic";
         };
         offset = {
