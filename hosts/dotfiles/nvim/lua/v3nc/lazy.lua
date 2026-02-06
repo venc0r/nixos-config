@@ -9,6 +9,8 @@ require("lazy").setup({
   spec = "v3nc.plugins",
   change_detection = { notify = false }
 }, {
+  -- Save lockfile in data directory to avoid read-only config issues
+  lockfile = vim.fn.stdpath("data") .. "/lazy-lock.json",
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
     -- default lazy.nvim defined Nerd Font icons, otherwise define a unicode icons table
