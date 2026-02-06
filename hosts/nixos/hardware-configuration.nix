@@ -13,15 +13,19 @@
   boot.kernelModules = [ "kvm-amd" ];
   boot.extraModulePackages = [ ];
 
+  # Root filesystem using label
   fileSystems."/" =
-    { device = "/dev/mapper/luks-5321adc7-3fa0-440a-800c-5af65c7f5b43";
+    { device = "/dev/disk/by-label/root";
       fsType = "ext4";
     };
 
-  boot.initrd.luks.devices."luks-5321adc7-3fa0-440a-800c-5af65c7f5b43".device = "/dev/disk/by-uuid/5321adc7-3fa0-440a-800c-5af65c7f5b43";
+  # LUKS container using partition label
+  # Maps /dev/disk/by-partlabel/root -> /dev/mapper/cryptroot
+  boot.initrd.luks.devices."cryptroot".device = "/dev/disk/by-partlabel/root";
 
+  # Boot partition using partition label
   fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/1B37-E012";
+    { device = "/dev/disk/by-partlabel/EFI";
       fsType = "vfat";
       options = [ "fmask=0077" "dmask=0077" ];
     };
