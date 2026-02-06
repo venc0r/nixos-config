@@ -1,0 +1,22 @@
+return {
+    { "nvim-lua/plenary.nvim", name = "plenary" },
+    { 'tpope/vim-fugitive' },
+    { 'tpope/vim-sleuth' },
+    { 'tpope/vim-repeat' },
+    { 'tpope/vim-surround' },
+    { 'fatih/vim-go', build = ':GoUpdateBinaries' },
+    { "qvalentin/helm-ls.nvim", ft = "helm" },
+    { 'rodjek/vim-puppet' },
+    { 'Glench/Vim-Jinja2-Syntax' },
+    { 'cuducos/yaml.nvim', dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-telescope/telescope.nvim" } },
+    { 'sindrets/diffview.nvim', dependencies = { 'nvim-tree/nvim-web-devicons', opt = true } },
+    { 'folke/zen-mode.nvim' },
+    { 'michaeljsmith/vim-indent-object' },
+    { 'numToStr/Comment.nvim', opts = {}, lazy = false, },
+    { 'ThePrimeagen/harpoon', dependencies = { { 'nvim-lua/plenary.nvim' } } },
+    { 'ThePrimeagen/git-worktree.nvim' },
+    -- testing
+    { 'habamax/vim-asciidoctor' },
+    { 'emmanueltouzery/decisive.nvim' },
+    { 'ThePrimeagen/vim-be-good' },
+}

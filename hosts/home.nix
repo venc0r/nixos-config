@@ -142,7 +142,7 @@ in
   };
 
   imports = [
-    ./programs/alacritty.nix ./programs/git.nix ./programs/tmux.nix ./programs/zsh.nix
+    ./programs/alacritty.nix ./programs/git.nix ./programs/tmux.nix ./programs/zsh.nix ./programs/nvim.nix
     ./services/dunst.nix
   ];
 
