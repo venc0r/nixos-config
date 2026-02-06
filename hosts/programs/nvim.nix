@@ -14,7 +14,6 @@
       wget
       curl
       gzip
-      tar
       ripgrep
       fd
       xclip
