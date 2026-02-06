@@ -124,12 +124,18 @@ nixos-config/
   - `t/n/m`: Popup sessions
 - **Note**: Helper scripts referenced but not yet migrated (pending "Bin scripts" task)
 
-### 🚧 High Priority Pending (4 items)
+#### 9. **Neovim**
+- **Location**: `hosts/programs/nvim.nix`
+- **Config source**: `hosts/dotfiles/nvim/` (symlinked)
+- **Strategy**: Symlink existing structure to avoid complexity
+- **Features**: Lazy.nvim, Mason, Treesitter, etc. kept as-is
+- **Dependencies**: `gcc`, `gnumake`, `ripgrep`, `fd`, `xclip`, `tree-sitter`, `luajitPackages.luarocks` installed via Nix
 
-1. **Nvim** - Neovim editor configuration
-2. **Kitty** - Alternative terminal emulator  
-3. **Autorandr** - Display/monitor management (critical for multi-monitor)
-4. **power-profiles** - Power management script
+### 🚧 High Priority Pending (3 items)
+
+1. **Kitty** - Alternative terminal emulator  
+2. **Autorandr** - Display/monitor management (critical for multi-monitor)
+3. **power-profiles** - Power management script
 
 ### 📋 Medium Priority Pending (6 items)
 
