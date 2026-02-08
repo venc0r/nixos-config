@@ -56,9 +56,11 @@ in
     qalculate-gtk
 
     # Theming
-    gnome-themes-extra # Adwaita GTK theme
-    adwaita-icon-theme # Adwaita icons
-    adwaita-qt # Qt theme matching Adwaita
+    kvantum # Qt theme engine
+    kdePackages.breeze # KDE Breeze theme (includes KvarcDark)
+    kdePackages.breeze-gtk # GTK version of Breeze
+    kdePackages.breeze-icons # Breeze icons
+    adwaita-icon-theme # Fallback icons
 
     # Clipboard and utilities
     xclip # For tmux clipboard integration
@@ -78,6 +80,12 @@ in
   home.file = {
     ".p10k.zsh".source = ../dotfiles/.p10k.zsh;
   };
+
+  # Kvantum theme configuration
+  xdg.configFile."Kvantum/kvantum.kvconfig".text = ''
+    [General]
+    theme=KvarcDark
+  '';
 
   xdg.configFile."alacritty/gruvbox-dark.toml".text = ''
     # Colors (Gruvbox dark)
@@ -531,18 +539,18 @@ in
     enable = true;
 
     theme = {
-      name = "Adwaita-dark";
-      package = pkgs.gnome-themes-extra;
+      name = "Breeze-Dark";
+      package = pkgs.kdePackages.breeze-gtk;
     };
 
     iconTheme = {
-      name = "Adwaita";
-      package = pkgs.adwaita-icon-theme;
+      name = "breeze-dark";
+      package = pkgs.kdePackages.breeze-icons;
     };
 
     cursorTheme = {
-      name = "Adwaita";
-      package = pkgs.adwaita-icon-theme;
+      name = "breeze_cursors";
+      package = pkgs.kdePackages.breeze;
     };
 
     gtk3.extraConfig = {
@@ -554,11 +562,11 @@ in
     };
   };
 
-  # Qt theme configuration for dark mode
+  # Qt theme configuration for dark mode (Kvantum)
   qt = {
     enable = true;
-    platformTheme.name = "gtk3";
-    style.name = "adwaita-dark";
+    platformTheme.name = "kvantum";
+    style.name = "kvantum";
   };
 
   # Let Home Manager install and manage itself.
