@@ -66,6 +66,8 @@ in
 
     # Clipboard and utilities
     xclip # For tmux clipboard integration
+    jq # JSON processor
+    go-yq # YAML processor
 
     # Custom Scripts
     scripts.volume-brightness
