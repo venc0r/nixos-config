@@ -8,18 +8,31 @@
     withNodeJs = true;
     withPython3 = true;
     extraPackages = with pkgs; [
+      # Build tools
       gcc
       gnumake
       unzip
       wget
       curl
       gzip
+
+      # Search and utilities
       ripgrep
       fd
       xclip
+
+      # Treesitter
       tree-sitter # Library for parsing
       tree-sitter-cli # CLI tool required by nvim-treesitter
+
+      # Lua
       luajitPackages.luarocks
+      lua5_1 # Required by luarocks for some plugins
+
+      # Language runtimes for Mason tools
+      go # Go toolchain (gopls, delve, etc.)
+      python3 # Python toolchain (pyright, debugpy, etc.)
+      python3Packages.pip # Pip for installing Python tools
     ];
   };
 
