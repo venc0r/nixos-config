@@ -356,6 +356,78 @@ let
     $NOTIFY_SEND "Zen Browser" "Launching with profile: $selected_profile"
   '';
 
+  tmux-cht = pkgs.writeShellScriptBin "tmux-cht" ''
+    #!/usr/bin/env bash
+    # Tmux cheat sheet lookup using cht.sh
+    # Requires ~/.tmux-cht-languages and ~/.tmux-cht-command files
+
+    FZF="${pkgs.fzf}/bin/fzf"
+    CAT="${pkgs.coreutils}/bin/cat"
+    CURL="${pkgs.curl}/bin/curl"
+    LESS="${pkgs.less}/bin/less"
+    TMUX="${pkgs.tmux}/bin/tmux"
+
+    selected=$($CAT ~/.tmux-cht-languages ~/.tmux-cht-command | $FZF)
+    if [[ -z $selected ]]; then
+        exit 0
+    fi
+
+    $TMUX neww bash -c "$CURL -s cht.sh/$selected | $LESS"
+  '';
+
+  tmux-cal = pkgs.writeShellScriptBin "tmux-cal" ''
+    #!/usr/bin/env bash
+    # Tmux calendar viewer using fzf year selector
+
+    FZF="${pkgs.fzf}/bin/fzf"
+    ECHO="${pkgs.coreutils}/bin/echo"
+    TR="${pkgs.coreutils}/bin/tr"
+    CAL="${pkgs.util-linux}/bin/cal"
+    SLEEP="${pkgs.coreutils}/bin/sleep"
+    TMUX="${pkgs.tmux}/bin/tmux"
+
+    yy=$($ECHO {24..37} | $TR ' ' '\n' | $FZF)
+    $TMUX neww bash -c "$CAL -wy 20$yy; $SLEEP 300"
+  '';
+
+  tmux-sessionizer = pkgs.writeShellScriptBin "tmux-sessionizer" ''
+    #!/usr/bin/env bash
+    # Tmux session manager for git projects
+    # Usage: tmux-sessionizer [path]
+    # If no path provided, uses fzf to select from ~/Documents/git/
+
+    FIND="${pkgs.findutils}/bin/find"
+    FZF="${pkgs.fzf}/bin/fzf"
+    BASENAME="${pkgs.coreutils}/bin/basename"
+    TR="${pkgs.coreutils}/bin/tr"
+    PGREP="${pkgs.procps}/bin/pgrep"
+    TMUX="${pkgs.tmux}/bin/tmux"
+
+    if [[ $# -eq 1 ]]; then
+        selected=$1
+    else
+        selected=$($FIND ~/Documents/git/ -mindepth 2 -maxdepth 3 -type d,l | $FZF)
+    fi
+
+    if [[ -z $selected ]]; then
+        exit 0
+    fi
+
+    selected_name=$($BASENAME "$selected" | $TR . _)
+    tmux_running=$($PGREP tmux)
+
+    if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then
+        $TMUX new-session -s $selected_name -c $selected
+        exit 0
+    fi
+
+    if ! $TMUX has-session -t=$selected_name 2> /dev/null; then
+        $TMUX new-session -ds $selected_name -c $selected
+    fi
+
+    $TMUX switch-client -t $selected_name
+  '';
+
 in
 {
   inherit
@@ -369,5 +441,8 @@ in
     block-temperature
     block-bandwidth
     zen-profile-selector
+    tmux-cht
+    tmux-cal
+    tmux-sessionizer
     ;
 }
