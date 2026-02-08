@@ -22,6 +22,11 @@
     "flakes"
   ];
 
+  # Show more verbose output during builds and downloads
+  nix.extraOptions = ''
+    show-trace = true
+  '';
+
   # Increase download buffer for large packages (zoom, teams, etc)
   nix.settings.download-buffer-size = 268435456; # 256 MB (default is 64 MB)
 
