@@ -13,6 +13,38 @@
     inputs.zen-browser.homeModules.default
   ];
 
+  # Make profiles.ini writable by copying instead of symlinking
+  home.file.".zen/profiles.ini".force = true;
+  home.activation.fixZenProfilesIni = config.lib.dag.entryAfter [ "writeBoundary" ] ''
+        if [ -L "$HOME/.zen/profiles.ini" ]; then
+          rm "$HOME/.zen/profiles.ini"
+          cat > "$HOME/.zen/profiles.ini" << 'EOF'
+    [General]
+    StartWithLastProfile=1
+    Version=2
+
+    [Profile0]
+    Default=1
+    IsRelative=1
+    Name=Personal
+    Path=personal
+
+    [Profile1]
+    Default=0
+    IsRelative=1
+    Name=Work
+    Path=work
+
+    [Profile2]
+    Default=0
+    IsRelative=1
+    Name=Development
+    Path=dev
+    EOF
+          chmod 644 "$HOME/.zen/profiles.ini"
+        fi
+  '';
+
   programs.zen-browser = {
     enable = true;
 
