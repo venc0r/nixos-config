@@ -100,9 +100,9 @@ in
     {
       "email": "joerg.markert@gmail.com",
       "base_url": "https://vaultwarden.v3nc.org",
-      "lock_timeout": 3600,
+      "lock_timeout": 14400,
       "sync_interval": 3600,
-      "pinentry": "${pkgs.pinentry-gnome3}/bin/pinentry-gnome3"
+      "pinentry": "pinentry-gnome3"
     }
   '';
 
@@ -597,10 +597,7 @@ in
     Service = {
       Type = "simple";
       ExecStart = "${pkgs.rbw}/bin/rbw-agent";
-      Environment = [
-        "DISPLAY=:0"
-        "PINENTRY_PROGRAM=${pkgs.pinentry-gnome3}/bin/pinentry-gnome3"
-      ];
+      Environment = [ "DISPLAY=:0" ];
       Restart = "on-failure";
     };
     Install = {
