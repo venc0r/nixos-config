@@ -51,7 +51,7 @@ nixos-config/
 
 ## Migration Progress
 
-### ✅ Completed (11 items)
+### ✅ Completed (12 items)
 
 #### 1. **i3 Window Manager** 
 - **Location**: `hosts/home.nix:414-704`
@@ -206,26 +206,31 @@ nixos-config/
 - **Documentation**: See `ZEN-BROWSER-GUIDE.md` for detailed usage instructions
 - **Note**: Auto-updates disabled (managed by Nix flake)
 
-### 🚧 High Priority Pending (1 item)
+#### 12. **Host-Specific Packages**
+- **Location**: `hosts/cubi/packages.nix`
+- **Strategy**: Host-specific package imports
+- **Packages added to cubi**:
+  - `teams-for-linux` - Microsoft Teams client
+  - `zoom-us` - Zoom video conferencing
+- **Configuration**: Imported in `hosts/cubi/configuration.nix` via `home-manager.users.jma.imports`
+- **Note**: These packages are only installed on the production machine (cubi), not on the VM
+
+### 📋 Medium Priority Pending (5 items)
+
+1. **Bash** - Bash shell configuration
+2. **Bin scripts** - General utility scripts (includes tmux helpers)
+3. **CopyQ** - Clipboard manager
+4. **iamb** - Matrix client
+5. **Vim** - Vim editor configuration
+
+### 📌 Low Priority Pending (5 items)
 
 1. **power-profiles** - Power management script
-
-### 📋 Medium Priority Pending (6 items)
-
-1. **Host-specific packages** - Move `teams-for-linux`, `zoom-us` to respective hosts
-2. **Bash** - Bash shell configuration
-3. **Bin scripts** - General utility scripts (includes tmux helpers)
-4. **CopyQ** - Clipboard manager
-5. **iamb** - Matrix client
-6. **Vim** - Vim editor configuration
-
-### 📌 Low Priority Pending (4 items)
-
-1. **Mangohud** - Gaming overlay
-2. **Neofetch** - System info tool
-3. **Remmina** - Remote desktop client
-4. **Yamllint** - YAML linter
-5. **Rofi theming** - `powermenu.rasi` theme
+2. **Mangohud** - Gaming overlay
+3. **Neofetch** - System info tool
+4. **Remmina** - Remote desktop client
+5. **Yamllint** - YAML linter
+6. **Rofi theming** - `powermenu.rasi` theme
 
 ## Key Technical Details
 
@@ -349,5 +354,5 @@ sudo nixos-rebuild switch --flake .#cubi --refresh
 ---
 
 **Last Updated**: 2026-02-08  
-**Status**: 9/22 tasks completed (41%)  
-**Next Priority**: Autorandr, Kitty, or power-profiles script
+**Status**: 12/22 tasks completed (55%)  
+**Next Priority**: Bin scripts, Bash, or CopyQ

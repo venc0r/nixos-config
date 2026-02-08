@@ -16,6 +16,7 @@
   # Home Manager configuration
   home-manager.users.jma.imports = [
     ../home.nix # Shared config
-    ./autorandr.nix # Host-specific config
+    ./autorandr.nix # Host-specific display profiles
+    ./packages.nix # Host-specific packages
   ];
 }
