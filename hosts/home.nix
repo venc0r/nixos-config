@@ -278,14 +278,14 @@ in
         "Mod4+Shift+q" = "kill";
 
         # Menus
-        "Mod4+space" = "exec --no-startup-id i3-dmenu-desktop";
+        "Mod4+space" = "exec --no-startup-id ${pkgs.i3}/bin/i3-dmenu-desktop";
 
         # Resize mode
         "Mod4+r" = "mode \"resize\"";
 
         # RBW / Rofi
-        "Mod4+p" = "exec rofi-rbw --action type --target password";
-        "Mod4+u" = "exec rofi-rbw --action type --target username";
+        "Mod4+p" = "exec ${pkgs.rofi-rbw}/bin/rofi-rbw --action type --target password";
+        "Mod4+u" = "exec ${pkgs.rofi-rbw}/bin/rofi-rbw --action type --target username";
 
         # Audio / PulseAudio
         "Mod4+Ctrl+m" = "exec ${pkgs.pavucontrol}/bin/pavucontrol";
@@ -319,8 +319,8 @@ in
         "Mod4+comma" = "scratchpad show";
 
         # Multimedia Keys (using custom scripts referenced in original config)
-        "XF86MonBrightnessUp" = "exec xbacklight -inc 1";
-        "XF86MonBrightnessDown" = "exec xbacklight -dec 1";
+        "XF86MonBrightnessUp" = "exec ${pkgs.xorg.xbacklight}/bin/xbacklight -inc 1";
+        "XF86MonBrightnessDown" = "exec ${pkgs.xorg.xbacklight}/bin/xbacklight -dec 1";
 
         # Volume
         "XF86AudioRaiseVolume" =
