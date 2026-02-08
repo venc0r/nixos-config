@@ -14,20 +14,27 @@ This document tracks the migration of dotfiles from Arch Linux to a clean, modul
 ### File Organization
 ```
 nixos-config/
-├── flake.nix                    # Main flake entry point
+├── flake.nix                       # Main flake entry point
 ├── hosts/
-│   ├── common.nix              # System-wide shared config
-│   ├── home.nix                # Home Manager user config (shared)
-│   ├── scripts.nix             # Custom shell scripts as Nix derivations
+│   ├── common.nix                  # System-wide shared config
+│   ├── home.nix                    # Home Manager user config (packages, i3 config)
+│   ├── scripts.nix                 # Custom shell scripts as Nix derivations
 │   ├── dotfiles/
-│   │   └── .p10k.zsh          # Powerlevel10k theme
-│   ├── programs/
-│   │   └── git.nix            # Git configuration (modular)
+│   │   ├── .p10k.zsh              # Powerlevel10k theme
+│   │   └── nvim/                  # Neovim configuration (symlinked)
+│   ├── programs/                   # Modular program configurations
+│   │   ├── alacritty.nix
+│   │   ├── git.nix
+│   │   ├── nvim.nix
+│   │   ├── tmux.nix
+│   │   └── zsh.nix
+│   ├── services/                   # Modular service configurations
+│   │   └── dunst.nix
 │   ├── nixos/
-│   │   ├── configuration.nix   # VM-specific config
+│   │   ├── configuration.nix       # VM-specific config
 │   │   └── hardware-configuration.nix
 │   └── cubi/
-│       ├── configuration.nix   # Intel box config
+│       ├── configuration.nix       # Intel box config
 │       └── hardware-configuration.nix
 ```
 
@@ -36,10 +43,11 @@ nixos-config/
 2. **Shared by default**: Common configuration in `common.nix` and `home.nix`
 3. **Absolute paths**: All scripts use `${pkgs.package}/bin/command` for reliability
 4. **Declarative**: Everything managed through Nix, minimal imperative setup
+5. **Organized imports**: Programs and services split into separate files under `hosts/programs/` and `hosts/services/`
 
 ## Migration Progress
 
-### ✅ Completed (8 items)
+### ✅ Completed (9 items)
 
 #### 1. **i3 Window Manager** 
 - **Location**: `hosts/home.nix:414-704`
@@ -64,7 +72,7 @@ nixos-config/
   - `block-volume`: Volume control (speakers + mic)
 
 #### 3. **Zsh Shell**
-- **Location**: `hosts/home.nix:141-195`
+- **Location**: `hosts/programs/zsh.nix`
 - **Features**:
   - Oh-My-Zsh with custom plugins
   - Powerlevel10k theme
@@ -81,20 +89,20 @@ nixos-config/
 - **Features**: SSH identities configured via prezto
 
 #### 6. **Alacritty Terminal**
-- **Location**: `hosts/home.nix:199-250`
+- **Location**: `hosts/programs/alacritty.nix`
 - **Features**:
   - MesloLGS NF font (size 10)
   - Gruvbox dark theme (with light theme available)
   - Window opacity: 0.9
   - No decorations
   - Custom environment variables
-- **Color schemes**: `hosts/home.nix:71-135`
+- **Color schemes**: Defined in the same file
   - `gruvbox-dark.toml` (active)
   - `gruvbox-light.toml` (commented out)
 - **Important fix**: Semantic escape chars use plain string for proper TOML generation
 
 #### 7. **Dunst Notification Daemon**
-- **Location**: `hosts/home.nix:252-337`
+- **Location**: `hosts/services/dunst.nix`
 - **Features**:
   - Follow mouse mode
   - Custom urgency levels with Gruvbox colors
@@ -107,7 +115,7 @@ nixos-config/
   - Critical: `#900000` / `#ffffff` (no timeout)
 
 #### 8. **Tmux Terminal Multiplexer**
-- **Location**: `hosts/home.nix:339-428` (after Dunst service)
+- **Location**: `hosts/programs/tmux.nix`
 - **Features**:
   - Custom prefix: `Alt+s` (instead of `Ctrl+b`)
   - Vim-style keybindings (navigation, resizing, copy mode)
@@ -124,12 +132,38 @@ nixos-config/
   - `t/n/m`: Popup sessions
 - **Note**: Helper scripts referenced but not yet migrated (pending "Bin scripts" task)
 
-#### 9. **Neovim**
+#### 9. **Neovim Editor**
 - **Location**: `hosts/programs/nvim.nix`
 - **Config source**: `hosts/dotfiles/nvim/` (symlinked)
-- **Strategy**: Symlink existing structure to avoid complexity
-- **Features**: Lazy.nvim, Mason, Treesitter, etc. kept as-is
-- **Dependencies**: `gcc`, `gnumake`, `ripgrep`, `fd`, `xclip`, `tree-sitter`, `luajitPackages.luarocks` installed via Nix
+- **Strategy**: Symlink existing Neovim configuration to avoid complexity
+- **Features**: 
+  - Lazy.nvim plugin manager
+  - Mason for LSP/DAP/linter management
+  - Treesitter for syntax highlighting
+  - Complete existing setup preserved
+- **Dependencies installed via Nix**: 
+  - `gcc`, `gnumake`, `unzip`, `wget`, `curl`, `gzip`
+  - `ripgrep`, `fd`, `xclip`, `tree-sitter`
+  - `luajitPackages.luarocks`
+- **Aliases**: `vi` and `vim` point to `nvim`
+- **Default editor**: Set as system default via `defaultEditor = true`
+
+#### 9. **Neovim Editor**
+- **Location**: `hosts/programs/nvim.nix`
+- **Config source**: `hosts/dotfiles/nvim/` (symlinked)
+- **Strategy**: Symlink existing Neovim configuration to avoid complexity
+- **Features**: 
+  - Lazy.nvim plugin manager
+  - Mason for LSP/DAP/linter management
+  - Treesitter for syntax highlighting
+  - Complete existing setup preserved
+- **Dependencies installed via Nix**: 
+  - `gcc`, `gnumake`, `unzip`, `wget`, `curl`, `gzip`
+  - `ripgrep`, `fd`, `xclip`, `tree-sitter`
+  - `luajitPackages.luarocks`
+- **Aliases**: `vi` and `vim` point to `nvim`
+- **Default editor**: Set as system default via `defaultEditor = true`
+- **Note**: lazy-lock.json writes will fail in read-only symlinked config; needs manual git updates
 
 ### 🚧 High Priority Pending (3 items)
 
@@ -220,60 +254,61 @@ sudo nixos-rebuild switch --flake .#cubi --refresh
 - Fonts: meslo-lgs-nf
 - Custom scripts (via `scripts.nix`)
 
-### Services Running
-- **Dunst**: Notification daemon (via Home Manager service)
-- **i3**: Window manager (via Home Manager xsession)
+### Programs Configured (via `hosts/programs/`)
+- **Alacritty**: Terminal emulator (`alacritty.nix`)
+- **Git**: Version control (`git.nix`)
+- **Neovim**: Text editor with full Lazy.nvim setup (`nvim.nix`)
+- **Tmux**: Terminal multiplexer (`tmux.nix`)
+- **Zsh**: Shell with Oh-My-Zsh and Powerlevel10k (`zsh.nix`)
 
-### Programs Configured
-- **Alacritty**: Terminal emulator
-- **Git**: Version control (modular config)
-- **Tmux**: Terminal multiplexer
-- **Zsh**: Shell with Oh-My-Zsh and Powerlevel10k
+### Services Running (via `hosts/services/`)
+- **Dunst**: Notification daemon (`dunst.nix`)
+- **i3**: Window manager (via Home Manager xsession in `home.nix`)
 
 ## Known Issues & Notes
 
-1. **Tmux helper scripts**: Referenced in tmux config but not yet migrated
+1. **Neovim lazy-lock.json**: Config is symlinked as read-only; plugin lockfile updates require manual git commits
+
+2. **Tmux helper scripts**: Referenced in tmux config but not yet migrated
    - `tmux-cht.sh`, `tmux-cal.sh`, `tmux-sessionizer.sh`
    - Location: `~/.dotfiles/bin/.local/bin/scripts/`
    - Will be migrated with "Bin scripts" task
 
-2. **VM-specific**: `block-temperature` shows "N/A" on VM (expected)
+3. **VM-specific**: `block-temperature` shows "N/A" on VM (expected)
 
-3. **Browser**: `zen-browser` not yet in nixpkgs, requires flake input or overlay
+4. **Browser**: `zen-browser` not yet in nixpkgs, requires flake input or overlay
 
-4. **Font naming**: Changed from "MesloLGS Nerd Font" to "MesloLGS NF" for consistency
+5. **Font naming**: Changed from "MesloLGS Nerd Font" to "MesloLGS NF" for consistency
+
+6. **Hardware configuration**: Updated to use label-based filesystem mounting and support both Intel/AMD KVM modules
 
 ## Recent Commits
 
+- `cb2fd54` - is this a problem?
+- `456e260` - gemini is so fail
+- `ef06daf` - feat(nixos): support both intel and amd kvm modules
+- `1b40604` - feat(nixos): switch to label-based filesystem mounting
+- `79e3430` - chore: remove lazy-lock.json and configure separate path
+- `c59e6e1` - docs: update migration summary for neovim
+- `05a9146` - feat: migrate neovim config
+- `030f8c2` - Add migration summary document for future sessions
+- `2a67be6` - add tmux, split program and service config into files and imports
 - `31bdb46` - Migrate Tmux configuration to programs.tmux
-- `b221fc9` - (previous git configuration work)
-- `feb3a62` - Migrate Dunst configuration to services.dunst
-- `44b5600` - Fix Alacritty semantic_escape_chars - use plain string for TOML generation
-- `38cc7a3` - Remove alacritty from packages (managed via programs.alacritty)
-- `8163018` - Add Alacritty configuration with Gruvbox themes
-- `fb1f09c` - (earlier i3/i3blocks work)
 
 ## Next Session Checklist
 
 1. Review this summary
 2. Pull latest changes: `git pull`
 3. Choose next task from high-priority list:
-   - **Nvim** (most complex, may need multiple sessions)
-   - **Autorandr** (important for multi-monitor setups)
+   - **Autorandr** (important for multi-monitor setups on cubi)
    - **Kitty** (similar to Alacritty, should be straightforward)
-   - **power-profiles** script
+   - **power-profiles** script (power management)
 
 4. Continue migration following established patterns
 5. Test on VM before deploying to main machine
 
-## Resources
-
-- **NixOS Options Search**: https://search.nixos.org/options
-- **Home Manager Options**: https://nix-community.github.io/home-manager/options.html
-- **Original dotfiles**: `~/.dotfiles/` (Arch Linux setup)
-
 ---
 
-**Last Updated**: 2026-02-05  
-**Status**: 8/22 tasks completed (36%)  
-**Next Priority**: Nvim, Autorandr, or Kitty configuration
+**Last Updated**: 2026-02-08  
+**Status**: 9/22 tasks completed (41%)  
+**Next Priority**: Autorandr, Kitty, or power-profiles script
