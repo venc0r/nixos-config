@@ -22,8 +22,7 @@
       xclip
 
       # Treesitter
-      tree-sitter # Library for parsing
-      tree-sitter-cli # CLI tool required by nvim-treesitter
+      tree-sitter # Includes both library and CLI tool
 
       # Lua
       luajitPackages.luarocks
