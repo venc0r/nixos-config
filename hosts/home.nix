@@ -89,6 +89,20 @@ in
     theme=ArcDark
   '';
 
+  # Configure rbw (Bitwarden CLI) to use graphical pinentry
+  home.sessionVariables = {
+    PINENTRY_PROGRAM = "${pkgs.pinentry-gnome3}/bin/pinentry-gnome3";
+  };
+
+  # RBW (Bitwarden) configuration
+  programs.rbw = {
+    enable = true;
+    settings = {
+      email = ""; # Set via 'rbw config set email your@email.com'
+      pinentry = pkgs.pinentry-gnome3;
+    };
+  };
+
   xdg.configFile."alacritty/gruvbox-dark.toml".text = ''
     # Colors (Gruvbox dark)
     [colors.cursor]
