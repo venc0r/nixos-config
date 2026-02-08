@@ -22,6 +22,24 @@
     "flakes"
   ];
 
+  # Increase download buffer for large packages (zoom, teams, etc)
+  nix.settings.download-buffer-size = 268435456; # 256 MB (default is 64 MB)
+
+  # Additional performance settings
+  nix.settings = {
+    # Use multiple cores for building
+    max-jobs = "auto";
+    cores = 0; # Use all available cores
+
+    # Enable binary cache substitution
+    substituters = [
+      "https://cache.nixos.org"
+    ];
+    trusted-public-keys = [
+      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+    ];
+  };
+
   # Enable networking
   networking.networkmanager.enable = true;
 
