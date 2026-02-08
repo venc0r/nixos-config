@@ -37,7 +37,8 @@
 
         # Privacy settings
         DontCheckDefaultBrowser = true;
-        OfferToSaveLogins = false;
+        OfferToSaveLogins = false; # Disabled - using Bitwarden extension
+        PasswordManagerEnabled = false; # Disable built-in password manager
         NoDefaultBookmarks = true;
 
         # Autofill settings
@@ -82,6 +83,11 @@
           "privacy.history.custom" = true;
           "datareporting.usage.uploadEnabled" = false;
 
+          # === Password Manager ===
+          "signon.rememberSignons" = false; # Disable built-in password manager (using Bitwarden)
+          "signon.autofillForms" = false; # Disable password autofill
+          "signon.management.page.breach-alerts.enabled" = false; # Disable breach alerts
+
           # === Developer Tools ===
           "devtools.theme" = "dark";
           "devtools.cache.disabled" = true; # Disable cache in DevTools
@@ -119,15 +125,10 @@
       name = "Personal";
 
       settings = {
-        # This profile will use its own Firefox Sync account
-        # Configure sync manually in the browser or via about:config
-        "services.sync.username" = ""; # Will be set through browser UI
+        # Firefox Sync will be configured through browser UI
+        # Extensions (including Bitwarden) are synced via Firefox account
+        "services.sync.username" = ""; # Set via browser UI
       };
-
-      # You can add profile-specific extensions here
-      # extensions = with inputs.firefox-addons.packages.${pkgs.system}; [
-      #   ublock-origin
-      # ];
     };
 
     # Profile 2: Work
@@ -136,8 +137,9 @@
       name = "Work";
 
       settings = {
-        # Different sync account for work
-        "services.sync.username" = ""; # Will be set through browser UI
+        # Different Firefox Sync account for work profile
+        # Extensions are synced independently per profile
+        "services.sync.username" = ""; # Set via browser UI
       };
     };
 

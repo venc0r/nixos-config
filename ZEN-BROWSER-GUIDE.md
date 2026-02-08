@@ -36,7 +36,13 @@ Each profile can use a different Firefox Sync account:
 1. Launch the profile: `zen -P <profile-name>`
 2. Open Settings → Firefox Account
 3. Sign in with the account you want to use for this profile
-4. Enable sync for the data you want (bookmarks, passwords, history, etc.)
+4. Enable sync for the data you want (bookmarks, passwords, history, **extensions**, etc.)
+
+**Note**: Extensions (including Bitwarden) are synced via Firefox Sync and are NOT managed through Nix configuration. Each profile will sync its own set of extensions from its respective Firefox account.
+
+## Password Manager
+
+The built-in Firefox password manager is **disabled** in this configuration. Use the Bitwarden extension (synced via Firefox account) for password management.
 
 ## Custom Keybindings
 
@@ -90,38 +96,23 @@ Preferences = mkLockedAttrs {
 
 ## Installing Extensions
 
-Extensions can be added per-profile or globally. To add extensions:
+**Extensions are synced via Firefox Sync and should NOT be managed through Nix configuration.**
 
-### Option 1: Via Configuration (Recommended)
+When you sign in to your Firefox account in a profile, all your extensions (including Bitwarden, uBlock Origin, etc.) will automatically sync and install.
 
-You'll need to add the firefox-addons input first:
+### Why Not Manage Extensions Through Nix?
 
-```nix
-# In flake.nix inputs:
-firefox-addons = {
-  url = "gitlab:rycee/nur-expressions?dir=pkgs/firefox-addons";
-  inputs.nixpkgs.follows = "nixpkgs";
-};
-```
+- Extensions are profile-specific and synced with your Firefox account
+- Managing them through Nix would conflict with Firefox Sync
+- Your extension settings and data are preserved through sync
+- Different profiles can have different extensions via different Firefox accounts
 
-Then in `programs/zen-browser.nix`:
+### Manual Installation (If Not Using Sync)
 
-```nix
-profiles.personal = {
-  extensions = with inputs.firefox-addons.packages.${pkgs.system}; [
-    ublock-origin
-    bitwarden
-    # ... more extensions
-  ];
-};
-```
+If you're not using Firefox Sync for a particular profile, you can install extensions manually:
+- Open `about:addons` → Search and install
 
-### Option 2: Manual Installation
-
-Install extensions through the browser's add-ons page:
-- `about:addons` → Search and install
-
-**Note**: Manually installed extensions are profile-specific.
+**Note**: Manually installed extensions are profile-specific and won't sync to other profiles.
 
 ## Profile-Specific Settings
 
@@ -137,11 +128,10 @@ profiles.work = {
     "browser.startup.homepage" = "https://company-intranet.com";
     "browser.newtabpage.enabled" = true;
   };
-  
-  # Work-specific extensions
-  extensions = [ ... ];
 };
 ```
+
+**Note**: Extensions are managed via Firefox Sync, not through Nix configuration.
 
 ## Advanced: Container Tabs
 
