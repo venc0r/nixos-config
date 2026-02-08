@@ -549,6 +549,10 @@ in
           command = "--no-startup-id ${pkgs.xautolock}/bin/xautolock -time 10 -locker \"${scripts.blurlock}/bin/blurlock\"";
           notification = false;
         }
+        {
+          command = "--no-startup-id ${pkgs.rbw}/bin/rbw-agent";
+          notification = false;
+        }
       ];
     };
   };
@@ -586,23 +590,6 @@ in
     enable = true;
     platformTheme.name = "kvantum";
     style.name = "kvantum";
-  };
-
-  # Systemd service for rbw-agent with proper environment
-  systemd.user.services.rbw-agent = {
-    Unit = {
-      Description = "Bitwarden agent (rbw)";
-      After = [ "graphical-session.target" ];
-    };
-    Service = {
-      Type = "simple";
-      ExecStart = "${pkgs.rbw}/bin/rbw-agent";
-      Environment = [ "DISPLAY=:0" ];
-      Restart = "on-failure";
-    };
-    Install = {
-      WantedBy = [ "graphical-session.target" ];
-    };
   };
 
   # Let Home Manager install and manage itself.
