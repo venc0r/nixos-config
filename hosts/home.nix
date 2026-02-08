@@ -94,6 +94,18 @@ in
     PINENTRY_PROGRAM = "${pkgs.pinentry-gnome3}/bin/pinentry-gnome3";
   };
 
+  # Configure rbw pinentry via config file (force overwrite)
+  xdg.configFile."rbw/config.json".force = true;
+  xdg.configFile."rbw/config.json".text = ''
+    {
+      "email": "joerg.markert@gmail.com",
+      "base_url": "https://vaultwarden.v3nc.org",
+      "lock_timeout": 3600,
+      "sync_interval": 3600,
+      "pinentry": "${pkgs.pinentry-gnome3}/bin/pinentry-gnome3"
+    }
+  '';
+
   xdg.configFile."alacritty/gruvbox-dark.toml".text = ''
     # Colors (Gruvbox dark)
     [colors.cursor]
