@@ -68,7 +68,7 @@ in
   ];
 
   home.file = {
-    ".p10k.zsh".source = ./dotfiles/.p10k.zsh;
+    ".p10k.zsh".source = ../dotfiles/.p10k.zsh;
   };
 
   xdg.configFile."alacritty/gruvbox-dark.toml".text = ''

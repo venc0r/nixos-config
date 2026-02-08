@@ -15,6 +15,9 @@ This document tracks the migration of dotfiles from Arch Linux to a clean, modul
 ```
 nixos-config/
 ├── flake.nix                       # Main flake entry point
+├── dotfiles/                       # Shared configuration files
+│   ├── .p10k.zsh                  # Powerlevel10k theme
+│   └── nvim/                      # Neovim configuration (symlinked)
 ├── programs/                       # Modular program configurations
 │   ├── alacritty.nix
 │   ├── git.nix
@@ -27,9 +30,6 @@ nixos-config/
     ├── common.nix                  # System-wide shared config
     ├── home.nix                    # Home Manager user config (packages, i3 config)
     ├── scripts.nix                 # Custom shell scripts as Nix derivations
-    ├── dotfiles/
-    │   ├── .p10k.zsh              # Powerlevel10k theme
-    │   └── nvim/                  # Neovim configuration (symlinked)
     ├── nixos/
     │   ├── configuration.nix       # VM-specific config
     │   └── hardware-configuration.nix
@@ -81,7 +81,7 @@ nixos-config/
   - SSH agent integration
 
 #### 4. **Powerlevel10k Theme**
-- **Location**: `hosts/dotfiles/.p10k.zsh`
+- **Location**: `dotfiles/.p10k.zsh`
 - **Integration**: Loaded via `home.file`
 
 #### 5. **SSH Configuration**
@@ -134,7 +134,7 @@ nixos-config/
 
 #### 9. **Neovim Editor**
 - **Location**: `programs/nvim.nix`
-- **Config source**: `hosts/dotfiles/nvim/` (symlinked)
+- **Config source**: `dotfiles/nvim/` (symlinked)
 - **Strategy**: Symlink existing Neovim configuration to avoid complexity
 - **Features**: 
   - Lazy.nvim plugin manager
@@ -150,7 +150,7 @@ nixos-config/
 
 #### 9. **Neovim Editor**
 - **Location**: `programs/nvim.nix`
-- **Config source**: `hosts/dotfiles/nvim/` (symlinked)
+- **Config source**: `dotfiles/nvim/` (symlinked)
 - **Strategy**: Symlink existing Neovim configuration to avoid complexity
 - **Features**: 
   - Lazy.nvim plugin manager
