@@ -29,7 +29,7 @@ in
     pinentry-gnome3 # Required by rbw for password input (graphical)
     gcr # GNOME Crypto library (needed by pinentry-gnome3)
     feh # Wallpaper
-    picom # Compositor
+    # picom # Configured via services.picom
     xorg.xbacklight
     # dunst # Configured via services.dunst
     pavucontrol # Audio control
@@ -469,6 +469,7 @@ in
     ../programs/nvim.nix
     ../programs/zen-browser.nix
     ../services/dunst.nix
+    ../services/picom.nix
   ];
 
   xdg.configFile."i3/i3blocks.conf".text = ''
@@ -812,10 +813,6 @@ in
         }
         {
           command = "--no-startup-id ${pkgs.feh}/bin/feh --bg-fill .config/i3/skin.png";
-          notification = false;
-        }
-        {
-          command = "--no-startup-id ${pkgs.picom}/bin/picom --config ~/.config/picom.conf";
           notification = false;
         }
         {
