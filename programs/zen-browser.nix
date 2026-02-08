@@ -52,29 +52,63 @@
           Fingerprinting = true;
         };
 
-        # Custom keybindings and preferences shared across all profiles
+        # Custom preferences and settings shared across all profiles
+        # Migrated from existing Zen Browser configuration
         Preferences = mkLockedAttrs {
-          # Tab behavior
+          # === Tab Behavior ===
           "browser.tabs.warnOnClose" = false;
           "browser.tabs.closeWindowWithLastTab" = false;
+          "browser.tabs.closeTabByDblclick" = false;
 
-          # UI preferences
-          "browser.toolbars.bookmarks.visibility" = "never";
+          # === UI & Appearance ===
+          "browser.toolbars.bookmarks.visibility" = "newtab"; # Show bookmarks only on new tab
+          "ui.systemUsesDarkTheme" = 1; # Use dark theme
+
+          # === Startup & Session ===
           "browser.startup.page" = 3; # Resume previous session
-
-          # Search behavior
-          "browser.search.suggest.enabled" = true;
-          "browser.urlbar.suggest.searches" = true;
-
-          # Download behavior
-          "browser.download.useDownloadDir" = false; # Always ask where to save
-
-          # Performance
           "browser.sessionstore.interval" = 15000; # Save session every 15 seconds
 
-          # Custom keybindings (if Zen supports these)
-          # Note: Some keybindings might need browser extensions or Zen-specific settings
-          "browser.tabs.closeTabByDblclick" = false;
+          # === Search & URL Bar ===
+          "browser.urlbar.suggest.searches" = false; # Disable search suggestions in URL bar
+          "browser.urlbar.placeholderName" = "DuckDuckGo";
+          "browser.urlbar.placeholderName.private" = "DuckDuckGo";
+
+          # === Download Behavior ===
+          "browser.download.useDownloadDir" = false; # Always ask where to save
+
+          # === Privacy & Security ===
+          "privacy.globalprivacycontrol.was_ever_enabled" = true;
+          "privacy.clearOnShutdown_v2.formdata" = true;
+          "privacy.history.custom" = true;
+          "datareporting.usage.uploadEnabled" = false;
+
+          # === Developer Tools ===
+          "devtools.theme" = "dark";
+          "devtools.cache.disabled" = true; # Disable cache in DevTools
+          "devtools.toolbox.host" = "window"; # DevTools in separate window
+          "devtools.toolbox.splitconsole.open" = true;
+          "devtools.inspector.selectedSidebar" = "computedview";
+
+          # === Zen-Specific Settings ===
+          "zen.view.compact.enable-at-startup" = true; # Enable compact mode on startup
+          "zen.view.compact.hide-toolbar" = true; # Hide toolbar in compact mode
+          "zen.view.compact.should-enable-at-startup" = true;
+          "zen.view.use-single-toolbar" = false; # Use separate toolbars
+          "zen.workspaces.continue-where-left-off" = true; # Resume workspaces
+          "zen.workspaces.separate-essentials" = false;
+
+          # === Performance ===
+          "browser.ml.enable" = true; # Enable machine learning features
+          "accessibility.typeaheadfind.flashBar" = 0; # Disable find-as-you-type flash
+
+          # === Sidebar ===
+          "sidebar.visibility" = "hide-sidebar"; # Hide sidebar by default
+
+          # === Display ===
+          "browser.display.document_color_use" = 0; # Use system colors
+
+          # === Forms & Autofill ===
+          "dom.forms.autocomplete.formautofill" = true; # Enable form autofill
         };
       };
 
@@ -107,15 +141,29 @@
       };
     };
 
-    # Profile 3: Development (optional)
+    # Profile 3: Development
     profiles.dev = {
       id = 2;
       name = "Development";
 
       settings = {
-        # Developer-specific settings
+        # Developer-specific settings from your current config
         "devtools.theme" = "dark";
-        "devtools.toolbox.host" = "right";
+        "devtools.cache.disabled" = true;
+        "devtools.toolbox.host" = "window";
+        "devtools.toolbox.previousHost" = "bottom";
+        "devtools.toolbox.selectedTool" = "netmonitor";
+        "devtools.toolbox.splitconsole.open" = true;
+        "devtools.toolbox.splitconsoleHeight" = 451;
+        "devtools.inspector.activeSidebar" = "computedview";
+        "devtools.inspector.selectedSidebar" = "computedview";
+        "devtools.toolsidebar-height.inspector" = 350;
+        "devtools.toolsidebar-width.inspector" = 510;
+        "devtools.toolsidebar-width.inspector.splitsidebar" = 255;
+        "devtools.performance.recording.entries" = 134217728;
+        "devtools.performance.recording.features" = "[\"screenshots\",\"js\",\"cpu\",\"memory\"]";
+        "devtools.performance.recording.threads" =
+          "[\"GeckoMain\",\"Compositor\",\"Renderer\",\"DOM Worker\"]";
       };
     };
   };
