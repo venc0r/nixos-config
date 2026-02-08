@@ -3,7 +3,7 @@
 {
   # Autorandr - automatic display configuration
   # Profiles are stored in ../dotfiles/autorandr/
-  services.autorandr = {
+  programs.autorandr = {
     enable = true;
 
     profiles = {
