@@ -58,9 +58,8 @@ in
     # Theming
     libsForQt5.qtstyleplugin-kvantum # Qt theme engine (Kvantum)
     arc-kde-theme # Arc KDE theme (includes ArcDark Kvantum theme)
-    kdePackages.breeze # KDE Breeze theme
-    kdePackages.breeze-gtk # GTK version of Breeze
-    kdePackages.breeze-icons # Breeze icons
+    arc-theme # Arc GTK theme
+    arc-icon-theme # Arc icon theme
     adwaita-icon-theme # Fallback icons
 
     # Clipboard and utilities
@@ -542,18 +541,18 @@ in
     enable = true;
 
     theme = {
-      name = "Breeze-Dark";
-      package = pkgs.kdePackages.breeze-gtk;
+      name = "Arc-Dark";
+      package = pkgs.arc-theme;
     };
 
     iconTheme = {
-      name = "breeze-dark";
-      package = pkgs.kdePackages.breeze-icons;
+      name = "Arc";
+      package = pkgs.arc-icon-theme;
     };
 
     cursorTheme = {
-      name = "breeze_cursors";
-      package = pkgs.kdePackages.breeze;
+      name = "Adwaita";
+      package = pkgs.adwaita-icon-theme;
     };
 
     gtk3.extraConfig = {
