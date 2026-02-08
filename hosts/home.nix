@@ -87,7 +87,6 @@ in
   home.file = {
     ".p10k.zsh".source = ../dotfiles/.p10k.zsh;
     ".tmux-cht-languages".source = ../dotfiles/.tmux-cht-languages;
-    ".tmux-cht-command".source = ../dotfiles/.tmux-cht-command;
   };
 
   # Kvantum theme configuration
