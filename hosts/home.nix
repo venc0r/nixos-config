@@ -26,7 +26,7 @@ in
     rofi-rbw
     rbw # Bitwarden client
     xdotool # Required by rofi-rbw for typing
-    pinentry-gnome3 # Required by rbw for password input (graphical)
+    pinentry-gtk2 # Required by rbw for password input (graphical GTK dialog)
     feh # Wallpaper
     picom # Compositor
     xorg.xbacklight
@@ -91,7 +91,7 @@ in
 
   # Configure rbw (Bitwarden CLI) to use graphical pinentry
   home.sessionVariables = {
-    PINENTRY_PROGRAM = "${pkgs.pinentry-gnome3}/bin/pinentry-gnome3";
+    PINENTRY_PROGRAM = "${pkgs.pinentry-gtk2}/bin/pinentry-gtk2";
   };
 
   # Configure rbw pinentry via config file (force overwrite)
@@ -102,7 +102,7 @@ in
       "base_url": "https://vaultwarden.v3nc.org",
       "lock_timeout": 14400,
       "sync_interval": 3600,
-      "pinentry": "pinentry-gnome3"
+      "pinentry": "pinentry-gtk-2"
     }
   '';
 
