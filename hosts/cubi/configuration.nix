@@ -15,4 +15,9 @@
 
   # Import the shared home-manager configuration
   home-manager.users.jma = import ../home.nix;
+
+  # Import host-specific home-manager modules
+  home-manager.users.jma.imports = [
+    ./autorandr.nix
+  ];
 }

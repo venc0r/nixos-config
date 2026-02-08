@@ -1,8 +1,17 @@
 { config, pkgs, ... }:
 
 {
-  # Autorandr - automatic display configuration
-  # Profiles are stored in ../dotfiles/autorandr/
+  # Autorandr - automatic display configuration for cubi host
+  #
+  # To add a new profile:
+  # 1. Connect your monitors in the desired configuration
+  # 2. Run: autorandr --save <profile-name>
+  # 3. Run: cat ~/.config/autorandr/<profile-name>/setup
+  #    Copy the EDID fingerprints to the fingerprint section below
+  # 4. Run: cat ~/.config/autorandr/<profile-name>/config
+  #    Copy the display settings to the config section below
+  # 5. Rebuild your system: sudo nixos-rebuild switch --flake .#cubi
+  #
   programs.autorandr = {
     enable = true;
 

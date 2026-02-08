@@ -1,0 +1,43 @@
+{ config, pkgs, ... }:
+
+{
+  # Autorandr - automatic display configuration for nixos host
+  # 
+  # To add a new profile:
+  # 1. Connect your monitors in the desired configuration
+  # 2. Run: autorandr --save <profile-name>
+  # 3. Run: cat ~/.config/autorandr/<profile-name>/setup
+  #    Copy the EDID fingerprints to the fingerprint section below
+  # 4. Run: cat ~/.config/autorandr/<profile-name>/config  
+  #    Copy the display settings to the config section below
+  # 5. Rename this file to autorandr.nix (remove .example)
+  # 6. Add this to hosts/nixos/configuration.nix:
+  #    home-manager.users.jma.imports = [ ./autorandr.nix ];
+  # 7. Rebuild your system: sudo nixos-rebuild switch --flake .#nixos
+  #
+  programs.autorandr = {
+    enable = true;
+
+    profiles = {
+      # Example profile - replace with your actual configuration
+      example = {
+        fingerprint = {
+          # Output name = "EDID from setup file"
+          # Example: eDP-1 = "00ffffffffffff00...";
+        };
+        config = {
+          # Output configuration
+          # Example:
+          # eDP-1 = {
+          #   enable = true;
+          #   crtc = 0;
+          #   primary = true;
+          #   position = "0x0";
+          #   mode = "1920x1080";
+          #   rate = "60.00";
+          # };
+        };
+      };
+    };
+  };
+}

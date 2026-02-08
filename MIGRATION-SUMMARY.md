@@ -17,16 +17,14 @@ nixos-config/
 ├── flake.nix                       # Main flake entry point
 ├── dotfiles/                       # Shared configuration files
 │   ├── .p10k.zsh                  # Powerlevel10k theme
-│   ├── autorandr/                 # Autorandr profiles (buero, desktop, notebook)
 │   └── nvim/                      # Neovim configuration (symlinked)
-├── programs/                       # Modular program configurations
+├── programs/                       # Modular program configurations (shared)
 │   ├── alacritty.nix
-│   ├── autorandr.nix
 │   ├── git.nix
 │   ├── nvim.nix
 │   ├── tmux.nix
 │   └── zsh.nix
-├── services/                       # Modular service configurations
+├── services/                       # Modular service configurations (shared)
 │   └── dunst.nix
 └── hosts/
     ├── common.nix                  # System-wide shared config
@@ -34,10 +32,12 @@ nixos-config/
     ├── scripts.nix                 # Custom shell scripts as Nix derivations
     ├── nixos/
     │   ├── configuration.nix       # VM-specific config
-    │   └── hardware-configuration.nix
+    │   ├── hardware-configuration.nix
+    │   └── autorandr.nix.example  # Template for adding autorandr
     └── cubi/
         ├── configuration.nix       # Intel box config
-        └── hardware-configuration.nix
+        ├── hardware-configuration.nix
+        └── autorandr.nix          # Display profiles for cubi
 ```
 
 ### Design Principles
@@ -168,17 +168,23 @@ nixos-config/
 - **Note**: lazy-lock.json writes will fail in read-only symlinked config; needs manual git updates
 
 #### 10. **Autorandr Display Manager**
-- **Location**: `programs/autorandr.nix`
-- **Config source**: `dotfiles/autorandr/` (copied from Arch)
+- **Location**: `hosts/cubi/autorandr.nix` (host-specific)
+- **Strategy**: Host-specific configuration imported in each host's configuration.nix
 - **Features**:
-  - Automatic display configuration switching
+  - Automatic display configuration switching based on connected monitors
   - Three profiles configured for `cubi` host:
     - `buero` (office): External 2560x1440 @ 59.95Hz (DP-1-8) + laptop 1920x1200 @ 60.03Hz (eDP-1)
     - `desktop`: External 3840x2160 @ 120Hz (DP-3) + laptop 1920x1200 @ 60.03Hz (eDP-1)
     - `notebook`: Laptop screen only 1920x1200 @ 60.03Hz (eDP-1)
   - EDID fingerprinting for automatic profile detection
   - Proper positioning: external monitors to the right of laptop screen
-- **Note**: Profiles are host-specific; VM (`nixos`) doesn't have these profiles configured
+- **Adding profiles**:
+  1. Connect monitors and run `autorandr --save <profile-name>`
+  2. Extract EDID from `~/.config/autorandr/<profile-name>/setup`
+  3. Extract config from `~/.config/autorandr/<profile-name>/config`
+  4. Add to `hosts/<hostname>/autorandr.nix`
+  5. Import in `hosts/<hostname>/configuration.nix` via `home-manager.users.jma.imports`
+- **Note**: Template available at `hosts/nixos/autorandr.nix.example`
 
 ### 🚧 High Priority Pending (2 items)
 
