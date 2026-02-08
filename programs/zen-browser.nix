@@ -135,6 +135,11 @@
           });
       };
 
+    # Shared keyboard shortcuts configuration (applied to all profiles)
+    # Version protection: fails activation if Zen Browser updates change shortcuts schema
+    # Current version found in about:config as "zen.keyboard.shortcuts.version"
+    keyboardShortcutsVersion = 14;
+
     # Profile 1: Personal
     profiles.personal = {
       id = 0;
@@ -146,6 +151,162 @@
         # Extensions (including Bitwarden) are synced via Firefox account
         "services.sync.username" = ""; # Set via browser UI
       };
+
+      # Custom keyboard shortcuts (migrated from existing Zen Browser config)
+      keyboardShortcuts = [
+        # === Navigation (Custom Vim-like) ===
+        {
+          id = "goBackKb";
+          key = "o";
+          modifiers = {
+            accel = true;
+          };
+        }
+        {
+          id = "goForwardKb";
+          key = "i";
+          modifiers = {
+            accel = true;
+          };
+        }
+
+        # === Tab Management ===
+        {
+          id = "key_close";
+          key = "q";
+          modifiers = {
+            accel = true;
+          };
+        }
+        {
+          id = "zen-toggle-pin-tab";
+          key = "d";
+          modifiers = {
+            accel = true;
+            shift = true;
+          };
+        }
+        {
+          id = "zen-close-all-unpinned-tabs";
+          key = "k";
+          modifiers = {
+            accel = true;
+            shift = true;
+          };
+        }
+
+        # === Window Management ===
+        {
+          id = "zen-new-unsynced-window";
+          key = "n";
+          modifiers = {
+            accel = true;
+            alt = true;
+          };
+        }
+
+        # === Sidebar Controls ===
+        {
+          id = "toggleSidebarKb";
+          key = "z";
+          modifiers = {
+            accel = true;
+            alt = true;
+          };
+        }
+        {
+          id = "zen-toggle-sidebar";
+          key = "b";
+          modifiers = {
+            alt = true;
+          };
+        }
+        {
+          id = "viewGenaiChatSidebarKb";
+          key = "x";
+          modifiers = {
+            accel = true;
+            alt = true;
+          };
+        }
+
+        # === Workspace Navigation ===
+        {
+          id = "zen-workspace-backward";
+          key = "q";
+          modifiers = {
+            accel = true;
+            alt = true;
+          };
+        }
+        {
+          id = "zen-workspace-forward";
+          key = "e";
+          modifiers = {
+            accel = true;
+            alt = true;
+          };
+        }
+
+        # === Split View ===
+        {
+          id = "zen-split-view-grid";
+          key = "g";
+          modifiers = {
+            accel = true;
+            alt = true;
+          };
+        }
+        {
+          id = "zen-split-view-vertical";
+          key = "v";
+          modifiers = {
+            accel = true;
+            shift = true;
+          };
+        }
+        {
+          id = "zen-split-view-unsplit";
+          key = "u";
+          modifiers = {
+            accel = true;
+            alt = true;
+          };
+        }
+        {
+          id = "zen-new-empty-split-view";
+          key = "*";
+          modifiers = {
+            accel = true;
+            shift = true;
+          };
+        }
+
+        # === Utility Shortcuts ===
+        {
+          id = "zen-copy-url-markdown";
+          key = "c";
+          modifiers = {
+            accel = true;
+            alt = true;
+            shift = true;
+          };
+        }
+
+        # === Disabled Shortcuts ===
+        {
+          id = "key_undoCloseWindow";
+          disabled = true;
+        }
+        {
+          id = "key_toggleReaderMode";
+          disabled = true;
+        }
+        {
+          id = "key_exitFullScreen";
+          disabled = true;
+        }
+      ];
     };
 
     # Profile 2: Work
@@ -158,6 +319,9 @@
         # Extensions are synced independently per profile
         "services.sync.username" = ""; # Set via browser UI
       };
+
+      # Inherit same keyboard shortcuts as personal profile
+      keyboardShortcuts = config.programs.zen-browser.profiles.personal.keyboardShortcuts;
     };
 
     # Profile 3: Development
@@ -184,6 +348,9 @@
         "devtools.performance.recording.threads" =
           "[\"GeckoMain\",\"Compositor\",\"Renderer\",\"DOM Worker\"]";
       };
+
+      # Inherit same keyboard shortcuts as personal profile
+      keyboardShortcuts = config.programs.zen-browser.profiles.personal.keyboardShortcuts;
     };
   };
 
