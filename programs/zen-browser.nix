@@ -135,11 +135,6 @@
           });
       };
 
-    # Shared keyboard shortcuts configuration (applied to all profiles)
-    # Version protection: fails activation if Zen Browser updates change shortcuts schema
-    # Current version found in about:config as "zen.keyboard.shortcuts.version"
-    keyboardShortcutsVersion = 14;
-
     # Profile 1: Personal
     profiles.personal = {
       id = 0;
@@ -151,6 +146,10 @@
         # Extensions (including Bitwarden) are synced via Firefox account
         "services.sync.username" = ""; # Set via browser UI
       };
+
+      # Version protection: fails activation if Zen Browser updates change shortcuts schema
+      # Current version found in about:config as "zen.keyboard.shortcuts.version"
+      keyboardShortcutsVersion = 14;
 
       # Custom keyboard shortcuts (migrated from existing Zen Browser config)
       keyboardShortcuts = [
@@ -320,6 +319,9 @@
         "services.sync.username" = ""; # Set via browser UI
       };
 
+      # Same shortcuts version as personal profile
+      keyboardShortcutsVersion = config.programs.zen-browser.profiles.personal.keyboardShortcutsVersion;
+
       # Inherit same keyboard shortcuts as personal profile
       keyboardShortcuts = config.programs.zen-browser.profiles.personal.keyboardShortcuts;
     };
@@ -348,6 +350,9 @@
         "devtools.performance.recording.threads" =
           "[\"GeckoMain\",\"Compositor\",\"Renderer\",\"DOM Worker\"]";
       };
+
+      # Same shortcuts version as personal profile
+      keyboardShortcutsVersion = config.programs.zen-browser.profiles.personal.keyboardShortcutsVersion;
 
       # Inherit same keyboard shortcuts as personal profile
       keyboardShortcuts = config.programs.zen-browser.profiles.personal.keyboardShortcuts;
