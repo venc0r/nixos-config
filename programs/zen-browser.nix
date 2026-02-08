@@ -80,6 +80,7 @@
             "browser.tabs.warnOnClose" = false;
             "browser.tabs.closeWindowWithLastTab" = false;
             "browser.tabs.closeTabByDblclick" = false;
+            "browser.warnOnQuitShortcut" = false; # Disable Ctrl+Q quit warning
 
             # === UI & Appearance ===
             "browser.toolbars.bookmarks.visibility" = "newtab";
