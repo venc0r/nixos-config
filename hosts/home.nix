@@ -147,6 +147,7 @@ in
     ../programs/tmux.nix
     ../programs/zsh.nix
     ../programs/nvim.nix
+    ../programs/zen-browser.nix
     ../services/dunst.nix
   ];
 
