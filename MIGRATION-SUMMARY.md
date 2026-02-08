@@ -51,7 +51,7 @@ nixos-config/
 
 ## Migration Progress
 
-### ✅ Completed (12 items)
+### ✅ Completed (13 items)
 
 #### 1. **i3 Window Manager** 
 - **Location**: `hosts/home.nix:414-704`
@@ -215,6 +215,19 @@ nixos-config/
 - **Configuration**: Imported in `hosts/cubi/configuration.nix` via `home-manager.users.jma.imports`
 - **Note**: These packages are only installed on the production machine (cubi), not on the VM
 
+#### 13. **Rofi Theming**
+- **Location**: `hosts/home.nix:93-375`
+- **Strategy**: Inline theme configuration via xdg.configFile and home.file
+- **Features**:
+  - Arc Dark Transparent Colors theme for consistent look with GTK/Qt Arc-Dark theme
+  - Main config file pointing to theme: `~/.config/rofi/config.rasi`
+  - Powermenu theme configuration: `~/.config/rofi/powermenu.rasi`
+  - Custom theme file: `~/.local/share/rofi/themes/arc_dark_transparent_colors.rasi`
+  - Transparent background (88% opacity)
+  - Orange accent color for selected items (#ff9305)
+  - Dark blue/gray color scheme matching Arc theme
+- **Note**: Theme integrates seamlessly with existing Arc-Dark GTK/Qt theming
+
 ### 📋 Medium Priority Pending (5 items)
 
 1. **Bash** - Bash shell configuration
@@ -230,7 +243,6 @@ nixos-config/
 3. **Neofetch** - System info tool
 4. **Remmina** - Remote desktop client
 5. **Yamllint** - YAML linter
-6. **Rofi theming** - `powermenu.rasi` theme
 
 ## Key Technical Details
 
@@ -354,5 +366,5 @@ sudo nixos-rebuild switch --flake .#cubi --refresh
 ---
 
 **Last Updated**: 2026-02-08  
-**Status**: 12/22 tasks completed (55%)  
+**Status**: 13/22 tasks completed (59%)  
 **Next Priority**: Bin scripts, Bash, or CopyQ
