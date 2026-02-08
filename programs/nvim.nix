@@ -19,6 +19,15 @@
       xclip
       tree-sitter
       luajitPackages.luarocks
+
+      # Language servers for LSP
+      lua-language-server
+      nil # Nix LSP
+      nodePackages.typescript-language-server
+      nodePackages.bash-language-server
+      nodePackages.yaml-language-server
+      gopls
+      pyright
     ];
   };
 
