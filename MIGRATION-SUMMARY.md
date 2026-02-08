@@ -15,27 +15,27 @@ This document tracks the migration of dotfiles from Arch Linux to a clean, modul
 ```
 nixos-config/
 ├── flake.nix                       # Main flake entry point
-├── hosts/
-│   ├── common.nix                  # System-wide shared config
-│   ├── home.nix                    # Home Manager user config (packages, i3 config)
-│   ├── scripts.nix                 # Custom shell scripts as Nix derivations
-│   ├── dotfiles/
-│   │   ├── .p10k.zsh              # Powerlevel10k theme
-│   │   └── nvim/                  # Neovim configuration (symlinked)
-│   ├── programs/                   # Modular program configurations
-│   │   ├── alacritty.nix
-│   │   ├── git.nix
-│   │   ├── nvim.nix
-│   │   ├── tmux.nix
-│   │   └── zsh.nix
-│   ├── services/                   # Modular service configurations
-│   │   └── dunst.nix
-│   ├── nixos/
-│   │   ├── configuration.nix       # VM-specific config
-│   │   └── hardware-configuration.nix
-│   └── cubi/
-│       ├── configuration.nix       # Intel box config
-│       └── hardware-configuration.nix
+├── programs/                       # Modular program configurations
+│   ├── alacritty.nix
+│   ├── git.nix
+│   ├── nvim.nix
+│   ├── tmux.nix
+│   └── zsh.nix
+├── services/                       # Modular service configurations
+│   └── dunst.nix
+└── hosts/
+    ├── common.nix                  # System-wide shared config
+    ├── home.nix                    # Home Manager user config (packages, i3 config)
+    ├── scripts.nix                 # Custom shell scripts as Nix derivations
+    ├── dotfiles/
+    │   ├── .p10k.zsh              # Powerlevel10k theme
+    │   └── nvim/                  # Neovim configuration (symlinked)
+    ├── nixos/
+    │   ├── configuration.nix       # VM-specific config
+    │   └── hardware-configuration.nix
+    └── cubi/
+        ├── configuration.nix       # Intel box config
+        └── hardware-configuration.nix
 ```
 
 ### Design Principles
@@ -43,7 +43,7 @@ nixos-config/
 2. **Shared by default**: Common configuration in `common.nix` and `home.nix`
 3. **Absolute paths**: All scripts use `${pkgs.package}/bin/command` for reliability
 4. **Declarative**: Everything managed through Nix, minimal imperative setup
-5. **Organized imports**: Programs and services split into separate files under `hosts/programs/` and `hosts/services/`
+5. **Organized imports**: Programs and services at top-level for easy access
 
 ## Migration Progress
 
@@ -72,7 +72,7 @@ nixos-config/
   - `block-volume`: Volume control (speakers + mic)
 
 #### 3. **Zsh Shell**
-- **Location**: `hosts/programs/zsh.nix`
+- **Location**: `programs/zsh.nix`
 - **Features**:
   - Oh-My-Zsh with custom plugins
   - Powerlevel10k theme
@@ -85,11 +85,11 @@ nixos-config/
 - **Integration**: Loaded via `home.file`
 
 #### 5. **SSH Configuration**
-- **Location**: `hosts/programs/git.nix` (modular approach)
+- **Location**: `programs/git.nix` (modular approach)
 - **Features**: SSH identities configured via prezto
 
 #### 6. **Alacritty Terminal**
-- **Location**: `hosts/programs/alacritty.nix`
+- **Location**: `programs/alacritty.nix`
 - **Features**:
   - MesloLGS NF font (size 10)
   - Gruvbox dark theme (with light theme available)
@@ -102,7 +102,7 @@ nixos-config/
 - **Important fix**: Semantic escape chars use plain string for proper TOML generation
 
 #### 7. **Dunst Notification Daemon**
-- **Location**: `hosts/services/dunst.nix`
+- **Location**: `services/dunst.nix`
 - **Features**:
   - Follow mouse mode
   - Custom urgency levels with Gruvbox colors
@@ -115,7 +115,7 @@ nixos-config/
   - Critical: `#900000` / `#ffffff` (no timeout)
 
 #### 8. **Tmux Terminal Multiplexer**
-- **Location**: `hosts/programs/tmux.nix`
+- **Location**: `programs/tmux.nix`
 - **Features**:
   - Custom prefix: `Alt+s` (instead of `Ctrl+b`)
   - Vim-style keybindings (navigation, resizing, copy mode)
@@ -133,7 +133,7 @@ nixos-config/
 - **Note**: Helper scripts referenced but not yet migrated (pending "Bin scripts" task)
 
 #### 9. **Neovim Editor**
-- **Location**: `hosts/programs/nvim.nix`
+- **Location**: `programs/nvim.nix`
 - **Config source**: `hosts/dotfiles/nvim/` (symlinked)
 - **Strategy**: Symlink existing Neovim configuration to avoid complexity
 - **Features**: 
@@ -149,7 +149,7 @@ nixos-config/
 - **Default editor**: Set as system default via `defaultEditor = true`
 
 #### 9. **Neovim Editor**
-- **Location**: `hosts/programs/nvim.nix`
+- **Location**: `programs/nvim.nix`
 - **Config source**: `hosts/dotfiles/nvim/` (symlinked)
 - **Strategy**: Symlink existing Neovim configuration to avoid complexity
 - **Features**: 
@@ -254,14 +254,14 @@ sudo nixos-rebuild switch --flake .#cubi --refresh
 - Fonts: meslo-lgs-nf
 - Custom scripts (via `scripts.nix`)
 
-### Programs Configured (via `hosts/programs/`)
+### Programs Configured (via `programs/`)
 - **Alacritty**: Terminal emulator (`alacritty.nix`)
 - **Git**: Version control (`git.nix`)
 - **Neovim**: Text editor with full Lazy.nvim setup (`nvim.nix`)
 - **Tmux**: Terminal multiplexer (`tmux.nix`)
 - **Zsh**: Shell with Oh-My-Zsh and Powerlevel10k (`zsh.nix`)
 
-### Services Running (via `hosts/services/`)
+### Services Running (via `services/`)
 - **Dunst**: Notification daemon (`dunst.nix`)
 - **i3**: Window manager (via Home Manager xsession in `home.nix`)
 

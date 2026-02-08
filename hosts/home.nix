@@ -142,8 +142,12 @@ in
   };
 
   imports = [
-    ./programs/alacritty.nix ./programs/git.nix ./programs/tmux.nix ./programs/zsh.nix ./programs/nvim.nix
-    ./services/dunst.nix
+    ../programs/alacritty.nix
+    ../programs/git.nix
+    ../programs/tmux.nix
+    ../programs/zsh.nix
+    ../programs/nvim.nix
+    ../services/dunst.nix
   ];
 
   xdg.configFile."i3/i3blocks.conf".text = ''

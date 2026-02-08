@@ -26,5 +26,5 @@
   # This makes the config read-only in ~/.config/nvim
   # Updates to lazy-lock.json will fail unless the path is changed in lazy setup
   # or the file is updated in the git repo.
-  xdg.configFile."nvim".source = ../dotfiles/nvim;
+  xdg.configFile."nvim".source = ../hosts/dotfiles/nvim;
 }
