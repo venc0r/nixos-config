@@ -9,16 +9,7 @@ return {
         
         require('nvim-treesitter').install(parsers)
 
-        -- Custom parser for Go templates
-        local parser_config = require 'nvim-treesitter.parsers'.get_parser_configs()
-        parser_config.gotmpl = {
-            install_info = {
-                url = "https://github.com/ngalaiko/tree-sitter-go-template",
-                files = { "src/parser.c" }
-            },
-            filetype = "helm",
-            used_by = { "helm", "gohtmltmpl", "gotexttmpl", "gotmpl", "yaml" }
-        }
+        -- Register gotmpl for helm files (gotmpl parser is now built-in)
         vim.treesitter.language.register("gotmpl", "helm")
 
         -- Treesitter context
