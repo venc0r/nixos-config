@@ -36,6 +36,7 @@ in
     networkmanagerapplet
     autorandr # Display management
     arandr # GUI for xrandr
+    xautolock # Auto-lock screen after inactivity
     flameshot # Screenshots
     copyq
     polkit_gnome
@@ -485,7 +486,7 @@ in
           notification = false;
         }
         {
-          command = "autorandr --load desktop";
+          command = "${pkgs.autorandr}/bin/autorandr --load desktop";
           notification = false;
         }
         {
@@ -509,11 +510,11 @@ in
           notification = false;
         }
         {
-          command = "--no-startup-id copyq";
+          command = "--no-startup-id ${pkgs.copyq}/bin/copyq";
           notification = false;
         }
         {
-          command = "--no-startup-id xautolock -time 10 -locker \"${scripts.blurlock}/bin/blurlock\"";
+          command = "--no-startup-id ${pkgs.xautolock}/bin/xautolock -time 10 -locker \"${scripts.blurlock}/bin/blurlock\"";
           notification = false;
         }
       ];
