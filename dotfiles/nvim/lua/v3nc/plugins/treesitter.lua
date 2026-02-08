@@ -3,12 +3,7 @@ return {
     dependencies = { 'nvim-treesitter/nvim-treesitter-context' },
     build = ':TSUpdate',
     config = function()
-        local status_ok, configs = pcall(require, 'nvim-treesitter.configs')
-        if not status_ok then
-            return
-        end
-
-        configs.setup({
+        require('nvim-treesitter.configs').setup({
             ensure_installed = { 'bash', 'dockerfile', 'go', 'gotmpl', 'html', 'java', 'javascript', 'json', 'lua',
                 'make', 'markdown', 'php', 'python', 'ruby', 'sql', 'toml', 'terraform', 'typescript', 'vimdoc', 'yaml' },
             auto_install = true,
