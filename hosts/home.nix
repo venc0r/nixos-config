@@ -592,8 +592,8 @@ in
         # Terminal
         "Mod4+Return" = "exec ${pkgs.alacritty}/bin/alacritty";
 
-        # Browser
-        "Mod4+Tab" = "exec ${config.programs.zen-browser.package}/bin/zen --profileManager";
+        # Browser (with profile selector)
+        "Mod4+Tab" = "exec ${scripts.zen-profile-selector}/bin/zen-profile-selector";
 
         # Kill window
         "Mod4+Shift+q" = "kill";
