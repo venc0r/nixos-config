@@ -63,6 +63,9 @@
     enable = true;
   };
 
+  # Enable dconf for GTK application settings
+  programs.dconf.enable = true;
+
   # Define a user account.
   users.users.jma = {
     isNormalUser = true;
