@@ -15,6 +15,7 @@ This document tracks the migration of dotfiles from Arch Linux to a clean, modul
 ```
 nixos-config/
 ├── flake.nix                       # Main flake entry point
+├── ZEN-BROWSER-GUIDE.md           # Zen Browser usage guide
 ├── dotfiles/                       # Shared configuration files
 │   ├── .p10k.zsh                  # Powerlevel10k theme
 │   └── nvim/                      # Neovim configuration (symlinked)
@@ -23,6 +24,7 @@ nixos-config/
 │   ├── git.nix
 │   ├── nvim.nix
 │   ├── tmux.nix
+│   ├── zen-browser.nix
 │   └── zsh.nix
 ├── services/                       # Modular service configurations (shared)
 │   └── dunst.nix
@@ -49,7 +51,7 @@ nixos-config/
 
 ## Migration Progress
 
-### ✅ Completed (10 items)
+### ✅ Completed (11 items)
 
 #### 1. **i3 Window Manager** 
 - **Location**: `hosts/home.nix:414-704`
@@ -186,7 +188,25 @@ nixos-config/
   5. Import in `hosts/<hostname>/configuration.nix` via `home-manager.users.jma.imports`
 - **Note**: Template available at `hosts/nixos/autorandr.nix.example`
 
-### 🚧 High Priority Pending (2 items)
+#### 11. **Zen Browser**
+- **Location**: `programs/zen-browser.nix`
+- **Flake input**: `github:0xc000022070/zen-browser-flake`
+- **Features**:
+  - Multi-profile support (personal, work, development)
+  - Each profile can sync with different Firefox Sync account
+  - Shared keybindings and policies across all profiles
+  - Privacy-focused defaults (no telemetry, tracking protection enabled)
+  - Custom keyboard shortcuts and preferences
+  - Set as default browser via XDG MIME associations
+- **Profiles configured**:
+  - `personal` (default): For personal browsing
+  - `work`: For work-related browsing
+  - `dev`: For development with DevTools optimizations
+- **Profile management**: Launch with `zen -P <profile-name>` or `zen --ProfileManager`
+- **Documentation**: See `ZEN-BROWSER-GUIDE.md` for detailed usage instructions
+- **Note**: Auto-updates disabled (managed by Nix flake)
+
+### 🚧 High Priority Pending (1 item)
 
 1. **power-profiles** - Power management script
 
