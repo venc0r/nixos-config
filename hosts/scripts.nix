@@ -320,7 +320,6 @@ let
 
     ROFI="${pkgs.rofi}/bin/rofi"
     NOTIFY_SEND="${pkgs.libnotify}/bin/notify-send"
-    ZEN="${pkgs.zen-browser}/bin/zen"
     GREP="${pkgs.gnugrep}/bin/grep"
 
     PROFILES_INI="''${HOME}/.zen/profiles.ini"
@@ -350,7 +349,8 @@ let
     fi
 
     # Launch Zen Browser with the selected profile
-    $ZEN -P "$selected_profile" &
+    # Use 'zen' from PATH since it's installed via home-manager
+    zen -P "$selected_profile" &
 
     # Optional: notify user
     $NOTIFY_SEND "Zen Browser" "Launching with profile: $selected_profile"
