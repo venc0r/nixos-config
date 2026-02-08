@@ -57,6 +57,7 @@ in
 
     # Theming
     libsForQt5.qtstyleplugin-kvantum # Qt theme engine (Kvantum)
+    arc-kde-theme # Arc KDE theme (includes ArcDark Kvantum theme)
     kdePackages.breeze # KDE Breeze theme
     kdePackages.breeze-gtk # GTK version of Breeze
     kdePackages.breeze-icons # Breeze icons
@@ -86,7 +87,7 @@ in
   # Kvantum theme configuration
   xdg.configFile."Kvantum/kvantum.kvconfig".text = ''
     [General]
-    theme=KvarcDark
+    theme=ArcDark
   '';
 
   xdg.configFile."alacritty/gruvbox-dark.toml".text = ''
