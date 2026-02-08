@@ -25,6 +25,6 @@ pkgs.writeShellScriptBin "block-bandwidth" ''
     tx_kbps = $6
     rx_mbps = (rx_kbps * 8) / 1000
     tx_mbps = (tx_kbps * 8) / 1000
-    printf "↓%.1f ↑%.1f Mb/s\n", rx_mbps, tx_mbps
+    printf "↓%.0f ↑%.0f Mb/s\n", rx_mbps, tx_mbps
   }'
 ''
