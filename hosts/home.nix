@@ -25,6 +25,7 @@ in
     rofi
     rofi-rbw
     rbw # Bitwarden client
+    xdotool # Required by rofi-rbw for typing
     feh # Wallpaper
     picom # Compositor
     xorg.xbacklight
