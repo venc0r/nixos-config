@@ -272,7 +272,7 @@ in
         "Mod4+Return" = "exec ${pkgs.alacritty}/bin/alacritty";
 
         # Browser
-        "Mod4+Tab" = "exec zen-browser --profileManager";
+        "Mod4+Tab" = "exec ${config.programs.zen-browser.package}/bin/zen --profileManager";
 
         # Kill window
         "Mod4+Shift+q" = "kill";
