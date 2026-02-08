@@ -3,26 +3,13 @@ return {
     dependencies = { 'nvim-treesitter/nvim-treesitter-context' },
     build = ':TSUpdate',
     config = function()
-        require('nvim-treesitter.configs').setup({
-            ensure_installed = { 'bash', 'dockerfile', 'go', 'gotmpl', 'html', 'java', 'javascript', 'json', 'lua',
-                'make', 'markdown', 'php', 'python', 'ruby', 'sql', 'toml', 'terraform', 'typescript', 'vimdoc', 'yaml' },
-            auto_install = true,
-            sync_install = false,
-            ignore_install = {},
-            indent = { enable = true },
+        -- Install parsers
+        local parsers = { 'bash', 'dockerfile', 'go', 'gotmpl', 'html', 'java', 'javascript', 'json', 'lua',
+            'make', 'markdown', 'php', 'python', 'ruby', 'sql', 'toml', 'terraform', 'typescript', 'vimdoc', 'yaml' }
+        
+        require('nvim-treesitter').install(parsers)
 
-            highlight = {
-                enable = true,
-                additional_vim_regex_highlighting = false,
-            },
-            textobjects = {
-                enable = true,
-            },
-            rainbow = {
-                enable = true,
-            }
-        })
-
+        -- Custom parser for Go templates
         local parser_config = require 'nvim-treesitter.parsers'.get_parser_configs()
         parser_config.gotmpl = {
             install_info = {
@@ -34,6 +21,7 @@ return {
         }
         vim.treesitter.language.register("gotmpl", "helm")
 
+        -- Treesitter context
         require("treesitter-context").setup({
             enable = true,
             throttle = true,
