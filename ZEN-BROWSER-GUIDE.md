@@ -79,9 +79,13 @@ All keyboard shortcuts are declaratively managed in `programs/zen-browser.nix` a
 - `Ctrl+Alt+Shift+C` - Copy URL as markdown
 
 ### Disabled Shortcuts
-- Undo close window - Disabled
-- Toggle reader mode - Disabled
-- Exit fullscreen (F11) - Disabled
+These shortcuts are disabled to prevent conflicts with custom keybindings or unwanted behavior:
+- **Undo close window** - Disabled
+- **Toggle reader mode** - Disabled  
+- **Exit fullscreen (F11)** - Disabled
+- **Zen glance expand (Ctrl+O)** - Disabled (conflicts with Back navigation)
+- **Toggle DevTools (Ctrl+Shift+I)** - Disabled (conflicts with Forward navigation)
+- **Browser toolbox (Ctrl+Alt+Shift+I)** - Disabled (conflicts with Forward navigation)
 
 ## Adding Custom Keyboard Shortcuts
 

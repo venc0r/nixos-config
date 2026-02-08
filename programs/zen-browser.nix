@@ -293,6 +293,7 @@
         }
 
         # === Disabled Shortcuts ===
+        # Disabled to prevent conflicts or unwanted behavior
         {
           id = "key_undoCloseWindow";
           disabled = true;
@@ -303,6 +304,20 @@
         }
         {
           id = "key_exitFullScreen";
+          disabled = true;
+        }
+        # Conflicts with Ctrl+O (Back navigation)
+        {
+          id = "zen-glance-expand";
+          disabled = true;
+        }
+        # Conflicts with Ctrl+I (Forward navigation) - DevTools shortcuts
+        {
+          id = "key_toggleToolbox";
+          disabled = true;
+        }
+        {
+          id = "key_browserToolbox";
           disabled = true;
         }
       ];
