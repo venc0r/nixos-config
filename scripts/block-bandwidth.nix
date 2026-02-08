@@ -17,6 +17,14 @@ pkgs.writeShellScriptBin "block-bandwidth" ''
       exit 0
   fi
 
-  # Measure
-  $SAR -n DEV 1 1 | $GREP "Average.*$IF" | $AWK '{printf "%.0f/%.0f kB/s\n", $5, $6}'
+  # Measure bandwidth and convert to Mb/s
+  # sar outputs rxkB/s and txkB/s (kilobytes per second)
+  # Convert to Mb/s (megabits per second): kB/s * 8 / 1000 = Mb/s
+  $SAR -n DEV 1 1 | $GREP "Average.*$IF" | $AWK '{
+    rx_kbps = $5
+    tx_kbps = $6
+    rx_mbps = (rx_kbps * 8) / 1000
+    tx_mbps = (tx_kbps * 8) / 1000
+    printf "↓%.1f ↑%.1f Mb/s\n", rx_mbps, tx_mbps
+  }'
 ''
