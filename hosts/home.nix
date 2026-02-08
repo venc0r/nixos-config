@@ -469,7 +469,7 @@ in
     ../programs/nvim.nix
     ../programs/zen-browser.nix
     ../services/dunst.nix
-    ../services/picom.nix
+    # picom moved to host-specific config (doesn't work well in VMs)
   ];
 
   xdg.configFile."i3/i3blocks.conf".text = ''

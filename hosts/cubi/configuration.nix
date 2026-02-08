@@ -18,5 +18,6 @@
     ../home.nix # Shared config
     ./autorandr.nix # Host-specific display profiles
     ./packages.nix # Host-specific packages
+    ../../services/picom.nix # Compositor (doesn't work well in VMs)
   ];
 }
