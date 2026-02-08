@@ -7,7 +7,6 @@
 
 let
   scripts = import ./scripts.nix { inherit pkgs; };
-  kvarcTheme = import ./kvarc-theme.nix { inherit pkgs; };
 in
 {
   home.username = "jma";
@@ -58,7 +57,6 @@ in
 
     # Theming
     libsForQt5.qtstyleplugin-kvantum # Qt theme engine (Kvantum)
-    kvarcTheme # KvArc theme for Kvantum
     kdePackages.breeze # KDE Breeze theme
     kdePackages.breeze-gtk # GTK version of Breeze
     kdePackages.breeze-icons # Breeze icons
