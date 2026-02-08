@@ -17,7 +17,8 @@
       ripgrep
       fd
       xclip
-      tree-sitter
+      tree-sitter # Library for parsing
+      tree-sitter-cli # CLI tool required by nvim-treesitter
       luajitPackages.luarocks
     ];
   };
