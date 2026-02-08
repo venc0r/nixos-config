@@ -17,9 +17,11 @@ nixos-config/
 ├── flake.nix                       # Main flake entry point
 ├── dotfiles/                       # Shared configuration files
 │   ├── .p10k.zsh                  # Powerlevel10k theme
+│   ├── autorandr/                 # Autorandr profiles (buero, desktop, notebook)
 │   └── nvim/                      # Neovim configuration (symlinked)
 ├── programs/                       # Modular program configurations
 │   ├── alacritty.nix
+│   ├── autorandr.nix
 │   ├── git.nix
 │   ├── nvim.nix
 │   ├── tmux.nix
@@ -47,7 +49,7 @@ nixos-config/
 
 ## Migration Progress
 
-### ✅ Completed (9 items)
+### ✅ Completed (10 items)
 
 #### 1. **i3 Window Manager** 
 - **Location**: `hosts/home.nix:414-704`
@@ -165,11 +167,22 @@ nixos-config/
 - **Default editor**: Set as system default via `defaultEditor = true`
 - **Note**: lazy-lock.json writes will fail in read-only symlinked config; needs manual git updates
 
-### 🚧 High Priority Pending (3 items)
+#### 10. **Autorandr Display Manager**
+- **Location**: `programs/autorandr.nix`
+- **Config source**: `dotfiles/autorandr/` (copied from Arch)
+- **Features**:
+  - Automatic display configuration switching
+  - Three profiles configured for `cubi` host:
+    - `buero` (office): External 2560x1440 @ 59.95Hz (DP-1-8) + laptop 1920x1200 @ 60.03Hz (eDP-1)
+    - `desktop`: External 3840x2160 @ 120Hz (DP-3) + laptop 1920x1200 @ 60.03Hz (eDP-1)
+    - `notebook`: Laptop screen only 1920x1200 @ 60.03Hz (eDP-1)
+  - EDID fingerprinting for automatic profile detection
+  - Proper positioning: external monitors to the right of laptop screen
+- **Note**: Profiles are host-specific; VM (`nixos`) doesn't have these profiles configured
 
-1. **Kitty** - Alternative terminal emulator  
-2. **Autorandr** - Display/monitor management (critical for multi-monitor)
-3. **power-profiles** - Power management script
+### 🚧 High Priority Pending (2 items)
+
+1. **power-profiles** - Power management script
 
 ### 📋 Medium Priority Pending (6 items)
 

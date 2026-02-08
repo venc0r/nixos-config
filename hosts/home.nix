@@ -143,6 +143,7 @@ in
 
   imports = [
     ../programs/alacritty.nix
+    ../programs/autorandr.nix
     ../programs/git.nix
     ../programs/tmux.nix
     ../programs/zsh.nix
