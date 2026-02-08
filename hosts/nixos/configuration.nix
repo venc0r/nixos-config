@@ -13,6 +13,8 @@
 
   networking.hostName = "nixos";
 
-  # Import the shared home-manager configuration
-  home-manager.users.jma = import ../home.nix;
+  # Home Manager configuration
+  home-manager.users.jma.imports = [
+    ../home.nix # Shared config
+  ];
 }

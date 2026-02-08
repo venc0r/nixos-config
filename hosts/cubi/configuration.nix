@@ -13,11 +13,9 @@
 
   networking.hostName = "cubi";
 
-  # Import the shared home-manager configuration
-  home-manager.users.jma = import ../home.nix;
-
-  # Import host-specific home-manager modules
+  # Home Manager configuration
   home-manager.users.jma.imports = [
-    ./autorandr.nix
+    ../home.nix # Shared config
+    ./autorandr.nix # Host-specific config
   ];
 }
