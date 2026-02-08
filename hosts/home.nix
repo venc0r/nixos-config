@@ -56,7 +56,7 @@ in
     qalculate-gtk
 
     # Theming
-    kvantum # Qt theme engine
+    libsForQt5.qtstyleplugin-kvantum # Qt theme engine (Kvantum)
     kdePackages.breeze # KDE Breeze theme (includes KvarcDark)
     kdePackages.breeze-gtk # GTK version of Breeze
     kdePackages.breeze-icons # Breeze icons
