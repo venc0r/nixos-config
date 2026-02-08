@@ -588,6 +588,26 @@ in
     style.name = "kvantum";
   };
 
+  # Systemd service for rbw-agent with proper environment
+  systemd.user.services.rbw-agent = {
+    Unit = {
+      Description = "Bitwarden agent (rbw)";
+      After = [ "graphical-session.target" ];
+    };
+    Service = {
+      Type = "simple";
+      ExecStart = "${pkgs.rbw}/bin/rbw-agent";
+      Environment = [
+        "DISPLAY=:0"
+        "PINENTRY_PROGRAM=${pkgs.pinentry-gnome3}/bin/pinentry-gnome3"
+      ];
+      Restart = "on-failure";
+    };
+    Install = {
+      WantedBy = [ "graphical-session.target" ];
+    };
+  };
+
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 }
