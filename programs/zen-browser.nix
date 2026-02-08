@@ -320,6 +320,11 @@
           id = "key_browserToolbox";
           disabled = true;
         }
+        # Conflicts with Ctrl+I (Forward navigation) - Page Info
+        {
+          id = "key_viewInfo";
+          disabled = true;
+        }
         # Conflicts with Ctrl+Shift+K (Close unpinned tabs)
         {
           id = "key_webconsole";

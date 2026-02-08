@@ -86,6 +86,7 @@ These shortcuts are disabled to prevent conflicts with custom keybindings or unw
 - **Zen glance expand (Ctrl+O)** - Disabled (conflicts with Back navigation)
 - **Toggle DevTools (Ctrl+Shift+I)** - Disabled (conflicts with Forward navigation)
 - **Browser toolbox (Ctrl+Alt+Shift+I)** - Disabled (conflicts with Forward navigation)
+- **View Page Info (Ctrl+I)** - Disabled (conflicts with Forward navigation)
 - **Web Console (Ctrl+Shift+K)** - Disabled (conflicts with Close unpinned tabs)
 
 ## Adding Custom Keyboard Shortcuts
