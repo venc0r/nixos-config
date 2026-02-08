@@ -51,7 +51,7 @@ nixos-config/
 
 ## Migration Progress
 
-### ✅ Completed (13 items)
+### ✅ Completed (14 items)
 
 #### 1. **i3 Window Manager** 
 - **Location**: `hosts/home.nix:414-704`
@@ -118,7 +118,22 @@ nixos-config/
   - Normal: `#759a1f` / `#002b36`
   - Critical: `#900000` / `#ffffff` (no timeout)
 
-#### 8. **Tmux Terminal Multiplexer**
+#### 8. **Picom Compositor**
+- **Location**: `services/picom.nix`
+- **Backend**: GLX (hardware accelerated)
+- **Features**:
+  - Window shadows with custom radius (5px) and opacity (0.3)
+  - Comprehensive shadow exclusion list (menus, notifications, i3 frames)
+  - Fading disabled for performance
+  - VSync disabled (change if screen tearing occurs)
+  - Performance optimizations (unredir-if-possible for fullscreen apps)
+  - XRender sync fence enabled (nvidia compatibility)
+  - Window type specific settings (tooltips, fullscreen)
+  - Rounded corner detection
+- **Note**: Managed as systemd service, not manual i3 startup
+- **Transparency**: Provides compositor for Alacritty window transparency (0.9 opacity)
+
+#### 9. **Tmux Terminal Multiplexer**
 - **Location**: `programs/tmux.nix`
 - **Features**:
   - Custom prefix: `Alt+s` (instead of `Ctrl+b`)
@@ -136,23 +151,7 @@ nixos-config/
   - `t/n/m`: Popup sessions
 - **Note**: Helper scripts referenced but not yet migrated (pending "Bin scripts" task)
 
-#### 9. **Neovim Editor**
-- **Location**: `programs/nvim.nix`
-- **Config source**: `dotfiles/nvim/` (symlinked)
-- **Strategy**: Symlink existing Neovim configuration to avoid complexity
-- **Features**: 
-  - Lazy.nvim plugin manager
-  - Mason for LSP/DAP/linter management
-  - Treesitter for syntax highlighting
-  - Complete existing setup preserved
-- **Dependencies installed via Nix**: 
-  - `gcc`, `gnumake`, `unzip`, `wget`, `curl`, `gzip`
-  - `ripgrep`, `fd`, `xclip`, `tree-sitter`
-  - `luajitPackages.luarocks`
-- **Aliases**: `vi` and `vim` point to `nvim`
-- **Default editor**: Set as system default via `defaultEditor = true`
-
-#### 9. **Neovim Editor**
+#### 10. **Neovim Editor**
 - **Location**: `programs/nvim.nix`
 - **Config source**: `dotfiles/nvim/` (symlinked)
 - **Strategy**: Symlink existing Neovim configuration to avoid complexity
@@ -169,7 +168,7 @@ nixos-config/
 - **Default editor**: Set as system default via `defaultEditor = true`
 - **Note**: lazy-lock.json writes will fail in read-only symlinked config; needs manual git updates
 
-#### 10. **Autorandr Display Manager**
+#### 11. **Autorandr Display Manager**
 - **Location**: `hosts/cubi/autorandr.nix` (host-specific)
 - **Strategy**: Host-specific configuration imported in each host's configuration.nix
 - **Features**:
@@ -188,7 +187,7 @@ nixos-config/
   5. Import in `hosts/<hostname>/configuration.nix` via `home-manager.users.jma.imports`
 - **Note**: Template available at `hosts/nixos/autorandr.nix.example`
 
-#### 11. **Zen Browser**
+#### 12. **Zen Browser**
 - **Location**: `programs/zen-browser.nix`
 - **Flake input**: `github:0xc000022070/zen-browser-flake`
 - **Features**:
@@ -206,7 +205,7 @@ nixos-config/
 - **Documentation**: See `ZEN-BROWSER-GUIDE.md` for detailed usage instructions
 - **Note**: Auto-updates disabled (managed by Nix flake)
 
-#### 12. **Host-Specific Packages**
+#### 13. **Host-Specific Packages**
 - **Location**: `hosts/cubi/packages.nix`
 - **Strategy**: Host-specific package imports
 - **Packages added to cubi**:
@@ -215,7 +214,7 @@ nixos-config/
 - **Configuration**: Imported in `hosts/cubi/configuration.nix` via `home-manager.users.jma.imports`
 - **Note**: These packages are only installed on the production machine (cubi), not on the VM
 
-#### 13. **Rofi Theming**
+#### 14. **Rofi Theming**
 - **Location**: `hosts/home.nix:93-375`
 - **Strategy**: Inline theme configuration via xdg.configFile and home.file
 - **Features**:
@@ -319,6 +318,7 @@ sudo nixos-rebuild switch --flake .#cubi --refresh
 
 ### Services Running (via `services/`)
 - **Dunst**: Notification daemon (`dunst.nix`)
+- **Picom**: Compositor for transparency and effects (`picom.nix`)
 - **i3**: Window manager (via Home Manager xsession in `home.nix`)
 
 ## Known Issues & Notes
@@ -366,5 +366,5 @@ sudo nixos-rebuild switch --flake .#cubi --refresh
 ---
 
 **Last Updated**: 2026-02-08  
-**Status**: 13/22 tasks completed (59%)  
+**Status**: 14/22 tasks completed (64%)  
 **Next Priority**: Bin scripts, Bash, or CopyQ
