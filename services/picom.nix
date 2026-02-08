@@ -34,8 +34,8 @@
       "class_g ?= 'Xfce4-power-manager'"
       "class_g ?= 'Dmenu'"
       "class_g ?= 'i3-frame'"
-      "_GTK_FRAME_EXTENTS@:c"
-      "_NET_WM_STATE@:32a *= '_NET_WM_STATE_HIDDEN'"
+      "_GTK_FRAME_EXTENTS@"
+      "_NET_WM_STATE@ *= '_NET_WM_STATE_HIDDEN'"
     ];
 
     # Opacity settings
@@ -84,7 +84,6 @@
       detect-client-leader = true;
 
       # Performance
-      refresh-rate = 0;
       unredir-if-possible = true;
 
       # XSync for nvidia
