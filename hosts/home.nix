@@ -55,6 +55,11 @@ in
     discord
     qalculate-gtk
 
+    # Theming
+    gnome-themes-extra # Adwaita GTK theme
+    adwaita-icon-theme # Adwaita icons
+    adwaita-qt # Qt theme matching Adwaita
+
     # Clipboard and utilities
     xclip # For tmux clipboard integration
 
@@ -519,6 +524,41 @@ in
         }
       ];
     };
+  };
+
+  # GTK theme configuration for dark mode
+  gtk = {
+    enable = true;
+
+    theme = {
+      name = "Adwaita-dark";
+      package = pkgs.gnome-themes-extra;
+    };
+
+    iconTheme = {
+      name = "Adwaita";
+      package = pkgs.adwaita-icon-theme;
+    };
+
+    cursorTheme = {
+      name = "Adwaita";
+      package = pkgs.adwaita-icon-theme;
+    };
+
+    gtk3.extraConfig = {
+      gtk-application-prefer-dark-theme = true;
+    };
+
+    gtk4.extraConfig = {
+      gtk-application-prefer-dark-theme = true;
+    };
+  };
+
+  # Qt theme configuration for dark mode
+  qt = {
+    enable = true;
+    platformTheme.name = "gtk3";
+    style.name = "adwaita-dark";
   };
 
   # Let Home Manager install and manage itself.
