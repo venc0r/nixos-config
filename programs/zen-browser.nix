@@ -19,11 +19,18 @@
     # Global policies applied to all profiles
     policies =
       let
-        # Helper function to lock preferences
+        # Helper function to lock preferences (use sparingly!)
         mkLockedAttrs = builtins.mapAttrs (
           _: value: {
             Value = value;
             Status = "locked";
+          }
+        );
+        # Helper for default (non-locked) preferences
+        mkDefaultAttrs = builtins.mapAttrs (
+          _: value: {
+            Value = value;
+            Status = "default";
           }
         );
       in
@@ -55,67 +62,77 @@
 
         # Custom preferences and settings shared across all profiles
         # Migrated from existing Zen Browser configuration
-        Preferences = mkLockedAttrs {
-          # === Tab Behavior ===
-          "browser.tabs.warnOnClose" = false;
-          "browser.tabs.closeWindowWithLastTab" = false;
-          "browser.tabs.closeTabByDblclick" = false;
+        #
+        # NOTE: Most preferences use "default" status so Zen can still modify them.
+        # Only security/privacy-critical settings are "locked".
+        Preferences =
+          (mkLockedAttrs {
+            # === LOCKED Preferences (cannot be changed by user) ===
+            # These are security/privacy critical
+            "datareporting.usage.uploadEnabled" = false; # No telemetry
+            "signon.rememberSignons" = false; # Force disable password manager
+            "signon.autofillForms" = false; # Force disable password autofill
+          })
+          // (mkDefaultAttrs {
+            # === DEFAULT Preferences (can be changed by user) ===
 
-          # === UI & Appearance ===
-          "browser.toolbars.bookmarks.visibility" = "newtab"; # Show bookmarks only on new tab
-          "ui.systemUsesDarkTheme" = 1; # Use dark theme
+            # === Tab Behavior ===
+            "browser.tabs.warnOnClose" = false;
+            "browser.tabs.closeWindowWithLastTab" = false;
+            "browser.tabs.closeTabByDblclick" = false;
 
-          # === Startup & Session ===
-          "browser.startup.page" = 3; # Resume previous session
-          "browser.sessionstore.interval" = 15000; # Save session every 15 seconds
+            # === UI & Appearance ===
+            "browser.toolbars.bookmarks.visibility" = "newtab";
+            "ui.systemUsesDarkTheme" = 1;
 
-          # === Search & URL Bar ===
-          "browser.urlbar.suggest.searches" = false; # Disable search suggestions in URL bar
-          "browser.urlbar.placeholderName" = "DuckDuckGo";
-          "browser.urlbar.placeholderName.private" = "DuckDuckGo";
+            # === Startup & Session ===
+            "browser.startup.page" = 3; # Resume previous session
+            "browser.sessionstore.interval" = 15000;
 
-          # === Download Behavior ===
-          "browser.download.useDownloadDir" = false; # Always ask where to save
+            # === Search & URL Bar ===
+            "browser.urlbar.suggest.searches" = false;
+            "browser.urlbar.placeholderName" = "DuckDuckGo";
+            "browser.urlbar.placeholderName.private" = "DuckDuckGo";
 
-          # === Privacy & Security ===
-          "privacy.globalprivacycontrol.was_ever_enabled" = true;
-          "privacy.clearOnShutdown_v2.formdata" = true;
-          "privacy.history.custom" = true;
-          "datareporting.usage.uploadEnabled" = false;
+            # === Download Behavior ===
+            "browser.download.useDownloadDir" = false;
 
-          # === Password Manager ===
-          "signon.rememberSignons" = false; # Disable built-in password manager (using Bitwarden)
-          "signon.autofillForms" = false; # Disable password autofill
-          "signon.management.page.breach-alerts.enabled" = false; # Disable breach alerts
+            # === Privacy & Security ===
+            "privacy.globalprivacycontrol.was_ever_enabled" = true;
+            "privacy.clearOnShutdown_v2.formdata" = true;
+            "privacy.history.custom" = true;
 
-          # === Developer Tools ===
-          "devtools.theme" = "dark";
-          "devtools.cache.disabled" = true; # Disable cache in DevTools
-          "devtools.toolbox.host" = "window"; # DevTools in separate window
-          "devtools.toolbox.splitconsole.open" = true;
-          "devtools.inspector.selectedSidebar" = "computedview";
+            # === Password Manager ===
+            "signon.management.page.breach-alerts.enabled" = false;
 
-          # === Zen-Specific Settings ===
-          "zen.view.compact.enable-at-startup" = true; # Enable compact mode on startup
-          "zen.view.compact.hide-toolbar" = true; # Hide toolbar in compact mode
-          "zen.view.compact.should-enable-at-startup" = true;
-          "zen.view.use-single-toolbar" = false; # Use separate toolbars
-          "zen.workspaces.continue-where-left-off" = true; # Resume workspaces
-          "zen.workspaces.separate-essentials" = false;
+            # === Developer Tools ===
+            "devtools.theme" = "dark";
+            "devtools.cache.disabled" = true;
+            "devtools.toolbox.host" = "window";
+            "devtools.toolbox.splitconsole.open" = true;
+            "devtools.inspector.selectedSidebar" = "computedview";
 
-          # === Performance ===
-          "browser.ml.enable" = true; # Enable machine learning features
-          "accessibility.typeaheadfind.flashBar" = 0; # Disable find-as-you-type flash
+            # === Zen-Specific Settings ===
+            "zen.view.compact.enable-at-startup" = true;
+            "zen.view.compact.hide-toolbar" = true;
+            "zen.view.compact.should-enable-at-startup" = true;
+            "zen.view.use-single-toolbar" = false;
+            "zen.workspaces.continue-where-left-off" = true;
+            "zen.workspaces.separate-essentials" = false;
 
-          # === Sidebar ===
-          "sidebar.visibility" = "hide-sidebar"; # Hide sidebar by default
+            # === Performance ===
+            "browser.ml.enable" = true;
+            "accessibility.typeaheadfind.flashBar" = 0;
 
-          # === Display ===
-          "browser.display.document_color_use" = 0; # Use system colors
+            # === Sidebar ===
+            "sidebar.visibility" = "hide-sidebar";
 
-          # === Forms & Autofill ===
-          "dom.forms.autocomplete.formautofill" = true; # Enable form autofill
-        };
+            # === Display ===
+            "browser.display.document_color_use" = 0;
+
+            # === Forms & Autofill ===
+            "dom.forms.autocomplete.formautofill" = true;
+          });
       };
 
     # Profile 1: Personal
