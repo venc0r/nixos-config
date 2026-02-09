@@ -67,7 +67,7 @@ in
     vlc
     mpv
     gimp
-    libsForQt5.k3b # CD/DVD burning
+    kdePackages.k3b # CD/DVD burning (KDE Plasma 6)
     picard # MusicBrainz tagger
     # supersonic # Music streaming client - TODO: verify package name
     makemkv # DVD/Blu-ray ripper
