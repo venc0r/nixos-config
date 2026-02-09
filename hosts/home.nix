@@ -82,7 +82,7 @@ in
     wireguard-tools
 
     # System info
-    neofetch
+    # neofetch # Unmaintained, replaced by fastfetch (configured via programs.fastfetch)
 
     # Theming
     libsForQt5.qtstyleplugin-kvantum # Qt theme engine (Kvantum)
@@ -505,6 +505,7 @@ in
     ../programs/copyq.nix
     ../programs/iamb.nix
     ../programs/mangohud.nix
+    ../programs/fastfetch.nix
     ../services/dunst.nix
     # picom moved to host-specific config (doesn't work well in VMs)
   ];
