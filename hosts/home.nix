@@ -57,7 +57,7 @@ in
     qalculate-gtk
     signal-desktop
     nextcloud-client
-    barrier # KVM switch (keyboard/mouse sharing)
+    input-leap # KVM switch (keyboard/mouse sharing) - replaces unmaintained barrier
     iamb # Matrix client
 
     # File managers and utilities
