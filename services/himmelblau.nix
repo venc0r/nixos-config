@@ -8,8 +8,7 @@
 
   services.himmelblau = {
     enable = true;
-    # NOTE: Uncomment to use desktop variant with O365 suite and Teams
-    # package = inputs.himmelblau.packages.${pkgs.system}.himmelblau-desktop;
+    package = inputs.himmelblau.packages.${pkgs.system}.himmelblau-desktop;
     settings = {
       # TODO: Update with actual Entra ID domain once confirmed
       # Note: domain is a list to support multiple domains
