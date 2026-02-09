@@ -67,9 +67,9 @@ in
     vlc
     mpv
     gimp
-    k3b # CD/DVD burning
+    libsForQt5.k3b # CD/DVD burning
     picard # MusicBrainz tagger
-    # supersonic # Music streaming client - check package name
+    # supersonic # Music streaming client - TODO: verify package name
     makemkv # DVD/Blu-ray ripper
 
     # File managers and utilities
