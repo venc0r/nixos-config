@@ -51,14 +51,26 @@ in
     # Applications mentioned in config
     # alacritty # Configured via programs.alacritty
     # zen-browser # Requires flake input or overlay
-    # supersonic # Check exact package name (supersonic-wayland?)
     thunar
     discord
     qalculate-gtk
     signal-desktop
+    element-desktop # Matrix GUI client
     nextcloud-client
     input-leap # KVM switch (keyboard/mouse sharing) - replaces unmaintained barrier
-    iamb # Matrix client
+    iamb # Matrix CLI client
+
+    # Browsers
+    brave # Privacy-focused browser
+
+    # Media applications
+    vlc
+    mpv
+    gimp
+    k3b # CD/DVD burning
+    picard # MusicBrainz tagger
+    # supersonic # Music streaming client - check package name
+    makemkv # DVD/Blu-ray ripper
 
     # File managers and utilities
     ranger # Terminal file manager
@@ -69,6 +81,33 @@ in
     terraform # Infrastructure as code
     vault # HashiCorp Vault CLI
     helm # Kubernetes package manager
+    kubectl # Kubernetes CLI
+    podman # Rootless container runtime
+    gh # GitHub CLI
+    ansible # Configuration management
+    restic # Backup tool
+
+    # Gaming
+    steam
+    lutris
+    winetricks
+    protontricks
+    heroic # Epic Games launcher
+    # Note: Battle.net runs via Lutris
+
+    # Virtualization
+    virt-manager
+    qemu
+
+    # Productivity
+    onlyoffice-bin # Office suite
+
+    # System utilities
+    wireshark
+    glances
+    rclone
+    rsync
+    socat
 
     # Security and encryption
     gnupg
