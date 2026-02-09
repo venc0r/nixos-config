@@ -1,4 +1,4 @@
-{ config, pkgs, inputs, ... }:
+{ config, pkgs, inputs, lib, ... }:
 {
   imports = [ inputs.himmelblau.nixosModules.himmelblau ];
 
@@ -8,7 +8,7 @@
 
   services.himmelblau = {
     enable = true;
-    package = inputs.himmelblau.packages.${pkgs.system}.himmelblau-desktop;
+    package = lib.mkForce inputs.himmelblau.packages.${pkgs.system}.himmelblau-desktop;
     settings = {
       # TODO: Update with actual Entra ID domain once confirmed
       # Note: domain is a list to support multiple domains
