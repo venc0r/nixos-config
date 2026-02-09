@@ -473,6 +473,7 @@ in
     ../programs/zsh.nix
     ../programs/nvim.nix
     ../programs/zen-browser.nix
+    ../programs/copyq.nix
     ../services/dunst.nix
     # picom moved to host-specific config (doesn't work well in VMs)
   ];
