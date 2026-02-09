@@ -12,7 +12,8 @@
     # package = inputs.himmelblau.packages.${pkgs.system}.himmelblau-desktop;
     settings = {
       # TODO: Update with actual Entra ID domain once confirmed
-      domain = "cloudpunks.onmicrosoft.com";
+      # Note: domain is a list to support multiple domains
+      domain = [ "cloudpunks.onmicrosoft.com" ];
       
       # TODO: Add Entra ID group GUIDs once available
       # pam_allow_groups = [ "ENTRA-GROUP-GUID-HERE" ];
