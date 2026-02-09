@@ -55,6 +55,34 @@ in
     thunar
     discord
     qalculate-gtk
+    signal-desktop
+    nextcloud-client
+    barrier # KVM switch (keyboard/mouse sharing)
+    iamb # Matrix client
+
+    # File managers and utilities
+    ranger # Terminal file manager
+    pcmanfm # GUI file manager
+
+    # Development tools
+    bat # Better cat with syntax highlighting
+    terraform # Infrastructure as code
+    vault # HashiCorp Vault CLI
+    helm # Kubernetes package manager
+
+    # Security and encryption
+    gnupg
+    gnome-keyring
+    seahorse # Keyring GUI
+
+    # Image processing
+    imagemagick # Required by blurlock script
+
+    # Networking
+    wireguard-tools
+
+    # System info
+    neofetch
 
     # Theming
     libsForQt5.qtstyleplugin-kvantum # Qt theme engine (Kvantum)
