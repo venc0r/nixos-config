@@ -8,7 +8,8 @@
 
   services.himmelblau = {
     enable = true;
-    package = inputs.himmelblau.packages.${pkgs.system}.himmelblau-desktop;
+    # NOTE: Uncomment to use desktop variant with O365 suite and Teams
+    # package = inputs.himmelblau.packages.${pkgs.system}.himmelblau-desktop;
     settings = {
       # TODO: Update with actual Entra ID domain once confirmed
       domain = "cloudpunks.onmicrosoft.com";
