@@ -72,8 +72,8 @@ in
 
     # Security and encryption
     gnupg
-    gnome-keyring
-    seahorse # Keyring GUI
+    # gnome-keyring - Not needed: rbw works without it, GPG has its own agent
+    # seahorse - Keyring GUI (not needed without gnome-keyring)
 
     # Image processing
     imagemagick # Required by blurlock script
