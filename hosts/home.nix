@@ -504,6 +504,7 @@ in
     ../programs/zen-browser.nix
     ../programs/copyq.nix
     ../programs/iamb.nix
+    ../programs/mangohud.nix
     ../services/dunst.nix
     # picom moved to host-specific config (doesn't work well in VMs)
   ];
