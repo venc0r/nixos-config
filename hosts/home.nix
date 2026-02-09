@@ -100,7 +100,7 @@ in
     qemu
 
     # Productivity
-    onlyoffice-bin # Office suite
+    onlyoffice-desktopeditors # Office suite
 
     # System utilities
     wireshark
