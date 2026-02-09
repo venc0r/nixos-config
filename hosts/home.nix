@@ -78,7 +78,7 @@ in
 
     # Development tools
     bat # Better cat with syntax highlighting
-    terraform # Infrastructure as code
+    opentofu # Infrastructure as code (open-source Terraform alternative)
     vault # HashiCorp Vault CLI
     helm # Kubernetes package manager
     kubectl # Kubernetes CLI
