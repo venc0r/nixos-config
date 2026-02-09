@@ -500,6 +500,7 @@ in
     ../programs/tmux.nix
     ../programs/zsh.nix
     ../programs/nvim.nix
+    ../programs/vim.nix
     ../programs/zen-browser.nix
     ../programs/copyq.nix
     ../programs/iamb.nix
