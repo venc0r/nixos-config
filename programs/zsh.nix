@@ -51,13 +51,11 @@ in
         "vim-interaction"
         "history"
       ];
+      extraConfig = ''
+        zstyle :omz:plugins:ssh-agent identities id_rsa_venc id_rsa_noris
+      '';
       custom = "$HOME/.oh-my-zsh/custom/";
     };
-
-    prezto.ssh.identities = [
-      "id_rsa_venc"
-      "id_rsa_noris"
-    ];
 
     plugins = [
       {
