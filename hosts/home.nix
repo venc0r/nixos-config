@@ -83,6 +83,8 @@ in
     vault # HashiCorp Vault CLI
     helm # Kubernetes package manager
     kubectl # Kubernetes CLI
+    tektoncd-cli # Tekton Pipelines CLI (tkn)
+    stern # Multi-pod log tailing for Kubernetes
     podman # Rootless container runtime
     gh # GitHub CLI
     ansible # Configuration management

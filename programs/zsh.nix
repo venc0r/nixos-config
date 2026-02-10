@@ -38,20 +38,8 @@ in
       expireDuplicatesFirst = true;
     };
 
-    # Completion configuration
-    completionInit = ''
-      autoload -U compinit colors zcalc
-      compinit -d
-      colors
-
-      # Completion styling
-      zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'     # Case insensitive tab completion
-      zstyle ':completion:*' list-colors "''${(s.:.)LS_COLORS}"     # Colored completion
-      zstyle ':completion:*' rehash true                            # automatically find new executables in path
-      zstyle ':completion:*' accept-exact '*(N)'                    # Speed up completions
-      zstyle ':completion:*' use-cache on
-      zstyle ':completion:*' cache-path ~/.zsh/cache
-    '';
+    # Completion options (enableCompletion = true handles the autoload)
+    # Completion styling moved to initContent
 
     oh-my-zsh = {
       enable = true;
@@ -78,7 +66,7 @@ in
       extraConfig = ''
         zstyle :omz:plugins:ssh-agent identities id_rsa_venc id_rsa_noris
       '';
-      custom = "$HOME/.oh-my-zsh/custom/";
+      custom = "${config.home.homeDirectory}/.oh-my-zsh/custom/";
     };
 
     plugins = [
@@ -86,11 +74,6 @@ in
         name = "zsh-autosuggestions";
         src = pkgs.zsh-autosuggestions;
         file = "share/zsh-autosuggestions/zsh-autosuggestions.zsh";
-      }
-      {
-        name = "powerlevel10k";
-        src = pkgs.zsh-powerlevel10k;
-        file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
       }
     ];
 
@@ -157,8 +140,16 @@ in
           setopt nocheckjobs                # Don't warn about running processes when exiting
           setopt numericglobsort            # Sort filenames numerically when it makes sense
           setopt nobeep                     # No beep
+
+          # Completion styling
+          zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+          zstyle ':completion:*' list-colors "''${(s.:.)LS_COLORS}"
+          zstyle ':completion:*' rehash true
+          zstyle ':completion:*' accept-exact '*(N)'
+          zstyle ':completion:*' use-cache on
+          zstyle ':completion:*' cache-path ${config.xdg.cacheHome}/zsh
         '';
-        
+
         zshConfigEarlyInit = lib.mkOrder 500 ''
           source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme
           source $HOME/.p10k.zsh
@@ -166,7 +157,7 @@ in
             source "''${XDG_CACHE_HOME:-''$HOME/.cache}/p10k-instant-prompt-''${(%):-%n}.zsh"
           fi 
         '';
-        
+
         keybindings = lib.mkOrder 550 ''
           # Word navigation and editing
           bindkey '^[[7~' beginning-of-line        # Home key
@@ -185,7 +176,7 @@ in
           bindkey '^[[Z' undo                      # Shift+Tab
           bindkey '^R' fzf-history-widget          # Ctrl+R for fzf history
         '';
-        
+
         customFunctions = ''
           # Vault completion
           complete -o nospace -C ${pkgs.vault}/bin/vault vault
@@ -195,20 +186,20 @@ in
           # ============================================================================
 
           # Quick cheat sheet lookup
-          wtf() { curl https://cheat.sh/$1 }
+          wtf() { ${pkgs.curl}/bin/curl https://cheat.sh/$1 }
 
           # Get Kubernetes API versions (for Helm compatibility checks)
           getApiVersions() {
-            tmp=$(mktemp -d)
-            mkdir -p "''${tmp}/templates" && pushd "''${tmp}" > /dev/null
+            tmp=$(${pkgs.coreutils}/bin/mktemp -d)
+            ${pkgs.coreutils}/bin/mkdir -p "''${tmp}/templates" && pushd "''${tmp}" > /dev/null
 
-            cat << YAML >> Chart.yaml
+            ${pkgs.coreutils}/bin/cat << YAML >> Chart.yaml
           apiVersion: v2
           name: pipelines
           version: 0.1.0
           YAML
 
-            cat << YAML >> templates/cm.yaml
+            ${pkgs.coreutils}/bin/cat << YAML >> templates/cm.yaml
           apiVersion: v1
           kind: ConfigMap
           metadata:
@@ -217,9 +208,9 @@ in
             key: {{ .Capabilities.APIVersions }}
           YAML
 
-            helm install test --dry-run .| tail -n2 | yq '.key.[]' | sed 's/\([a-zA-Z0-9/.]*\)/--api-versions=\1/g'
+            ${pkgs.kubernetes-helm}/bin/helm install test --dry-run .| ${pkgs.coreutils}/bin/tail -n2 | ${pkgs.yq-go}/bin/yq '.key.[]' | ${pkgs.gnused}/bin/sed 's/\([a-zA-Z0-9/.]*\)/--api-versions=\1/g'
             popd > /dev/null
-            rm -rf ''${tmp}
+            ${pkgs.coreutils}/bin/rm -rf ''${tmp}
           }
 
           # Azure Container Apps helpers
@@ -247,8 +238,8 @@ in
           # OpenCode session browser
           sessions() {
             local days_ago=''${1:-0}
-            local target_date=$(date -d "$days_ago days ago" +%Y-%m-%d)
-            find ~/.local/share/opencode/storage/session -name "ses_*.json" -type f -exec sh -c 'file_date=$(date -d @$(jq -r ".time.updated / 1000" "$1") +%Y-%m-%d); if [ "$file_date" = "'"$target_date"'" ]; then jq -r "\"[\((.time.updated / 1000) | strftime(\"%H:%M\"))] \(.directory) | \(.title)\"" "$1"; fi' _ {} \; | sort -rn
+            local target_date=$(${pkgs.coreutils}/bin/date -d "$days_ago days ago" +%Y-%m-%d)
+            ${pkgs.findutils}/bin/find ~/.local/share/opencode/storage/session -name "ses_*.json" -type f -exec sh -c 'file_date=$(date -d @$(${pkgs.jq}/bin/jq -r ".time.updated / 1000" "$1") +%Y-%m-%d); if [ "$file_date" = "'"$target_date"'" ]; then ${pkgs.jq}/bin/jq -r "\"[\((.time.updated / 1000) | strftime(\"%H:%M\"))] \(.directory) | \(.title)\"" "$1"; fi' _ {} \; | ${pkgs.coreutils}/bin/sort -rn
           }
 
           # ============================================================================
@@ -278,16 +269,16 @@ in
                 ;;
             esac
 
-            kubectl config use-context "''${cluster_name}"
+            ${pkgs.kubectl}/bin/kubectl config use-context "''${cluster_name}"
 
-            export KUBE_TOKEN=$(yq ".users[] | select(.name == \"''${cluster_name}\") | .user.token" "''${HOME}/.kube/config")
-            export KUBE_HOST=$(yq ".clusters[] | select(.name == \"''${cluster_name}\") | .cluster.server" "''${HOME}/.kube/config")
+            export KUBE_TOKEN=$(${pkgs.yq-go}/bin/yq ".users[] | select(.name == \"''${cluster_name}\") | .user.token" "''${HOME}/.kube/config")
+            export KUBE_HOST=$(${pkgs.yq-go}/bin/yq ".clusters[] | select(.name == \"''${cluster_name}\") | .cluster.server" "''${HOME}/.kube/config")
             export KUBE_INSECURE="true"
             export TF_VAR_cloud="''${cluster_name}"
 
             unset VAULT_ADDR
             export VAULT_ADDR="https://openbao.''${subdomain}.v3nc.org"
-            ln -sf "''${HOME}/.vault-token-''${cluster_name}" "''${HOME}/.vault-token"
+            ${pkgs.coreutils}/bin/ln -sf "''${HOME}/.vault-token-''${cluster_name}" "''${HOME}/.vault-token"
 
             IaC="''${HOME}/Documents/git/jma/venc0r/IaC"
             if [[ ''${USER} == "jma" ]]; then
@@ -300,8 +291,8 @@ in
             fi
             for d in "''${workspaces[@]}"; do
               pushd "''${IaC}/terraform/''${d}" > /dev/null
-              tofu init -reconfigure -upgrade > /dev/null
-              tofu workspace select "''${cluster_name}" || echo "failed to select workspace on ''${IaC}/terraform/''${d}"
+              ${pkgs.opentofu}/bin/tofu init -reconfigure -upgrade > /dev/null
+              ${pkgs.opentofu}/bin/tofu workspace select "''${cluster_name}" || echo "failed to select workspace on ''${IaC}/terraform/''${d}"
               popd > /dev/null
             done
 
@@ -312,20 +303,20 @@ in
 
           # Run Renovate job in Kubernetes
           renovate() {
-            kubectl delete job renovateme -n renovate --context ''${2:-wavestack}
+            ${pkgs.kubectl}/bin/kubectl delete job renovateme -n renovate --context ''${2:-wavestack}
             if [[ $# -eq 0 ]]; then
-              kubectl create job --from cj/renovate -n renovate renovateme --context ''${2:-wavestack}
-              kubectl stern -n renovate --context ''${2:-wavestack} renovateme-
+              ${pkgs.kubectl}/bin/kubectl create job --from cj/renovate -n renovate renovateme --context ''${2:-wavestack}
+              ${pkgs.stern}/bin/stern -n renovate --context ''${2:-wavestack} renovateme-
             else
-              kubectl get cj renovate -o yaml -n renovate --context ''${2:-wavestack} |\
-                yq .spec.jobTemplate |\
-                yq ".spec.template.spec.containers[0].env += {\"name\": \"RENOVATE_AUTODISCOVER_FILTER\", \"value\": \"''${1}\"}" |\
-                yq ".spec.template.spec.containers[0].env += {\"name\": \"LOG_LEVEL\", \"value\": \"DEBUG\"}" |\
-                yq '.metadata.name = "renovateme"'|\
-                yq '.kind = "Job"' |\
-                yq '.apiVersion = "batch/v1"' |\
-                kubectl apply -n renovate --context ''${2:-wavestack} -f -
-                kubectl stern -n renovate --context ''${2:-wavestack} renovateme-
+              ${pkgs.kubectl}/bin/kubectl get cj renovate -o yaml -n renovate --context ''${2:-wavestack} |\
+                ${pkgs.yq-go}/bin/yq .spec.jobTemplate |\
+                ${pkgs.yq-go}/bin/yq ".spec.template.spec.containers[0].env += {\"name\": \"RENOVATE_AUTODISCOVER_FILTER\", \"value\": \"''${1}\"}" |\
+                ${pkgs.yq-go}/bin/yq ".spec.template.spec.containers[0].env += {\"name\": \"LOG_LEVEL\", \"value\": \"DEBUG\"}" |\
+                ${pkgs.yq-go}/bin/yq '.metadata.name = "renovateme"'|\
+                ${pkgs.yq-go}/bin/yq '.kind = "Job"' |\
+                ${pkgs.yq-go}/bin/yq '.apiVersion = "batch/v1"' |\
+                ${pkgs.kubectl}/bin/kubectl apply -n renovate --context ''${2:-wavestack} -f -
+                ${pkgs.stern}/bin/stern -n renovate --context ''${2:-wavestack} renovateme-
             fi
           }
 
@@ -385,8 +376,8 @@ in
                 local workspace_name="wavestack"
             esac
 
-            local tmp="$(mktemp).yml"
-            /bin/cat << EOF >> ''${tmp}
+            local tmp="$(${pkgs.coreutils}/bin/mktemp).yml"
+            ${pkgs.coreutils}/bin/cat << EOF >> ''${tmp}
           spec:
             accessModes:
               - ReadWriteOnce
@@ -396,7 +387,7 @@ in
                 storage: 100Mi
           EOF
 
-            tkn pipeline start -c n100 patchday \
+            ${pkgs.tektoncd-cli}/bin/tkn pipeline start -c n100 patchday \
               --param git_url=ssh://git@git.v3nc.org:2223/devOops/IaC.git \
               --param workspace_name=''${workspace_name} \
               --workspace name=sources,volumeClaimTemplateFile=''${tmp} \
@@ -405,7 +396,7 @@ in
               --namespace tekton-pipelines \
               --showlog
 
-            rm ''${tmp}
+            ${pkgs.coreutils}/bin/rm ''${tmp}
           }
 
           # Tekton PipelineRun: OpenTofu
@@ -427,8 +418,8 @@ in
             esac
 
             local path=$2
-            local tmp="$(/usr/bin/mktemp).yml"
-            /bin/cat << EOF >> ''${tmp}
+            local tmp="$(${pkgs.coreutils}/bin/mktemp).yml"
+            ${pkgs.coreutils}/bin/cat << EOF >> ''${tmp}
           spec:
             accessModes:
               - ReadWriteOnce
@@ -438,7 +429,7 @@ in
                 storage: 100Mi
           EOF
 
-            /usr/bin/tkn pipeline start -c n100 tofu \
+            ${pkgs.tektoncd-cli}/bin/tkn pipeline start -c n100 tofu \
               --param git_url=ssh://git@git.v3nc.org:2223/devOops/IaC.git \
               --param path=''${path} \
               --param tf_action=plan \
@@ -449,7 +440,7 @@ in
               --namespace tekton-pipelines \
               --showlog
 
-            /bin/rm ''${tmp}
+            ${pkgs.coreutils}/bin/rm ''${tmp}
           }
 
           # Tekton PipelineRun: IaC
@@ -464,8 +455,8 @@ in
                 local playbook="cluster-setup.yml"
             esac
 
-            local tmp="$(mktemp).yml"
-            /bin/cat << EOF >> ''${tmp}
+            local tmp="$(${pkgs.coreutils}/bin/mktemp).yml"
+            ${pkgs.coreutils}/bin/cat << EOF >> ''${tmp}
           spec:
             accessModes:
               - ReadWriteOnce
@@ -475,7 +466,7 @@ in
                 storage: 100Mi
           EOF
 
-            tkn pipeline start -c n100 tofu \
+            ${pkgs.tektoncd-cli}/bin/tkn pipeline start -c n100 tofu \
               --param git_url=ssh://git@git.v3nc.org:2223/devOops/IaC.git \
               --param path=terraform \
               --param tf_action=plan \
@@ -486,7 +477,7 @@ in
               --namespace tekton-pipelines \
               --showlog
 
-            rm ''${tmp}
+            ${pkgs.coreutils}/bin/rm ''${tmp}
           }
 
           # Tekton PipelineRun: Ansible
@@ -516,8 +507,8 @@ in
               esac
             done
 
-            local tmp="$(mktemp).yml"
-            /bin/cat << EOF >> ''${tmp}
+            local tmp="$(${pkgs.coreutils}/bin/mktemp).yml"
+            ${pkgs.coreutils}/bin/cat << EOF >> ''${tmp}
           spec:
             accessModes:
               - ReadWriteOnce
@@ -527,7 +518,7 @@ in
                 storage: 100Mi
           EOF
 
-            tkn pipeline start -c n100 ansible \
+            ${pkgs.tektoncd-cli}/bin/tkn pipeline start -c n100 ansible \
               --param git_url=ssh://git@git.v3nc.org:2223/devOops/IaC.git \
               --param git_ref=main \
               --param path=ansible \
@@ -542,10 +533,10 @@ in
               --namespace tekton-pipelines \
               --showlog
 
-            rm ''${tmp}
+            ${pkgs.coreutils}/bin/rm ''${tmp}
           }
         '';
-        
+
         zshConfig = lib.mkOrder 1000 "# Zsh configuration loaded";
       in
       lib.mkMerge [
