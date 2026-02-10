@@ -11,11 +11,19 @@ in
   programs.zsh = {
     enable = true;
     enableCompletion = true;
-    autosuggestion.enable = true;
+    autosuggestion = {
+      enable = true;
+      strategy = [
+        "history"
+        "completion"
+      ];
+    };
     syntaxHighlighting.enable = true;
 
     # Zsh options
     defaultKeymap = "emacs";
+
+    autocd = true;
 
     historySubstringSearch.enable = true;
 
@@ -27,7 +35,35 @@ in
       ignoreAllDups = true;
       extended = true;
       share = true;
+      expireDuplicatesFirst = true;
     };
+
+    # Zsh options via initExtraFirst (needs to run before oh-my-zsh)
+    initExtraFirst = ''
+      # Zsh shell options
+      setopt correct                    # Auto correct mistakes
+      setopt extendedglob               # Extended globbing
+      setopt nocaseglob                 # Case insensitive globbing
+      setopt rcexpandparam              # Array expansion with parameters
+      setopt nocheckjobs                # Don't warn about running processes when exiting
+      setopt numericglobsort            # Sort filenames numerically when it makes sense
+      setopt nobeep                     # No beep
+    '';
+
+    # Completion configuration
+    completionInit = ''
+      autoload -U compinit colors zcalc
+      compinit -d
+      colors
+
+      # Completion styling
+      zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'     # Case insensitive tab completion
+      zstyle ':completion:*' list-colors "''${(s.:.)LS_COLORS}"     # Colored completion
+      zstyle ':completion:*' rehash true                            # automatically find new executables in path
+      zstyle ':completion:*' accept-exact '*(N)'                    # Speed up completions
+      zstyle ':completion:*' use-cache on
+      zstyle ':completion:*' cache-path ~/.zsh/cache
+    '';
 
     oh-my-zsh = {
       enable = true;
@@ -69,6 +105,11 @@ in
         file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
       }
     ];
+
+    # Local variables
+    localVariables = {
+      WORDCHARS = "\${WORDCHARS//[\\/[&.;]}"; # Don't consider certain characters part of the word
+    };
 
     # Shell aliases
     shellAliases = {
@@ -116,62 +157,27 @@ in
       nano = "curl -s -L https://raw.githubusercontent.com/keroserene/rickrollrc/master/roll.sh | bash";
     };
 
+    # Keybindings
+    initExtraBeforeCompInit = ''
+      # Word navigation and editing
+      bindkey '^[[7~' beginning-of-line        # Home key
+      bindkey '^[[H' beginning-of-line         # Home key
+      bindkey '^[[8~' end-of-line              # End key
+      bindkey '^[[F' end-of-line               # End key
+      bindkey '^[[2~' overwrite-mode           # Insert key
+      bindkey '^[[3~' delete-char              # Delete key
+      bindkey '^[[C' forward-char              # Right key
+      bindkey '^[[D' backward-char             # Left key
+      bindkey '^[Oc' forward-word              # Ctrl+Right
+      bindkey '^[Od' backward-word             # Ctrl+Left
+      bindkey '^[[1;5D' backward-word          # Ctrl+Left (alternate)
+      bindkey '^[[1;5C' forward-word           # Ctrl+Right (alternate)
+      bindkey '^H' backward-kill-word          # Ctrl+Backspace
+      bindkey '^[[Z' undo                      # Shift+Tab
+      bindkey '^R' fzf-history-widget          # Ctrl+R for fzf history
+    '';
+
     initExtra = ''
-      # Zsh options
-      setopt correct                    # Auto correct mistakes
-      setopt extendedglob               # Extended globbing
-      setopt nocaseglob                 # Case insensitive globbing
-      setopt rcexpandparam              # Array expansion with parameters
-      setopt nocheckjobs                # Don't warn about running processes when exiting
-      setopt numericglobsort            # Sort filenames numerically when it makes sense
-      setopt nobeep                     # No beep
-      setopt appendhistory              # Immediately append history instead of overwriting
-      setopt histignorealldups          # If a new command is a duplicate, remove the older one
-      setopt autocd                     # if only directory path is entered, cd there
-      setopt inc_append_history         # save commands are added to the history immediately
-
-      # Completion styling
-      zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'     # Case insensitive tab completion
-      zstyle ':completion:*' list-colors "''${(s.:.)LS_COLORS}"     # Colored completion
-      zstyle ':completion:*' rehash true                            # automatically find new executables in path
-      zstyle ':completion:*' accept-exact '*(N)'                    # Speed up completions
-      zstyle ':completion:*' use-cache on
-      zstyle ':completion:*' cache-path ~/.zsh/cache
-
-      # Word characters
-      WORDCHARS=''${WORDCHARS//\/[&.;]}
-
-      # Keybindings
-      bindkey -e
-      bindkey '^[[7~' beginning-of-line
-      bindkey '^[[H' beginning-of-line
-      bindkey '^[[8~' end-of-line
-      bindkey '^[[F' end-of-line
-      bindkey '^[[2~' overwrite-mode
-      bindkey '^[[3~' delete-char
-      bindkey '^[[C' forward-char
-      bindkey '^[[D' backward-char
-      bindkey '^[Oc' forward-word
-      bindkey '^[Od' backward-word
-      bindkey '^[[1;5D' backward-word
-      bindkey '^[[1;5C' forward-word
-      bindkey '^H' backward-kill-word
-      bindkey '^[[Z' undo
-      bindkey '^R' fzf-history-widget
-
-      # Colored man pages
-      export LESS_TERMCAP_mb=$'\E[01;32m'
-      export LESS_TERMCAP_md=$'\E[01;32m'
-      export LESS_TERMCAP_me=$'\E[0m'
-      export LESS_TERMCAP_se=$'\E[0m'
-      export LESS_TERMCAP_so=$'\E[01;47;34m'
-      export LESS_TERMCAP_ue=$'\E[0m'
-      export LESS_TERMCAP_us=$'\E[01;36m'
-      export LESS=-R
-
-      # Autosuggestions strategy
-      ZSH_AUTOSUGGEST_STRATEGY=(history completion)
-
       # Conditional alias for duf
       if [[ -x $(which duf) ]]; then
         alias df=duf
@@ -564,6 +570,16 @@ in
   home.sessionVariables = {
     EDITOR = "nvim";
     DOTNET_CLI_TELEMETRY_OPTOUT = "1";
+
+    # Colored man pages
+    LESS_TERMCAP_mb = "$(printf '\e[01;32m')";
+    LESS_TERMCAP_md = "$(printf '\e[01;32m')";
+    LESS_TERMCAP_me = "$(printf '\e[0m')";
+    LESS_TERMCAP_se = "$(printf '\e[0m')";
+    LESS_TERMCAP_so = "$(printf '\e[01;47;34m')";
+    LESS_TERMCAP_ue = "$(printf '\e[0m')";
+    LESS_TERMCAP_us = "$(printf '\e[01;36m')";
+    LESS = "-R";
   };
 
   home.sessionPath = [
