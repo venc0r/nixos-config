@@ -194,10 +194,14 @@ in
           bindkey '^[[1;5C' forward-word           # Ctrl+Right (alternate)
           bindkey '^H' backward-kill-word          # Ctrl+Backspace
           bindkey '^[[Z' undo                      # Shift+Tab
-          bindkey '^R' fzf-history-widget          # Ctrl+R for fzf history
         '';
 
         customFunctions = ''
+          # Fix fzf-history-widget keybinding in Vi mode
+          # The vi-mode plugin overwrites the default binding
+          bindkey -M viins '^R' fzf-history-widget
+          bindkey -M vicmd '^R' fzf-history-widget
+
           # ============================================================================
           # CUSTOM FUNCTIONS
           # ============================================================================
