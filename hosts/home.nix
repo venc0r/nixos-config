@@ -571,292 +571,293 @@ in
     enable = true;
 
     windowManager.i3 = {
-    enable = true;
-    config = {
-      modifier = "Mod4";
+      enable = true;
+      config = {
+        modifier = "Mod4";
 
-      # Fonts
-      fonts = {
-        names = [ "Noto Sans" ];
-        style = "Regular";
-        size = 10.0;
-      };
-
-      # Gaps
-      gaps = {
-        inner = 0;
-        outer = 0;
-      };
-
-      # Keybindings
-      keybindings = lib.mkOptionDefault {
-        # Workspace switching (standard)
-        "Mod4+1" = "workspace number 1";
-        "Mod4+2" = "workspace number 2";
-        "Mod4+3" = "workspace number 3";
-        "Mod4+4" = "workspace number 4";
-        "Mod4+5" = "workspace number 5";
-        "Mod4+6" = "workspace number 6";
-        "Mod4+7" = "workspace number 7";
-        "Mod4+8" = "workspace number 8";
-        "Mod4+9" = "workspace number 9";
-
-        # Move to workspace AND switch to it (Follow)
-        "Mod4+Shift+1" = "move container to workspace number 1; workspace number 1";
-        "Mod4+Shift+2" = "move container to workspace number 2; workspace number 2";
-        "Mod4+Shift+3" = "move container to workspace number 3; workspace number 3";
-        "Mod4+Shift+4" = "move container to workspace number 4; workspace number 4";
-        "Mod4+Shift+5" = "move container to workspace number 5; workspace number 5";
-        "Mod4+Shift+6" = "move container to workspace number 6; workspace number 6";
-        "Mod4+Shift+7" = "move container to workspace number 7; workspace number 7";
-        "Mod4+Shift+8" = "move container to workspace number 8; workspace number 8";
-        "Mod4+Shift+9" = "move container to workspace number 9; workspace number 9";
-
-        # Terminal
-        "Mod4+Return" = "exec ${pkgs.alacritty}/bin/alacritty";
-
-        # Browser (with profile selector)
-        "Mod4+Tab" = "exec ${scripts.zen-profile-selector}/bin/zen-profile-selector";
-
-        # Kill window
-        "Mod4+Shift+q" = "kill";
-
-        # Menus
-        "Mod4+space" = "exec --no-startup-id ${pkgs.i3}/bin/i3-dmenu-desktop";
-
-        # Resize mode
-        "Mod4+r" = "mode \"resize\"";
-
-        # RBW / Rofi
-        "Mod4+p" = "exec ${pkgs.rofi-rbw}/bin/rofi-rbw --action type --target password";
-        "Mod4+u" = "exec ${pkgs.rofi-rbw}/bin/rofi-rbw --action type --target username";
-
-        # Audio / PulseAudio
-        "Mod4+Ctrl+m" = "exec ${pkgs.pavucontrol}/bin/pavucontrol";
-
-        # Navigation (Vim style)
-        "Mod4+h" = "focus left";
-        "Mod4+j" = "focus down";
-        "Mod4+k" = "focus up";
-        "Mod4+l" = "focus right";
-
-        # Move windows
-        "Mod4+Shift+h" = "move left";
-        "Mod4+Shift+j" = "move down";
-        "Mod4+Shift+k" = "move up";
-        "Mod4+Shift+l" = "move right";
-
-        # Workspaces
-        "Mod4+b" = "workspace back_and_forth";
-        "Mod4+Shift+b" = "move container to workspace back_and_forth; workspace back_and_forth";
-
-        # Splits
-        "Mod4+minus" = "split toggle";
-        "Mod4+f" = "fullscreen toggle";
-        "Mod4+w" = "layout tabbed";
-        "Mod4+Shift+space" = "floating toggle";
-        "Mod4+Shift+f" = "floating toggle";
-        "Mod4+Shift+s" = "sticky toggle";
-
-        # Scratchpad
-        "Mod4+Shift+comma" = "move scratchpad";
-        "Mod4+comma" = "scratchpad show";
-
-        # Multimedia Keys (using custom scripts referenced in original config)
-        "XF86MonBrightnessUp" = "exec ${pkgs.xorg.xbacklight}/bin/xbacklight -inc 1";
-        "XF86MonBrightnessDown" = "exec ${pkgs.xorg.xbacklight}/bin/xbacklight -dec 1";
-
-        # Volume
-        "XF86AudioRaiseVolume" =
-          "exec --no-startup-id ${scripts.volume-brightness}/bin/volume-brightness volume_up";
-        "XF86AudioLowerVolume" =
-          "exec --no-startup-id ${scripts.volume-brightness}/bin/volume-brightness volume_down";
-        "XF86AudioMute" =
-          "exec --no-startup-id ${scripts.volume-brightness}/bin/volume-brightness volume_mute";
-
-        # Lock
-        "Mod4+Escape" = "exec --no-startup-id ${pkgs.i3lock}/bin/i3lock";
-      };
-
-      # Resize modes
-      modes = {
-        "resize" = lib.mkOptionDefault {
-          "h" = "resize shrink width 10 px or 10 ppt";
-          "j" = "resize grow height 10 px or 10 ppt";
-          "k" = "resize shrink height 10 px or 10 ppt";
-          "l" = "resize grow width 10 px or 10 ppt";
-          "Return" = "mode \"default\"";
-          "Escape" = "mode \"default\"";
+        # Fonts
+        fonts = {
+          names = [ "Noto Sans" ];
+          style = "Regular";
+          size = 10.0;
         };
-      };
 
-      # Assigns
-      assigns = {
-        "2" = [
-          { class = "^(?i)firefox$"; }
-          { class = "^Brave-browser$"; }
-          { class = "^zen$"; }
-        ];
-        "3" = [ { class = "^Thunar$"; } ];
-        "4" = [
-          { class = "^org.remmina.Remmina$"; }
-        ];
-        "5" = [
-          { class = "^TelegramDesktop$"; }
-          { class = "^Supersonic$"; }
-        ];
-        "6" = [
-          { class = "^discord$"; }
-          { class = "^teams-for-linux$"; }
-        ];
-        "7" = [ { class = "^zoom$"; } ];
-      };
+        # Gaps
+        gaps = {
+          inner = 0;
+          outer = 0;
+        };
 
-      # Floating rules
-      window.commands = [
-        {
-          command = "floating enable";
-          criteria = {
-            class = "xfreerdp";
-          };
-        }
-        {
-          command = "floating enable";
-          criteria = {
-            class = "qalculate-gtk";
-          };
-        }
-        {
-          command = "resize set 800 600";
-          criteria = {
-            class = "zoom";
-          };
-        }
-        {
-          command = "floating enable";
-          criteria = {
-            class = "Pavucontrol";
-          };
-        }
-        {
-          command = "border pixel 1";
-          criteria = {
-            class = "^.*";
-          };
-        }
-      ];
+        # Keybindings
+        keybindings = lib.mkOptionDefault {
+          # Workspace switching (standard)
+          "Mod4+1" = "workspace number 1";
+          "Mod4+2" = "workspace number 2";
+          "Mod4+3" = "workspace number 3";
+          "Mod4+4" = "workspace number 4";
+          "Mod4+5" = "workspace number 5";
+          "Mod4+6" = "workspace number 6";
+          "Mod4+7" = "workspace number 7";
+          "Mod4+8" = "workspace number 8";
+          "Mod4+9" = "workspace number 9";
 
-      # Colors
-      colors = {
-        focused = {
-          border = "#5294e2";
-          background = "#08052b";
-          text = "#ffffff";
-          indicator = "#8b8b8b";
-          childBorder = "#8b8b8b";
-        };
-        focusedInactive = {
-          border = "#08052b";
-          background = "#08052b";
-          text = "#b0b5bd";
-          indicator = "#000000";
-          childBorder = "#000000";
-        };
-        unfocused = {
-          border = "#08052b";
-          background = "#08052b";
-          text = "#b0b5bd";
-          indicator = "#383c4a";
-          childBorder = "#383c4a";
-        };
-        urgent = {
-          border = "#e53935";
-          background = "#e53935";
-          text = "#ffffff";
-          indicator = "#e1b700";
-          childBorder = "#e1b700";
-        };
-      };
+          # Move to workspace AND switch to it (Follow)
+          "Mod4+Shift+1" = "move container to workspace number 1; workspace number 1";
+          "Mod4+Shift+2" = "move container to workspace number 2; workspace number 2";
+          "Mod4+Shift+3" = "move container to workspace number 3; workspace number 3";
+          "Mod4+Shift+4" = "move container to workspace number 4; workspace number 4";
+          "Mod4+Shift+5" = "move container to workspace number 5; workspace number 5";
+          "Mod4+Shift+6" = "move container to workspace number 6; workspace number 6";
+          "Mod4+Shift+7" = "move container to workspace number 7; workspace number 7";
+          "Mod4+Shift+8" = "move container to workspace number 8; workspace number 8";
+          "Mod4+Shift+9" = "move container to workspace number 9; workspace number 9";
 
-      # Bar
-      bars = [
-        {
-          position = "bottom";
-          statusCommand = "${pkgs.i3blocks}/bin/i3blocks -c ${config.xdg.configHome}/i3/i3blocks.conf";
-          fonts = {
-            names = [ "Noto Sans" ];
-            size = 10.0;
+          # Terminal
+          "Mod4+Return" = "exec ${pkgs.alacritty}/bin/alacritty";
+
+          # Browser (with profile selector)
+          "Mod4+Tab" = "exec ${scripts.zen-profile-selector}/bin/zen-profile-selector";
+
+          # Kill window
+          "Mod4+Shift+q" = "kill";
+
+          # Menus
+          "Mod4+space" = "exec --no-startup-id ${pkgs.i3}/bin/i3-dmenu-desktop";
+
+          # Resize mode
+          "Mod4+r" = "mode \"resize\"";
+
+          # RBW / Rofi
+          "Mod4+p" = "exec ${pkgs.rofi-rbw}/bin/rofi-rbw --action type --target password";
+          "Mod4+u" = "exec ${pkgs.rofi-rbw}/bin/rofi-rbw --action type --target username";
+
+          # Audio / PulseAudio
+          "Mod4+Ctrl+m" = "exec ${pkgs.pavucontrol}/bin/pavucontrol";
+
+          # Navigation (Vim style)
+          "Mod4+h" = "focus left";
+          "Mod4+j" = "focus down";
+          "Mod4+k" = "focus up";
+          "Mod4+l" = "focus right";
+
+          # Move windows
+          "Mod4+Shift+h" = "move left";
+          "Mod4+Shift+j" = "move down";
+          "Mod4+Shift+k" = "move up";
+          "Mod4+Shift+l" = "move right";
+
+          # Workspaces
+          "Mod4+b" = "workspace back_and_forth";
+          "Mod4+Shift+b" = "move container to workspace back_and_forth; workspace back_and_forth";
+
+          # Splits
+          "Mod4+minus" = "split toggle";
+          "Mod4+f" = "fullscreen toggle";
+          "Mod4+w" = "layout tabbed";
+          "Mod4+Shift+space" = "floating toggle";
+          "Mod4+Shift+f" = "floating toggle";
+          "Mod4+Shift+s" = "sticky toggle";
+
+          # Scratchpad
+          "Mod4+Shift+comma" = "move scratchpad";
+          "Mod4+comma" = "scratchpad show";
+
+          # Multimedia Keys (using custom scripts referenced in original config)
+          "XF86MonBrightnessUp" = "exec ${pkgs.xorg.xbacklight}/bin/xbacklight -inc 1";
+          "XF86MonBrightnessDown" = "exec ${pkgs.xorg.xbacklight}/bin/xbacklight -dec 1";
+
+          # Volume
+          "XF86AudioRaiseVolume" =
+            "exec --no-startup-id ${scripts.volume-brightness}/bin/volume-brightness volume_up";
+          "XF86AudioLowerVolume" =
+            "exec --no-startup-id ${scripts.volume-brightness}/bin/volume-brightness volume_down";
+          "XF86AudioMute" =
+            "exec --no-startup-id ${scripts.volume-brightness}/bin/volume-brightness volume_mute";
+
+          # Lock
+          "Mod4+Escape" = "exec --no-startup-id ${pkgs.i3lock}/bin/i3lock";
+        };
+
+        # Resize modes
+        modes = {
+          "resize" = lib.mkOptionDefault {
+            "h" = "resize shrink width 10 px or 10 ppt";
+            "j" = "resize grow height 10 px or 10 ppt";
+            "k" = "resize shrink height 10 px or 10 ppt";
+            "l" = "resize grow width 10 px or 10 ppt";
+            "Return" = "mode \"default\"";
+            "Escape" = "mode \"default\"";
           };
-          trayOutput = "primary";
-          colors = {
-            separator = "#e345ff";
-            background = "#383c4a";
-            statusline = "#ffffff";
-            focusedWorkspace = {
-              border = "#8b8b8b";
-              background = "#b0b5bd";
-              text = "#383c4a";
+        };
+
+        # Assigns
+        assigns = {
+          "2" = [
+            { class = "^(?i)firefox$"; }
+            { class = "^Brave-browser$"; }
+            { class = "^zen$"; }
+          ];
+          "3" = [ { class = "^Thunar$"; } ];
+          "4" = [
+            { class = "^org.remmina.Remmina$"; }
+          ];
+          "5" = [
+            { class = "^TelegramDesktop$"; }
+            { class = "^Supersonic$"; }
+          ];
+          "6" = [
+            { class = "^discord$"; }
+            { class = "^teams-for-linux$"; }
+          ];
+          "7" = [ { class = "^zoom$"; } ];
+        };
+
+        # Floating rules
+        window.commands = [
+          {
+            command = "floating enable";
+            criteria = {
+              class = "xfreerdp";
             };
-            activeWorkspace = {
-              border = "#5294e2";
-              background = "#8b8b8b";
-              text = "#383c4a";
+          }
+          {
+            command = "floating enable";
+            criteria = {
+              class = "qalculate-gtk";
             };
-            inactiveWorkspace = {
-              border = "#383c4a";
+          }
+          {
+            command = "resize set 800 600";
+            criteria = {
+              class = "zoom";
+            };
+          }
+          {
+            command = "floating enable";
+            criteria = {
+              class = "Pavucontrol";
+            };
+          }
+          {
+            command = "border pixel 1";
+            criteria = {
+              class = "^.*";
+            };
+          }
+        ];
+
+        # Colors
+        colors = {
+          focused = {
+            border = "#5294e2";
+            background = "#08052b";
+            text = "#ffffff";
+            indicator = "#8b8b8b";
+            childBorder = "#8b8b8b";
+          };
+          focusedInactive = {
+            border = "#08052b";
+            background = "#08052b";
+            text = "#b0b5bd";
+            indicator = "#000000";
+            childBorder = "#000000";
+          };
+          unfocused = {
+            border = "#08052b";
+            background = "#08052b";
+            text = "#b0b5bd";
+            indicator = "#383c4a";
+            childBorder = "#383c4a";
+          };
+          urgent = {
+            border = "#e53935";
+            background = "#e53935";
+            text = "#ffffff";
+            indicator = "#e1b700";
+            childBorder = "#e1b700";
+          };
+        };
+
+        # Bar
+        bars = [
+          {
+            position = "bottom";
+            statusCommand = "${pkgs.i3blocks}/bin/i3blocks -c ${config.xdg.configHome}/i3/i3blocks.conf";
+            fonts = {
+              names = [ "Noto Sans" ];
+              size = 10.0;
+            };
+            trayOutput = "primary";
+            colors = {
+              separator = "#e345ff";
               background = "#383c4a";
-              text = "#b0b5bd";
+              statusline = "#ffffff";
+              focusedWorkspace = {
+                border = "#8b8b8b";
+                background = "#b0b5bd";
+                text = "#383c4a";
+              };
+              activeWorkspace = {
+                border = "#5294e2";
+                background = "#8b8b8b";
+                text = "#383c4a";
+              };
+              inactiveWorkspace = {
+                border = "#383c4a";
+                background = "#383c4a";
+                text = "#b0b5bd";
+              };
+              urgentWorkspace = {
+                border = "#e53935";
+                background = "#e53935";
+                text = "#ffffff";
+              };
             };
-            urgentWorkspace = {
-              border = "#e53935";
-              background = "#e53935";
-              text = "#ffffff";
-            };
-          };
-        }
-      ];
+          }
+        ];
 
-      # Startup commands
-      startup = [
-        {
-          command = "${pkgs.autorandr}/bin/autorandr --load desktop";
-          notification = false;
-        }
-        {
-          command = "--no-startup-id ${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
-          notification = false;
-        }
-        {
-          command = "--no-startup-id ${pkgs.feh}/bin/feh --bg-fill .config/i3/skin.png";
-          notification = false;
-        }
-        {
-          command = "--no-startup-id ${pkgs.flameshot}/bin/flameshot";
-          notification = false;
-        }
-        {
-          command = "--no-startup-id ${pkgs.networkmanagerapplet}/bin/nm-applet";
-          notification = false;
-        }
-        {
-          command = "--no-startup-id ${pkgs.pasystray}/bin/pasystray";
-          notification = false;
-        }
-        {
-          command = "--no-startup-id ${pkgs.copyq}/bin/copyq";
-          notification = false;
-        }
-        {
-          command = "--no-startup-id ${pkgs.xautolock}/bin/xautolock -time 10 -locker \"${scripts.blurlock}/bin/blurlock\"";
-          notification = false;
-        }
-        {
-          command = "--no-startup-id ${pkgs.rbw}/bin/rbw-agent";
-          notification = false;
-        }
-      ];
-    };
-  };
+        # Startup commands
+        startup = [
+          {
+            command = "${pkgs.autorandr}/bin/autorandr --load desktop";
+            notification = false;
+          }
+          {
+            command = "--no-startup-id ${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
+            notification = false;
+          }
+          {
+            command = "--no-startup-id ${pkgs.feh}/bin/feh --bg-fill .config/i3/skin.png";
+            notification = false;
+          }
+          {
+            command = "--no-startup-id ${pkgs.flameshot}/bin/flameshot";
+            notification = false;
+          }
+          {
+            command = "--no-startup-id ${pkgs.networkmanagerapplet}/bin/nm-applet";
+            notification = false;
+          }
+          {
+            command = "--no-startup-id ${pkgs.pasystray}/bin/pasystray";
+            notification = false;
+          }
+          {
+            command = "--no-startup-id ${pkgs.copyq}/bin/copyq";
+            notification = false;
+          }
+          {
+            command = "--no-startup-id ${pkgs.xautolock}/bin/xautolock -time 10 -locker \"${scripts.blurlock}/bin/blurlock\"";
+            notification = false;
+          }
+          {
+            command = "--no-startup-id ${pkgs.rbw}/bin/rbw-agent";
+            notification = false;
+          }
+        ];
+      }; # End of config
+    }; # End of windowManager.i3
+  }; # End of xsession
 
   # GTK theme configuration for dark mode
   gtk = {
