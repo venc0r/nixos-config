@@ -115,7 +115,7 @@ in
     shellAliases = {
       # Basic aliases
       cp = "cp -i";
-      df = "df -h";
+      df = "duf"; # Use duf instead of df
       free = "free -m";
       vim = "nvim";
 
@@ -143,6 +143,7 @@ in
 
       # OpenShift/kubectl
       op = "oc project";
+      oc = "kubectl"; # Use kubectl as oc (OpenShift CLI not installed)
 
       # PowerShell container
       pwaz = "podman run -it -v homevol:/root --rm docker.io/venc0r/pwsh";
@@ -178,22 +179,8 @@ in
     '';
 
     initExtra = ''
-      # Conditional alias for duf
-      if [[ -x $(which duf) ]]; then
-        alias df=duf
-      fi
-
-      # Conditional oc completion
-      if [[ ! -x $(which oc) ]]; then
-        alias oc='kubectl'
-      else
-        source <(oc completion zsh)
-      fi
-
       # Vault completion
-      if [[ -x $(which vault) ]]; then
-        complete -o nospace -C $(which vault) vault
-      fi
+      complete -o nospace -C ${pkgs.vault}/bin/vault vault
 
       # ============================================================================
       # CUSTOM FUNCTIONS

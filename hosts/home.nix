@@ -47,6 +47,7 @@ in
     lm_sensors
     acpi
     iproute2
+    duf # Better df - disk usage utility
 
     # Applications mentioned in config
     # alacritty # Configured via programs.alacritty
