@@ -569,11 +569,6 @@ in
   # X11 session and window manager
   xsession = {
     enable = true;
-    
-    # Keyboard repeat rate
-    initExtra = ''
-      ${pkgs.xorg.xset}/bin/xset r rate 250 70
-    '';
 
     windowManager.i3 = {
     enable = true;

@@ -80,6 +80,9 @@
       layout = "us";
       variant = "altgr-intl";
     };
+    # Keyboard repeat rate: 250ms delay, ~70 repeats/sec (1000/14 ≈ 71)
+    autoRepeatDelay = 250;
+    autoRepeatInterval = 14;
   };
 
   services.displayManager.sddm = {
