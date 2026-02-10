@@ -38,18 +38,6 @@ in
       expireDuplicatesFirst = true;
     };
 
-    # Zsh options via initExtraFirst (needs to run before oh-my-zsh)
-    initExtraFirst = ''
-      # Zsh shell options
-      setopt correct                    # Auto correct mistakes
-      setopt extendedglob               # Extended globbing
-      setopt nocaseglob                 # Case insensitive globbing
-      setopt rcexpandparam              # Array expansion with parameters
-      setopt nocheckjobs                # Don't warn about running processes when exiting
-      setopt numericglobsort            # Sort filenames numerically when it makes sense
-      setopt nobeep                     # No beep
-    '';
-
     # Completion configuration
     completionInit = ''
       autoload -U compinit colors zcalc
@@ -158,398 +146,413 @@ in
       nano = "curl -s -L https://raw.githubusercontent.com/keroserene/rickrollrc/master/roll.sh | bash";
     };
 
-    # Keybindings
-    initExtraBeforeCompInit = ''
-      # Word navigation and editing
-      bindkey '^[[7~' beginning-of-line        # Home key
-      bindkey '^[[H' beginning-of-line         # Home key
-      bindkey '^[[8~' end-of-line              # End key
-      bindkey '^[[F' end-of-line               # End key
-      bindkey '^[[2~' overwrite-mode           # Insert key
-      bindkey '^[[3~' delete-char              # Delete key
-      bindkey '^[[C' forward-char              # Right key
-      bindkey '^[[D' backward-char             # Left key
-      bindkey '^[Oc' forward-word              # Ctrl+Right
-      bindkey '^[Od' backward-word             # Ctrl+Left
-      bindkey '^[[1;5D' backward-word          # Ctrl+Left (alternate)
-      bindkey '^[[1;5C' forward-word           # Ctrl+Right (alternate)
-      bindkey '^H' backward-kill-word          # Ctrl+Backspace
-      bindkey '^[[Z' undo                      # Shift+Tab
-      bindkey '^R' fzf-history-widget          # Ctrl+R for fzf history
-    '';
-
-    initExtra = ''
-      # Vault completion
-      complete -o nospace -C ${pkgs.vault}/bin/vault vault
-
-      # ============================================================================
-      # CUSTOM FUNCTIONS
-      # ============================================================================
-
-      # Quick cheat sheet lookup
-      wtf() { curl https://cheat.sh/$1 }
-
-      # Get Kubernetes API versions (for Helm compatibility checks)
-      getApiVersions() {
-        tmp=$(mktemp -d)
-        mkdir -p "''${tmp}/templates" && pushd "''${tmp}" > /dev/null
-
-        cat << YAML >> Chart.yaml
-      apiVersion: v2
-      name: pipelines
-      version: 0.1.0
-      YAML
-
-        cat << YAML >> templates/cm.yaml
-      apiVersion: v1
-      kind: ConfigMap
-      metadata:
-        name: test
-      data:
-        key: {{ .Capabilities.APIVersions }}
-      YAML
-
-        helm install test --dry-run .| tail -n2 | yq '.key.[]' | sed 's/\([a-zA-Z0-9/.]*\)/--api-versions=\1/g'
-        popd > /dev/null
-        rm -rf ''${tmp}
-      }
-
-      # Azure Container Apps helpers
-      rtzx() {
-        export RG=$1
-      }
-
-      rtz() {
-        local func=$1
-        shift 1
-        case "$func" in
-          "logs") local app=$1
-            shift 1
-            az containerapp logs show -n $app -g $RG $@
-          ;;
-          "exec") local app=$1
-            shift 1
-            az containerapp exec -n $app -g $RG --command $@
-          ;;
-          *) az containerapp --help
-          ;;
-        esac
-      }
-
-      # OpenCode session browser
-      sessions() {
-        local days_ago=''${1:-0}
-        local target_date=$(date -d "$days_ago days ago" +%Y-%m-%d)
-        find ~/.local/share/opencode/storage/session -name "ses_*.json" -type f -exec sh -c 'file_date=$(date -d @$(jq -r ".time.updated / 1000" "$1") +%Y-%m-%d); if [ "$file_date" = "'"$target_date"'" ]; then jq -r "\"[\((.time.updated / 1000) | strftime(\"%H:%M\"))] \(.directory) | \(.title)\"" "$1"; fi' _ {} \; | sort -rn
-      }
-
-      # ============================================================================
-      # WORK-SPECIFIC FUNCTIONS (Kubernetes/Tekton/Infrastructure)
-      # ============================================================================
-
-      # Kubernetes cluster switcher and workspace configurator
-      cl() {
-        case "$1" in
-          n100) subdomain="n100"
-            cluster_name="n100"
-            workspaces=('infrastructure' 'argocd-infra' 'vault')
-            ;;
-          os) subdomain="$1"
-            cluster_name="openstack"
-            workspaces=('infrastructure' 'argocd-infra' 'vault' 'image_upload')
-            ;;
-          ws) subdomain="$1"
-            cluster_name="wavestack"
-            workspaces=('infrastructure' 'argocd-infra' 'vault' 'image_upload')
-            ;;
-          garden) subdomain="cks"
-            cluster_name="gardener"
-            workspaces=('infrastructure' 'argocd-infra' 'vault' 'image_upload')
-            ;;
-          *) echo "Usage >> cl os|ws|n100|garden << " && return 1
-            ;;
-        esac
-
-        kubectl config use-context "''${cluster_name}"
-
-        export KUBE_TOKEN=$(yq ".users[] | select(.name == \"''${cluster_name}\") | .user.token" "''${HOME}/.kube/config")
-        export KUBE_HOST=$(yq ".clusters[] | select(.name == \"''${cluster_name}\") | .cluster.server" "''${HOME}/.kube/config")
-        export KUBE_INSECURE="true"
-        export TF_VAR_cloud="''${cluster_name}"
-
-        unset VAULT_ADDR
-        export VAULT_ADDR="https://openbao.''${subdomain}.v3nc.org"
-        ln -sf "''${HOME}/.vault-token-''${cluster_name}" "''${HOME}/.vault-token"
-
-        IaC="''${HOME}/Documents/git/jma/venc0r/IaC"
-        if [[ ''${USER} == "jma" ]]; then
-          IaC="''${HOME}/Documents/git/gitea/devops/IaC"
-        fi
-
-        if [[ $(pwd) != "''${IaC}" ]]; then
-          popme=$(pwd)
-          pushd "''${IaC}/terraform" > /dev/null
-        fi
-        for d in "''${workspaces[@]}"; do
-          pushd "''${IaC}/terraform/''${d}" > /dev/null
-          tofu init -reconfigure -upgrade > /dev/null
-          tofu workspace select "''${cluster_name}" || echo "failed to select workspace on ''${IaC}/terraform/''${d}"
-          popd > /dev/null
-        done
-
-        if [[ -n "''${popme}" ]]; then
-          popd > /dev/null || cd "''${popme}"
-        fi
-      }
-
-      # Run Renovate job in Kubernetes
-      renovate() {
-        kubectl delete job renovateme -n renovate --context ''${2:-wavestack}
-        if [[ $# -eq 0 ]]; then
-          kubectl create job --from cj/renovate -n renovate renovateme --context ''${2:-wavestack}
-          kubectl stern -n renovate --context ''${2:-wavestack} renovateme-
-        else
-          kubectl get cj renovate -o yaml -n renovate --context ''${2:-wavestack} |\
-            yq .spec.jobTemplate |\
-            yq ".spec.template.spec.containers[0].env += {\"name\": \"RENOVATE_AUTODISCOVER_FILTER\", \"value\": \"''${1}\"}" |\
-            yq ".spec.template.spec.containers[0].env += {\"name\": \"LOG_LEVEL\", \"value\": \"DEBUG\"}" |\
-            yq '.metadata.name = "renovateme"'|\
-            yq '.kind = "Job"' |\
-            yq '.apiVersion = "batch/v1"' |\
-            kubectl apply -n renovate --context ''${2:-wavestack} -f -
-            kubectl stern -n renovate --context ''${2:-wavestack} renovateme-
-        fi
-      }
-
-      # Unseal OpenBao/Vault
-      unseal() {
-        case "$1" in
-          n100)
-            local limit="n100"
-            local workspace_name="n100"
-            ;;
-          os)
-            local limit="openstack"
-            local workspace_name="openstack"
-            ;;
-          ws)
-            local limit="wavestack"
-            local workspace_name="wavestack"
-            ;;
-          *) echo "Usage >> unseal os|ws|n100 << " && return 1
-            ;;
-        esac
-        local tags="openbao-unseal"
-        tknPipelineRunAnsible -p cluster-setup.yml -t ''${tags} -l ''${limit} -w ''${workspace_name} -tf terraform
-      }
-
-      # Patch management
-      patch() {
-        case "$1" in
-          archlinux)
-            local playbook="archlinux-setup.yml"
-            local limit="archlinux"
-          ;;
-          os)
-            local playbook="cluster-setup.yml"
-            local limit="arch-$1"
-            local workspace_name="openstack"
-          ;;
-          ws)
-            local playbook="cluster-setup.yml"
-            local limit="arch-$1"
-            local workspace_name="wavestack"
-          ;;
-          *)
-            echo "Usage >> unseal os|ws|archlinux << " && return 1
-          ;;
-        esac
-        tknPipelineRunAnsible -p ''${playbook} -l ''${limit} -w ''${workspace_name}
-      }
-
-      # Tekton PipelineRun: Patchday
-      tknPipelineRunPatchday() {
-        case "$1" in
-          os)
-            local workspace_name="openstack"
-          ;;
-          ws)
-            local workspace_name="wavestack"
-        esac
-
-        local tmp="$(mktemp).yml"
-        /bin/cat << EOF >> ''${tmp}
-      spec:
-        accessModes:
-          - ReadWriteOnce
-        volumeMode: Filesystem
-        resources:
-          requests:
-            storage: 100Mi
-      EOF
-
-        tkn pipeline start -c n100 patchday \
-          --param git_url=ssh://git@git.v3nc.org:2223/devOops/IaC.git \
-          --param workspace_name=''${workspace_name} \
-          --workspace name=sources,volumeClaimTemplateFile=''${tmp} \
-          --workspace name=ssh-directory,secret=git-ssh-credential \
-          --workspace name=patchlist,config=patchlist \
-          --namespace tekton-pipelines \
-          --showlog
-
-        rm ''${tmp}
-      }
-
-      # Tekton PipelineRun: OpenTofu
-      tknPipelineRunTofu() {
-        set -x
-        case "$1" in
-          os)
-            local workspace_name="openstack"
-          ;;
-          ws)
-            local workspace_name="wavestack"
-          ;;
-          n100)
-            local workspace_name="n100"
-          ;;
-          *)
-            echo "no known workspace"
-            return 1
-        esac
-
-        local path=$2
-        local tmp="$(/usr/bin/mktemp).yml"
-        /bin/cat << EOF >> ''${tmp}
-      spec:
-        accessModes:
-          - ReadWriteOnce
-        volumeMode: Filesystem
-        resources:
-          requests:
-            storage: 100Mi
-      EOF
-
-        /usr/bin/tkn pipeline start -c n100 tofu \
-          --param git_url=ssh://git@git.v3nc.org:2223/devOops/IaC.git \
-          --param path=''${path} \
-          --param tf_action=plan \
-          --param workspace_name=''${workspace_name} \
-          --workspace name=sources,volumeClaimTemplateFile=''${tmp} \
-          --workspace name=ssh-directory,secret=git-ssh-credential \
-          --workspace name=plans,claimName=tofu \
-          --namespace tekton-pipelines \
-          --showlog
-
-        /bin/rm ''${tmp}
-      }
-
-      # Tekton PipelineRun: IaC
-      tknPipelineRunIaC() {
-        case "$1" in
-          os)
-            local workspace_name="openstack"
-            local playbook="cluster-setup.yml"
-          ;;
-          ws)
-            local workspace_name="wavestack"
-            local playbook="cluster-setup.yml"
-        esac
-
-        local tmp="$(mktemp).yml"
-        /bin/cat << EOF >> ''${tmp}
-      spec:
-        accessModes:
-          - ReadWriteOnce
-        volumeMode: Filesystem
-        resources:
-          requests:
-            storage: 100Mi
-      EOF
-
-        tkn pipeline start -c n100 tofu \
-          --param git_url=ssh://git@git.v3nc.org:2223/devOops/IaC.git \
-          --param path=terraform \
-          --param tf_action=plan \
-          --param workspace_name=''${workspace_name} \
-          --workspace name=sources,volumeClaimTemplateFile=''${tmp} \
-          --workspace name=ssh-directory,secret=git-ssh-credential \
-          --workspace name=plans,claimName=tofu \
-          --namespace tekton-pipelines \
-          --showlog
-
-        rm ''${tmp}
-      }
-
-      # Tekton PipelineRun: Ansible
-      tknPipelineRunAnsible() {
-        while [ "$#" -gt 0 ]; do
-          case "$1" in
-            -p)
-              playbook="$2"
-              shift 2
-            ;;
-            -t)
-              tags="$2"
-              shift 2
-            ;;
-            -w)
-              workspace_name="$2"
-              shift 2
-            ;;
-            -l)
-              limit="$2"
-              shift 2
-            ;;
-            -tf)
-              tf_path="$2"
-              shift 2
-            ;;
-          esac
-        done
-
-        local tmp="$(mktemp).yml"
-        /bin/cat << EOF >> ''${tmp}
-      spec:
-        accessModes:
-          - ReadWriteOnce
-        volumeMode: Filesystem
-        resources:
-          requests:
-            storage: 100Mi
-      EOF
-
-        tkn pipeline start -c n100 ansible \
-          --param git_url=ssh://git@git.v3nc.org:2223/devOops/IaC.git \
-          --param git_ref=main \
-          --param path=ansible \
-          --param playbook=''${playbook} \
-          --param limit=''${limit} \
-          --param tags=''${tags} \
-          --param workspace_name=''${workspace_name} \
-          --param tf_path=''${tf_path} \
-          --param secret=ansible \
-          --workspace name=sources,volumeClaimTemplateFile=''${tmp} \
-          --workspace name=ssh-directory,secret=git-ssh-credential \
-          --namespace tekton-pipelines \
-          --showlog
-
-        rm ''${tmp}
-      }
-    '';
-
     initContent =
       let
+        zshOptions = lib.mkBefore ''
+          # Zsh shell options
+          setopt correct                    # Auto correct mistakes
+          setopt extendedglob               # Extended globbing
+          setopt nocaseglob                 # Case insensitive globbing
+          setopt rcexpandparam              # Array expansion with parameters
+          setopt nocheckjobs                # Don't warn about running processes when exiting
+          setopt numericglobsort            # Sort filenames numerically when it makes sense
+          setopt nobeep                     # No beep
+        '';
+        
         zshConfigEarlyInit = lib.mkOrder 500 ''
           source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme
           source $HOME/.p10k.zsh
           if [[ -r "''${XDG_CACHE_HOME:-''$HOME/.cache}/p10k-instant-prompt-''${(%):-%n}.zsh" ]]; then
             source "''${XDG_CACHE_HOME:-''$HOME/.cache}/p10k-instant-prompt-''${(%):-%n}.zsh"
-          fi '';
+          fi 
+        '';
+        
+        keybindings = lib.mkOrder 550 ''
+          # Word navigation and editing
+          bindkey '^[[7~' beginning-of-line        # Home key
+          bindkey '^[[H' beginning-of-line         # Home key
+          bindkey '^[[8~' end-of-line              # End key
+          bindkey '^[[F' end-of-line               # End key
+          bindkey '^[[2~' overwrite-mode           # Insert key
+          bindkey '^[[3~' delete-char              # Delete key
+          bindkey '^[[C' forward-char              # Right key
+          bindkey '^[[D' backward-char             # Left key
+          bindkey '^[Oc' forward-word              # Ctrl+Right
+          bindkey '^[Od' backward-word             # Ctrl+Left
+          bindkey '^[[1;5D' backward-word          # Ctrl+Left (alternate)
+          bindkey '^[[1;5C' forward-word           # Ctrl+Right (alternate)
+          bindkey '^H' backward-kill-word          # Ctrl+Backspace
+          bindkey '^[[Z' undo                      # Shift+Tab
+          bindkey '^R' fzf-history-widget          # Ctrl+R for fzf history
+        '';
+        
+        customFunctions = ''
+          # Vault completion
+          complete -o nospace -C ${pkgs.vault}/bin/vault vault
+
+          # ============================================================================
+          # CUSTOM FUNCTIONS
+          # ============================================================================
+
+          # Quick cheat sheet lookup
+          wtf() { curl https://cheat.sh/$1 }
+
+          # Get Kubernetes API versions (for Helm compatibility checks)
+          getApiVersions() {
+            tmp=$(mktemp -d)
+            mkdir -p "''${tmp}/templates" && pushd "''${tmp}" > /dev/null
+
+            cat << YAML >> Chart.yaml
+          apiVersion: v2
+          name: pipelines
+          version: 0.1.0
+          YAML
+
+            cat << YAML >> templates/cm.yaml
+          apiVersion: v1
+          kind: ConfigMap
+          metadata:
+            name: test
+          data:
+            key: {{ .Capabilities.APIVersions }}
+          YAML
+
+            helm install test --dry-run .| tail -n2 | yq '.key.[]' | sed 's/\([a-zA-Z0-9/.]*\)/--api-versions=\1/g'
+            popd > /dev/null
+            rm -rf ''${tmp}
+          }
+
+          # Azure Container Apps helpers
+          rtzx() {
+            export RG=$1
+          }
+
+          rtz() {
+            local func=$1
+            shift 1
+            case "$func" in
+              "logs") local app=$1
+                shift 1
+                az containerapp logs show -n $app -g $RG $@
+              ;;
+              "exec") local app=$1
+                shift 1
+                az containerapp exec -n $app -g $RG --command $@
+              ;;
+              *) az containerapp --help
+              ;;
+            esac
+          }
+
+          # OpenCode session browser
+          sessions() {
+            local days_ago=''${1:-0}
+            local target_date=$(date -d "$days_ago days ago" +%Y-%m-%d)
+            find ~/.local/share/opencode/storage/session -name "ses_*.json" -type f -exec sh -c 'file_date=$(date -d @$(jq -r ".time.updated / 1000" "$1") +%Y-%m-%d); if [ "$file_date" = "'"$target_date"'" ]; then jq -r "\"[\((.time.updated / 1000) | strftime(\"%H:%M\"))] \(.directory) | \(.title)\"" "$1"; fi' _ {} \; | sort -rn
+          }
+
+          # ============================================================================
+          # WORK-SPECIFIC FUNCTIONS (Kubernetes/Tekton/Infrastructure)
+          # ============================================================================
+
+          # Kubernetes cluster switcher and workspace configurator
+          cl() {
+            case "$1" in
+              n100) subdomain="n100"
+                cluster_name="n100"
+                workspaces=('infrastructure' 'argocd-infra' 'vault')
+                ;;
+              os) subdomain="$1"
+                cluster_name="openstack"
+                workspaces=('infrastructure' 'argocd-infra' 'vault' 'image_upload')
+                ;;
+              ws) subdomain="$1"
+                cluster_name="wavestack"
+                workspaces=('infrastructure' 'argocd-infra' 'vault' 'image_upload')
+                ;;
+              garden) subdomain="cks"
+                cluster_name="gardener"
+                workspaces=('infrastructure' 'argocd-infra' 'vault' 'image_upload')
+                ;;
+              *) echo "Usage >> cl os|ws|n100|garden << " && return 1
+                ;;
+            esac
+
+            kubectl config use-context "''${cluster_name}"
+
+            export KUBE_TOKEN=$(yq ".users[] | select(.name == \"''${cluster_name}\") | .user.token" "''${HOME}/.kube/config")
+            export KUBE_HOST=$(yq ".clusters[] | select(.name == \"''${cluster_name}\") | .cluster.server" "''${HOME}/.kube/config")
+            export KUBE_INSECURE="true"
+            export TF_VAR_cloud="''${cluster_name}"
+
+            unset VAULT_ADDR
+            export VAULT_ADDR="https://openbao.''${subdomain}.v3nc.org"
+            ln -sf "''${HOME}/.vault-token-''${cluster_name}" "''${HOME}/.vault-token"
+
+            IaC="''${HOME}/Documents/git/jma/venc0r/IaC"
+            if [[ ''${USER} == "jma" ]]; then
+              IaC="''${HOME}/Documents/git/gitea/devops/IaC"
+            fi
+
+            if [[ $(pwd) != "''${IaC}" ]]; then
+              popme=$(pwd)
+              pushd "''${IaC}/terraform" > /dev/null
+            fi
+            for d in "''${workspaces[@]}"; do
+              pushd "''${IaC}/terraform/''${d}" > /dev/null
+              tofu init -reconfigure -upgrade > /dev/null
+              tofu workspace select "''${cluster_name}" || echo "failed to select workspace on ''${IaC}/terraform/''${d}"
+              popd > /dev/null
+            done
+
+            if [[ -n "''${popme}" ]]; then
+              popd > /dev/null || cd "''${popme}"
+            fi
+          }
+
+          # Run Renovate job in Kubernetes
+          renovate() {
+            kubectl delete job renovateme -n renovate --context ''${2:-wavestack}
+            if [[ $# -eq 0 ]]; then
+              kubectl create job --from cj/renovate -n renovate renovateme --context ''${2:-wavestack}
+              kubectl stern -n renovate --context ''${2:-wavestack} renovateme-
+            else
+              kubectl get cj renovate -o yaml -n renovate --context ''${2:-wavestack} |\
+                yq .spec.jobTemplate |\
+                yq ".spec.template.spec.containers[0].env += {\"name\": \"RENOVATE_AUTODISCOVER_FILTER\", \"value\": \"''${1}\"}" |\
+                yq ".spec.template.spec.containers[0].env += {\"name\": \"LOG_LEVEL\", \"value\": \"DEBUG\"}" |\
+                yq '.metadata.name = "renovateme"'|\
+                yq '.kind = "Job"' |\
+                yq '.apiVersion = "batch/v1"' |\
+                kubectl apply -n renovate --context ''${2:-wavestack} -f -
+                kubectl stern -n renovate --context ''${2:-wavestack} renovateme-
+            fi
+          }
+
+          # Unseal OpenBao/Vault
+          unseal() {
+            case "$1" in
+              n100)
+                local limit="n100"
+                local workspace_name="n100"
+                ;;
+              os)
+                local limit="openstack"
+                local workspace_name="openstack"
+                ;;
+              ws)
+                local limit="wavestack"
+                local workspace_name="wavestack"
+                ;;
+              *) echo "Usage >> unseal os|ws|n100 << " && return 1
+                ;;
+            esac
+            local tags="openbao-unseal"
+            tknPipelineRunAnsible -p cluster-setup.yml -t ''${tags} -l ''${limit} -w ''${workspace_name} -tf terraform
+          }
+
+          # Patch management
+          patch() {
+            case "$1" in
+              archlinux)
+                local playbook="archlinux-setup.yml"
+                local limit="archlinux"
+              ;;
+              os)
+                local playbook="cluster-setup.yml"
+                local limit="arch-$1"
+                local workspace_name="openstack"
+              ;;
+              ws)
+                local playbook="cluster-setup.yml"
+                local limit="arch-$1"
+                local workspace_name="wavestack"
+              ;;
+              *)
+                echo "Usage >> unseal os|ws|archlinux << " && return 1
+              ;;
+            esac
+            tknPipelineRunAnsible -p ''${playbook} -l ''${limit} -w ''${workspace_name}
+          }
+
+          # Tekton PipelineRun: Patchday
+          tknPipelineRunPatchday() {
+            case "$1" in
+              os)
+                local workspace_name="openstack"
+              ;;
+              ws)
+                local workspace_name="wavestack"
+            esac
+
+            local tmp="$(mktemp).yml"
+            /bin/cat << EOF >> ''${tmp}
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            volumeMode: Filesystem
+            resources:
+              requests:
+                storage: 100Mi
+          EOF
+
+            tkn pipeline start -c n100 patchday \
+              --param git_url=ssh://git@git.v3nc.org:2223/devOops/IaC.git \
+              --param workspace_name=''${workspace_name} \
+              --workspace name=sources,volumeClaimTemplateFile=''${tmp} \
+              --workspace name=ssh-directory,secret=git-ssh-credential \
+              --workspace name=patchlist,config=patchlist \
+              --namespace tekton-pipelines \
+              --showlog
+
+            rm ''${tmp}
+          }
+
+          # Tekton PipelineRun: OpenTofu
+          tknPipelineRunTofu() {
+            set -x
+            case "$1" in
+              os)
+                local workspace_name="openstack"
+              ;;
+              ws)
+                local workspace_name="wavestack"
+              ;;
+              n100)
+                local workspace_name="n100"
+              ;;
+              *)
+                echo "no known workspace"
+                return 1
+            esac
+
+            local path=$2
+            local tmp="$(/usr/bin/mktemp).yml"
+            /bin/cat << EOF >> ''${tmp}
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            volumeMode: Filesystem
+            resources:
+              requests:
+                storage: 100Mi
+          EOF
+
+            /usr/bin/tkn pipeline start -c n100 tofu \
+              --param git_url=ssh://git@git.v3nc.org:2223/devOops/IaC.git \
+              --param path=''${path} \
+              --param tf_action=plan \
+              --param workspace_name=''${workspace_name} \
+              --workspace name=sources,volumeClaimTemplateFile=''${tmp} \
+              --workspace name=ssh-directory,secret=git-ssh-credential \
+              --workspace name=plans,claimName=tofu \
+              --namespace tekton-pipelines \
+              --showlog
+
+            /bin/rm ''${tmp}
+          }
+
+          # Tekton PipelineRun: IaC
+          tknPipelineRunIaC() {
+            case "$1" in
+              os)
+                local workspace_name="openstack"
+                local playbook="cluster-setup.yml"
+              ;;
+              ws)
+                local workspace_name="wavestack"
+                local playbook="cluster-setup.yml"
+            esac
+
+            local tmp="$(mktemp).yml"
+            /bin/cat << EOF >> ''${tmp}
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            volumeMode: Filesystem
+            resources:
+              requests:
+                storage: 100Mi
+          EOF
+
+            tkn pipeline start -c n100 tofu \
+              --param git_url=ssh://git@git.v3nc.org:2223/devOops/IaC.git \
+              --param path=terraform \
+              --param tf_action=plan \
+              --param workspace_name=''${workspace_name} \
+              --workspace name=sources,volumeClaimTemplateFile=''${tmp} \
+              --workspace name=ssh-directory,secret=git-ssh-credential \
+              --workspace name=plans,claimName=tofu \
+              --namespace tekton-pipelines \
+              --showlog
+
+            rm ''${tmp}
+          }
+
+          # Tekton PipelineRun: Ansible
+          tknPipelineRunAnsible() {
+            while [ "$#" -gt 0 ]; do
+              case "$1" in
+                -p)
+                  playbook="$2"
+                  shift 2
+                ;;
+                -t)
+                  tags="$2"
+                  shift 2
+                ;;
+                -w)
+                  workspace_name="$2"
+                  shift 2
+                ;;
+                -l)
+                  limit="$2"
+                  shift 2
+                ;;
+                -tf)
+                  tf_path="$2"
+                  shift 2
+                ;;
+              esac
+            done
+
+            local tmp="$(mktemp).yml"
+            /bin/cat << EOF >> ''${tmp}
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            volumeMode: Filesystem
+            resources:
+              requests:
+                storage: 100Mi
+          EOF
+
+            tkn pipeline start -c n100 ansible \
+              --param git_url=ssh://git@git.v3nc.org:2223/devOops/IaC.git \
+              --param git_ref=main \
+              --param path=ansible \
+              --param playbook=''${playbook} \
+              --param limit=''${limit} \
+              --param tags=''${tags} \
+              --param workspace_name=''${workspace_name} \
+              --param tf_path=''${tf_path} \
+              --param secret=ansible \
+              --workspace name=sources,volumeClaimTemplateFile=''${tmp} \
+              --workspace name=ssh-directory,secret=git-ssh-credential \
+              --namespace tekton-pipelines \
+              --showlog
+
+            rm ''${tmp}
+          }
+        '';
+        
         zshConfig = lib.mkOrder 1000 "# Zsh configuration loaded";
       in
       lib.mkMerge [
+        zshOptions
         zshConfigEarlyInit
+        keybindings
+        customFunctions
         zshConfig
       ];
   };

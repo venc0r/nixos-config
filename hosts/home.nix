@@ -30,7 +30,7 @@ in
     gcr # GNOME Crypto library (needed by pinentry-gnome3)
     feh # Wallpaper
     # picom # Configured via services.picom
-    xorg.xbacklight
+    xbacklight
     # dunst # Configured via services.dunst
     pavucontrol # Audio control
     pasystray
@@ -664,8 +664,8 @@ in
           "Mod4+comma" = "scratchpad show";
 
           # Multimedia Keys (using custom scripts referenced in original config)
-          "XF86MonBrightnessUp" = "exec ${pkgs.xorg.xbacklight}/bin/xbacklight -inc 1";
-          "XF86MonBrightnessDown" = "exec ${pkgs.xorg.xbacklight}/bin/xbacklight -dec 1";
+          "XF86MonBrightnessUp" = "exec ${pkgs.xbacklight}/bin/xbacklight -inc 1";
+          "XF86MonBrightnessDown" = "exec ${pkgs.xbacklight}/bin/xbacklight -dec 1";
 
           # Volume
           "XF86AudioRaiseVolume" =

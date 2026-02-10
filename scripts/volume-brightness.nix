@@ -13,7 +13,7 @@ pkgs.writeShellScriptBin "volume-brightness" ''
   PACTL="${pkgs.pulseaudio}/bin/pactl"
   GREP="${pkgs.gnugrep}/bin/grep"
   HEAD="${pkgs.coreutils}/bin/head"
-  XBACKLIGHT="${pkgs.xorg.xbacklight}/bin/xbacklight"
+  XBACKLIGHT="${pkgs.xbacklight}/bin/xbacklight"
   DUNSTIFY="${pkgs.dunst}/bin/dunstify"
 
   function get_volume {
