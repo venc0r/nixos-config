@@ -855,9 +855,9 @@ in
             notification = false;
           }
         ];
-      }; # End of config
-    }; # End of windowManager.i3
-  }; # End of xsession
+      };
+    };
+  };
 
   # GTK theme configuration for dark mode
   gtk = {
