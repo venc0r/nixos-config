@@ -1,4 +1,9 @@
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 let
 
 in
@@ -12,7 +17,7 @@ in
         width = 300;
         height = 300;
         origin = "top-right";
-        offset = "0x0";
+        offset = "10x30"; # 10px from right edge, 30px from top edge
         scale = 0;
         notification_limit = 10;
         indicate_hidden = "yes";
