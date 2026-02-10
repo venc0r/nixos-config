@@ -8,7 +8,7 @@
 
   services.himmelblau = {
     enable = true;
-    package = lib.mkForce inputs.himmelblau.packages.${pkgs.system}.himmelblau-desktop;
+    package = lib.mkForce inputs.himmelblau.packages.${pkgs.stdenv.hostPlatform.system}.himmelblau-desktop;
     settings = {
       # TODO: Update with actual Entra ID domain once confirmed
       # Note: domain is a list to support multiple domains
