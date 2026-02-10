@@ -842,7 +842,7 @@ in
 
   xdg.configFile."Kvantum/kvantum.kvconfig".text = ''
     [General]
-    theme=ArcDark
+    theme=KvArcDark
   '';
 
   # Let Home Manager install and manage itself.
