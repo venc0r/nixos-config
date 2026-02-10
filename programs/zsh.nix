@@ -41,6 +41,34 @@ in
     # Completion options (enableCompletion = true handles the autoload)
     # Completion styling moved to initContent
 
+    completionInit = ''
+      # Custom completion configuration
+      zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+      zstyle ':completion:*' list-colors "''${(s.:.)LS_COLORS}"
+      zstyle ':completion:*' rehash true
+      zstyle ':completion:*' accept-exact '*(N)'
+      zstyle ':completion:*' use-cache on
+      zstyle ':completion:*' cache-path ${config.xdg.cacheHome}/zsh
+
+      # Enable bashcompinit for tools that need it (like vault)
+      autoload -U +X bashcompinit && bashcompinit
+
+      # Vault completion (uses bash completion mechanism)
+      complete -o nospace -C ${pkgs.vault}/bin/vault vault
+
+      # Load native zsh completions for other tools
+      # Note: kubectl, helm, ansible, git, terraform are handled by oh-my-zsh plugins
+
+      # GitHub CLI completion
+      source <(${pkgs.gh}/bin/gh completion -s zsh)
+
+      # Tekton CLI completion
+      source <(${pkgs.tektoncd-cli}/bin/tkn completion zsh)
+
+      # Stern completion
+      source <(${pkgs.stern}/bin/stern --completion zsh)
+    '';
+
     oh-my-zsh = {
       enable = true;
       plugins = [
@@ -140,14 +168,6 @@ in
           setopt nocheckjobs                # Don't warn about running processes when exiting
           setopt numericglobsort            # Sort filenames numerically when it makes sense
           setopt nobeep                     # No beep
-
-          # Completion styling
-          zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
-          zstyle ':completion:*' list-colors "''${(s.:.)LS_COLORS}"
-          zstyle ':completion:*' rehash true
-          zstyle ':completion:*' accept-exact '*(N)'
-          zstyle ':completion:*' use-cache on
-          zstyle ':completion:*' cache-path ${config.xdg.cacheHome}/zsh
         '';
 
         zshConfigEarlyInit = lib.mkOrder 500 ''
@@ -178,9 +198,6 @@ in
         '';
 
         customFunctions = ''
-          # Vault completion
-          complete -o nospace -C ${pkgs.vault}/bin/vault vault
-
           # ============================================================================
           # CUSTOM FUNCTIONS
           # ============================================================================
