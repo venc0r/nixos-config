@@ -1,9 +1,6 @@
 { config, pkgs, ... }:
 
 {
-  # CopyQ clipboard manager configuration
-  # Symlinks configuration files from dotfiles/copyq/
-
   xdg.configFile."copyq/copyq.conf".source = ../dotfiles/copyq/copyq.conf;
   xdg.configFile."copyq/copyq-commands.ini".source = ../dotfiles/copyq/copyq-commands.ini;
   xdg.configFile."copyq/copyq-filter.ini".source = ../dotfiles/copyq/copyq-filter.ini;

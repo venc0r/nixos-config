@@ -92,7 +92,7 @@ in
         "history"
       ];
       extraConfig = ''
-        zstyle :omz:plugins:ssh-agent identities id_rsa_venc id_rsa_noris
+        zstyle :omz:plugins:ssh-agent identities id_rsa_venc id_ed25519 id_rsa_noris
       '';
       custom = "${config.home.homeDirectory}/.oh-my-zsh/custom/";
     };
@@ -175,7 +175,7 @@ in
           source $HOME/.p10k.zsh
           if [[ -r "''${XDG_CACHE_HOME:-''$HOME/.cache}/p10k-instant-prompt-''${(%):-%n}.zsh" ]]; then
             source "''${XDG_CACHE_HOME:-''$HOME/.cache}/p10k-instant-prompt-''${(%):-%n}.zsh"
-          fi 
+          fi
         '';
 
         keybindings = lib.mkOrder 550 ''

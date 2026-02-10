@@ -7,103 +7,97 @@
 
 let
   scripts = import ./scripts.nix { inherit pkgs; };
+  wallpaper = ./nixos_wallpaper.jpg;
 in
 {
   home.username = "jma";
   home.homeDirectory = "/home/jma";
   home.stateVersion = "25.11";
 
-  # Install packages required by your i3 config and workflow
   home.packages = with pkgs; [
     meslo-lgs-nf
 
-    # i3 related tools
     i3lock
     i3status
     i3blocks
     dmenu
+    rbw
     rofi
     rofi-rbw
-    rbw # Bitwarden client
     xdotool # Required by rofi-rbw for typing
     pinentry-gnome3 # Required by rbw for password input (graphical)
     gcr # GNOME Crypto library (needed by pinentry-gnome3)
-    feh # Wallpaper
-    # picom # Configured via services.picom
+    feh
     xbacklight
-    # dunst # Configured via services.dunst
-    pavucontrol # Audio control
+    pavucontrol
     pasystray
     networkmanagerapplet
-    autorandr # Display management
-    arandr # GUI for xrandr
-    xautolock # Auto-lock screen after inactivity
-    flameshot # Screenshots
+    autorandr
+    arandr
+    xautolock
+    flameshot
     copyq
     polkit_gnome
+
+    # Image processing
+    imagemagick # Required by blurlock script
 
     # System monitoring
     sysstat
     lm_sensors
     acpi
     iproute2
-    duf # Better df - disk usage utility
+    duf
 
-    # Applications mentioned in config
-    # alacritty # Configured via programs.alacritty
-    # zen-browser # Requires flake input or overlay
-    thunar
     discord
     qalculate-gtk
     signal-desktop
-    element-desktop # Matrix GUI client
-    nextcloud-client
-    input-leap # KVM switch (keyboard/mouse sharing) - replaces unmaintained barrier
-    iamb # Matrix CLI client
+    element-desktop
+    owncloud-client
+    input-leap
+    iamb
 
     # Browsers
-    brave # Privacy-focused browser
+    brave
 
     # Media applications
     vlc
     mpv
     gimp
-    kdePackages.k3b # CD/DVD burning (KDE Plasma 6)
-    picard # MusicBrainz tagger
-    # supersonic # Music streaming client - TODO: verify package name
-    makemkv # DVD/Blu-ray ripper
+    kdePackages.k3b
+    picard
+    supersonic
+    makemkv
 
-    # File managers and utilities
-    ranger # Terminal file manager
-    pcmanfm # GUI file manager
+    ranger
+    pcmanfm
+    thunar
 
     # Development tools
-    bat # Better cat with syntax highlighting
-    opentofu # Infrastructure as code (open-source Terraform alternative)
-    vault # HashiCorp Vault CLI
-    kubernetes-helm # Kubernetes package manager (explicitly use kubernetes-helm, not 'helm' which conflicts with emacs-helm)
-    kubectl # Kubernetes CLI
-    tektoncd-cli # Tekton Pipelines CLI (tkn)
-    stern # Multi-pod log tailing for Kubernetes
-    podman # Rootless container runtime
-    gh # GitHub CLI
-    ansible # Configuration management
-    restic # Backup tool
+    opentofu
+    vault
+    kubernetes-helm
+    kubectl
+    tektoncd-cli
+    stern
+    podman
+    gh
+    ansible
+    restic
 
     # Gaming
     steam
     lutris
     winetricks
     protontricks
-    heroic # Epic Games launcher
-    # Note: Battle.net runs via Lutris
+    heroic
 
     # Virtualization
     virt-manager
     qemu
 
     # Productivity
-    onlyoffice-desktopeditors # Office suite
+    onlyoffice-desktopeditors
 
     # System utilities
     wireshark
@@ -112,19 +106,12 @@ in
     rsync
     socat
 
-    # Security and encryption
     gnupg
     # gnome-keyring - Not needed: rbw works without it, GPG has its own agent
     # seahorse - Keyring GUI (not needed without gnome-keyring)
 
-    # Image processing
-    imagemagick # Required by blurlock script
-
     # Networking
     wireguard-tools
-
-    # System info
-    # neofetch # Unmaintained, replaced by fastfetch (configured via programs.fastfetch)
 
     # Theming
     libsForQt5.qtstyleplugin-kvantum # Qt theme engine (Kvantum)
@@ -135,8 +122,8 @@ in
 
     # Clipboard and utilities
     xclip # For tmux clipboard integration
-    jq # JSON processor
-    yq-go # YAML processor
+    jq
+    yq-go
 
     # Custom Scripts
     scripts.volume-brightness
@@ -159,22 +146,12 @@ in
     ".tmux-cht-languages".source = ../dotfiles/.tmux-cht-languages;
   };
 
-  # Kvantum theme configuration
-  xdg.configFile."Kvantum/kvantum.kvconfig".text = ''
-    [General]
-    theme=ArcDark
-  '';
-
   # Rofi configuration and themes
   xdg.configFile."rofi/config.rasi".text = ''
     @theme "~/.local/share/rofi/themes/arc_dark_transparent_colors.rasi"
   '';
 
   xdg.configFile."rofi/powermenu.rasi".text = ''
-    /*******************************************************
-     * ROFI configs i3 powermenu for EndeavourOS
-     * Maintainer: joekamprad [joekamprad //a_t// endeavouros.com]
-     *******************************************************/
     configuration {
         font:            "Noto Sans Regular 10";
         show-icons:      false;
@@ -299,10 +276,6 @@ in
   '';
 
   home.file.".local/share/rofi/themes/arc_dark_transparent_colors.rasi".text = ''
-    /*******************************************************
-     * ROFI Arch Dark Transparent colors for EndeavourOS
-     * Maintainer: joekamprad [joekamprad //a_t// endeavouros.com]
-     *******************************************************/
     * {
         selected-normal-foreground:  rgba ( 255, 147, 5, 100 % );
         foreground:                  rgba ( 196, 203, 212, 100 % );
@@ -538,18 +511,18 @@ in
 
   imports = [
     ../programs/alacritty.nix
-    ../programs/git.nix
-    ../programs/tmux.nix
-    ../programs/zsh.nix
-    ../programs/nvim.nix
-    ../programs/vim.nix
-    ../programs/zen-browser.nix
     ../programs/copyq.nix
+    ../programs/fastfetch.nix
+    ../programs/git.nix
     ../programs/iamb.nix
     ../programs/mangohud.nix
-    ../programs/fastfetch.nix
+    ../programs/krew.nix
+    ../programs/nvim.nix
+    ../programs/tmux.nix
+    ../programs/vim.nix
+    ../programs/zen-browser.nix
+    ../programs/zsh.nix
     ../services/dunst.nix
-    # picom moved to host-specific config (doesn't work well in VMs)
   ];
 
   xdg.configFile."i3/i3blocks.conf".text = ''
@@ -562,14 +535,12 @@ in
     color=#717171
   '';
 
-  # X11 keyboard configuration
   home.keyboard = {
     layout = "us";
     variant = "altgr-intl";
-    options = [ "caps:escape" ]; # Map Caps Lock to Escape
+    options = [ "caps:escape" ];
   };
 
-  # X11 session and window manager
   xsession = {
     enable = true;
 
@@ -578,22 +549,18 @@ in
       config = {
         modifier = "Mod4";
 
-        # Fonts
         fonts = {
           names = [ "Noto Sans" ];
           style = "Regular";
           size = 10.0;
         };
 
-        # Gaps
         gaps = {
           inner = 0;
           outer = 0;
         };
 
-        # Keybindings
         keybindings = lib.mkOptionDefault {
-          # Workspace switching (standard)
           "Mod4+1" = "workspace number 1";
           "Mod4+2" = "workspace number 2";
           "Mod4+3" = "workspace number 3";
@@ -604,7 +571,6 @@ in
           "Mod4+8" = "workspace number 8";
           "Mod4+9" = "workspace number 9";
 
-          # Move to workspace AND switch to it (Follow)
           "Mod4+Shift+1" = "move container to workspace number 1; workspace number 1";
           "Mod4+Shift+2" = "move container to workspace number 2; workspace number 2";
           "Mod4+Shift+3" = "move container to workspace number 3; workspace number 3";
@@ -615,45 +581,29 @@ in
           "Mod4+Shift+8" = "move container to workspace number 8; workspace number 8";
           "Mod4+Shift+9" = "move container to workspace number 9; workspace number 9";
 
-          # Terminal
           "Mod4+Return" = "exec ${pkgs.alacritty}/bin/alacritty";
-
-          # Browser (with profile selector)
           "Mod4+Tab" = "exec ${scripts.zen-profile-selector}/bin/zen-profile-selector";
 
-          # Kill window
-          "Mod4+Shift+q" = "kill";
-
-          # Menus
           "Mod4+space" = "exec --no-startup-id ${pkgs.i3}/bin/i3-dmenu-desktop";
-
-          # Resize mode
-          "Mod4+r" = "mode \"resize\"";
-
-          # RBW / Rofi
           "Mod4+p" = "exec ${pkgs.rofi-rbw}/bin/rofi-rbw --action type --target password";
           "Mod4+u" = "exec ${pkgs.rofi-rbw}/bin/rofi-rbw --action type --target username";
 
-          # Audio / PulseAudio
-          "Mod4+Ctrl+m" = "exec ${pkgs.pavucontrol}/bin/pavucontrol";
+          "Mod4+Shift+q" = "kill";
+          "Mod4+r" = "mode \"resize\"";
 
-          # Navigation (Vim style)
           "Mod4+h" = "focus left";
           "Mod4+j" = "focus down";
           "Mod4+k" = "focus up";
           "Mod4+l" = "focus right";
 
-          # Move windows
           "Mod4+Shift+h" = "move left";
           "Mod4+Shift+j" = "move down";
           "Mod4+Shift+k" = "move up";
           "Mod4+Shift+l" = "move right";
 
-          # Workspaces
           "Mod4+b" = "workspace back_and_forth";
           "Mod4+Shift+b" = "move container to workspace back_and_forth; workspace back_and_forth";
 
-          # Splits
           "Mod4+minus" = "split toggle";
           "Mod4+f" = "fullscreen toggle";
           "Mod4+w" = "layout tabbed";
@@ -661,15 +611,12 @@ in
           "Mod4+Shift+f" = "floating toggle";
           "Mod4+Shift+s" = "sticky toggle";
 
-          # Scratchpad
           "Mod4+Shift+comma" = "move scratchpad";
           "Mod4+comma" = "scratchpad show";
 
-          # Multimedia Keys (using custom scripts referenced in original config)
           "XF86MonBrightnessUp" = "exec ${pkgs.xbacklight}/bin/xbacklight -inc 1";
           "XF86MonBrightnessDown" = "exec ${pkgs.xbacklight}/bin/xbacklight -dec 1";
 
-          # Volume
           "XF86AudioRaiseVolume" =
             "exec --no-startup-id ${scripts.volume-brightness}/bin/volume-brightness volume_up";
           "XF86AudioLowerVolume" =
@@ -677,11 +624,9 @@ in
           "XF86AudioMute" =
             "exec --no-startup-id ${scripts.volume-brightness}/bin/volume-brightness volume_mute";
 
-          # Lock
           "Mod4+Escape" = "exec --no-startup-id ${pkgs.i3lock}/bin/i3lock";
         };
 
-        # Resize modes
         modes = {
           "resize" = lib.mkOptionDefault {
             "h" = "resize shrink width 10 px or 10 ppt";
@@ -693,16 +638,15 @@ in
           };
         };
 
-        # Assigns
         assigns = {
           "2" = [
             { class = "^(?i)firefox$"; }
             { class = "^Brave-browser$"; }
-            { class = "^zen$"; }
+            { class = "^zen-beta$"; }
           ];
-          "3" = [ { class = "^Thunar$"; } ];
           "4" = [
-            { class = "^org.remmina.Remmina$"; }
+            { class = "^xfreerdp$"; }
+            { class = "^steam$"; }
           ];
           "5" = [
             { class = "^TelegramDesktop$"; }
@@ -726,7 +670,7 @@ in
           {
             command = "floating enable";
             criteria = {
-              class = "qalculate-gtk";
+              class = "Qalculate-gtk";
             };
           }
           {
@@ -738,7 +682,7 @@ in
           {
             command = "floating enable";
             criteria = {
-              class = "Pavucontrol";
+              class = "pavucontrol";
             };
           }
           {
@@ -749,7 +693,6 @@ in
           }
         ];
 
-        # Colors
         colors = {
           focused = {
             border = "#5294e2";
@@ -781,7 +724,6 @@ in
           };
         };
 
-        # Bar
         bars = [
           {
             position = "bottom";
@@ -819,7 +761,6 @@ in
           }
         ];
 
-        # Startup commands
         startup = [
           {
             command = "${pkgs.autorandr}/bin/autorandr --load desktop";
@@ -857,12 +798,15 @@ in
             command = "--no-startup-id ${pkgs.rbw}/bin/rbw-agent";
             notification = false;
           }
+          {
+            command = "${pkgs.feh}/bin/feh --bg-fill ${wallpaper}";
+            notification = false;
+          }
         ];
       };
     };
   };
 
-  # GTK theme configuration for dark mode
   gtk = {
     enable = true;
 
@@ -890,12 +834,16 @@ in
     };
   };
 
-  # Qt theme configuration for dark mode (Kvantum)
   qt = {
     enable = true;
     platformTheme.name = "kvantum";
     style.name = "kvantum";
   };
+
+  xdg.configFile."Kvantum/kvantum.kvconfig".text = ''
+    [General]
+    theme=ArcDark
+  '';
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;

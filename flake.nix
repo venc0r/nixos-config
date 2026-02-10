@@ -9,6 +9,10 @@
       url = "github:0xc000022070/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    inputs.krewfile = {
+      url = "github:brumhard/krewfile";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =

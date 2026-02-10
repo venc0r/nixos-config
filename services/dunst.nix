@@ -17,7 +17,7 @@ in
         width = 300;
         height = 300;
         origin = "top-right";
-        offset = "10x30"; # 10px from right edge, 30px from top edge
+        offset = "10x30";
         scale = 0;
         notification_limit = 10;
         indicate_hidden = "yes";
