@@ -901,6 +901,10 @@ in
           notification = false;
         }
         {
+          command = "--no-startup-id ${pkgs.pasystray}/bin/pasystray";
+          notification = false;
+        }
+        {
           command = "--no-startup-id ${pkgs.copyq}/bin/copyq";
           notification = false;
         }
