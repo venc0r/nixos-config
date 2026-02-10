@@ -81,7 +81,7 @@ in
     bat # Better cat with syntax highlighting
     opentofu # Infrastructure as code (open-source Terraform alternative)
     vault # HashiCorp Vault CLI
-    helm # Kubernetes package manager
+    kubernetes-helm # Kubernetes package manager (explicitly use kubernetes-helm, not 'helm' which conflicts with emacs-helm)
     kubectl # Kubernetes CLI
     tektoncd-cli # Tekton Pipelines CLI (tkn)
     stern # Multi-pod log tailing for Kubernetes
