@@ -7,7 +7,7 @@
 
 let
   scripts = import ./scripts.nix { inherit pkgs; };
-  wallpaper = ./nixos_wallpaper.jpg;
+  wallpaper = ./nixos_wallpaper.png;
 in
 {
   home.username = "jma";
