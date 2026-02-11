@@ -115,6 +115,7 @@ in
 
     # Theming
     libsForQt5.qtstyleplugin-kvantum # Qt theme engine (Kvantum)
+    kdePackages.qtstyleplugin-kvantum
     arc-kde-theme # Arc KDE theme (includes ArcDark Kvantum theme)
     arc-theme # Arc GTK theme
     arc-icon-theme # Arc icon theme
@@ -425,6 +426,12 @@ in
   # Configure rbw (Bitwarden CLI) to use graphical pinentry
   home.sessionVariables = {
     PINENTRY_PROGRAM = "${pkgs.pinentry-gnome3}/bin/pinentry-gnome3";
+  };
+
+  # Configure theme for qt5 applications (owncloud)
+  home.sessionVariables = {
+    QT_QPA_PLATFORMTHEME = "kvantum";
+    QT_STYLE_OVERRIDE = "kvantum";
   };
 
   # Configure rbw pinentry via config file (force overwrite)
@@ -796,6 +803,10 @@ in
           }
           {
             command = "--no-startup-id ${pkgs.rbw}/bin/rbw-agent";
+            notification = false;
+          }
+          {
+            command = "env -u QT_STYLE_OVERRIDE -u QT_QPA_PLATFORMTHEME ${pkgs.owncloud-client}/bin/owncloud";
             notification = false;
           }
           {
