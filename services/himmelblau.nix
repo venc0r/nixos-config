@@ -1,9 +1,6 @@
-{ config, pkgs, ... }:
-let
-  himmelblau = builtins.getFlake "github:himmelblau-idm/himmelblau/main";
-in
+{ config, pkgs, inputs, ... }:
 {
-  imports = [ himmelblau.nixosModules.himmelblau ];
+  imports = [ inputs.himmelblau.nixosModules.himmelblau ];
 
   environment.systemPackages = [
     config.services.himmelblau.package
@@ -11,7 +8,7 @@ in
 
   services.himmelblau = {
     enable = true;
-    package = himmelblau.packages.${pkgs.system}.himmelblau-desktop;
+    package = inputs.himmelblau.packages.${pkgs.system}.himmelblau-desktop;
     settings = {
       # TODO: Update with actual Entra ID domain once confirmed
       domain = "cloudpunks.onmicrosoft.com";

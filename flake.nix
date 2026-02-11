@@ -9,10 +9,13 @@
       url = "github:0xc000022070/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    himmelblau = {
+      url = "github:himmelblau-idm/himmelblau/main";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     krewfile = {
       url = "github:brumhard/krewfile";
       inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs =
