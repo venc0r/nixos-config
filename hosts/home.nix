@@ -540,6 +540,71 @@ in
     [simple-2]
     full_text=: :
     color=#717171
+
+    [disk]
+    label= 
+    instance=/
+    command=${pkgs.coreutils}/bin/df -h / | ${pkgs.gawk}/bin/awk '/\// {print $4}'
+    interval=30
+
+    [memory]
+    label= 
+    command=${pkgs.procps}/bin/free -m | ${pkgs.gawk}/bin/awk '/^Mem:/ {printf "%.1f%%\n", $3/$2 * 100}'
+    interval=2
+
+    [cpu_usage]
+    label= 
+    command=${pkgs.sysstat}/bin/mpstat 1 1 | ${pkgs.coreutils}/bin/tail -n 1 | ${pkgs.gawk}/bin/awk '{print 100 - $NF "%"}'
+    interval=2
+
+    [temperature]
+    label= 
+    command=${scripts.block-temperature}/bin/block-temperature
+    interval=30
+
+    [bandwidth]
+    label= 
+    command=${scripts.block-bandwidth}/bin/block-bandwidth
+    interval=5
+
+    [battery]
+    command=${scripts.block-battery}/bin/block-battery
+    label=
+    interval=30
+
+    [simple-2]
+    full_text=: :
+    color=#717171
+
+    [pavucontrol]
+    full_text=
+    command=${pkgs.pavucontrol}/bin/pavucontrol
+
+    [volume-pulseaudio]
+    command=${scripts.block-volume}/bin/block-volume
+    instance=Master
+    interval=1
+
+    [pavucontrol-mic]
+    full_text=🎤
+    command=${pkgs.pavucontrol}/bin/pavucontrol
+
+    [volume-mic]
+    command=${scripts.block-volume}/bin/block-volume
+    instance=Capture
+    interval=1
+
+    [simple-2]
+    full_text=: :
+    color=#717171
+
+    [time]
+    command=date '+%a %d %b %H:%M:%S'
+    interval=1
+
+    [simple-2]
+    full_text=: :
+    color=#717171
   '';
 
   home.keyboard = {
