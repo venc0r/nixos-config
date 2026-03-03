@@ -9,7 +9,6 @@
   imports = [
     inputs.home-manager.nixosModules.default
     ../services/himmelblau.nix
-    ../services/mdatp.nix
   ];
 
   # Bootloader.
