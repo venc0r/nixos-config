@@ -24,7 +24,7 @@
   };
 
   outputs =
-  { self, nixpkgs, ... }@inputs:
+  { self, nixpkgs, home-manager, ... }@inputs:
   let
     system = "x86_64-linux";
   in
@@ -48,6 +48,18 @@
           ./hosts/cubi/configuration.nix
         ];
       };
+    };
+    homeConfigurations."jmarkert@cloudpunks.de" = home-manager.lib.homeManagerConfiguration {
+      pkgs = nixpkgs.legacyPackages.x86_64-linux;
+      extraSpecialArgs = { inherit inputs; };
+      modules = [
+        ./hosts/home.nix
+          ({ lib, ... }: {
+           home.username = "jmarkert@cloudpunks.de";
+           home.homeDirectory = "/home/jmarkert@cloudpunks.de";
+           home.stateVersion = "24.11";
+           })
+      ];
     };
   };
 }

@@ -70,6 +70,11 @@
 
   services.xserver = {
     enable = true;
+    displayManager.lightdm = {
+      enable = true;
+      greeters.gtk.enable = true;
+    };
+
     windowManager.i3 = {
       enable = true;
       extraPackages = with pkgs; [
@@ -86,9 +91,7 @@
     autoRepeatInterval = 10;
   };
 
-  services.displayManager.sddm = {
-    enable = true;
-  };
+  security.loginDefs.settings.LOGIN_TIMEOUT = 300;
 
   # Enable dconf for GTK application settings
   programs.dconf.enable = true;
@@ -125,6 +128,8 @@
   nixpkgs.config.allowUnfree = true;
 
   environment.systemPackages = with pkgs; [
+    alacritty
+    xterm
     curl
     git
     fzf

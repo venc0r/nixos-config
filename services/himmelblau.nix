@@ -10,14 +10,11 @@
     enable = true;
     package = lib.mkForce inputs.himmelblau.packages.${pkgs.stdenv.hostPlatform.system}.himmelblau-desktop;
     settings = {
-      # TODO: Update with actual Entra ID domain once confirmed
-      # Note: domain is a list to support multiple domains
-      domain = [ "cloudpunks.onmicrosoft.com" ];
-      
+      domain = [ "cloudpunks.de" ];
+
       # TODO: Add Entra ID group GUIDs once available
       # pam_allow_groups = [ "ENTRA-GROUP-GUID-HERE" ];
-      
-      # Entra ID users will be automatically added to these local groups
+
       local_groups = [ "wheel" "docker" "networkmanager" ];
     };
   };
