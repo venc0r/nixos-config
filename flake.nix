@@ -17,6 +17,10 @@
       url = "github:brumhard/krewfile";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    mdatp = {
+      url = "github:epetousis/nix-mdatp";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
