@@ -9,6 +9,7 @@
   imports = [
     inputs.home-manager.nixosModules.default
     ../services/himmelblau.nix
+    ../services/mdatp.nix
   ];
 
   # Bootloader.
@@ -28,6 +29,10 @@
     show-trace = true
     ssl-cert-file = ${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt
   '';
+
+  systemd.services.nix-daemon.environment = {
+    NIX_SSL_CERT_FILE = "${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
+  };
 
   # Increase download buffer for large packages (zoom, teams, etc)
   nix.settings.download-buffer-size = 268435456; # 256 MB (default is 64 MB)
