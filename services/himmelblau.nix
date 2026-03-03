@@ -16,6 +16,7 @@
       # pam_allow_groups = [ "ENTRA-GROUP-GUID-HERE" ];
 
       local_groups = [ "wheel" "docker" "networkmanager" ];
+      shell = "/run/current-system/sw/bin/zsh";
     };
   };
 }
