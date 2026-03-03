@@ -27,6 +27,7 @@
   # Show more verbose output during builds and downloads
   nix.extraOptions = ''
     show-trace = true
+    ssl-cert-file = ${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt
   '';
 
   # Increase download buffer for large packages (zoom, teams, etc)
