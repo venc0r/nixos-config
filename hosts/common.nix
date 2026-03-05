@@ -8,8 +8,10 @@
 {
   imports = [
     inputs.home-manager.nixosModules.default
+    inputs.agenix.nixosModules.default
     ../services/himmelblau.nix
     ../services/mdatp.nix
+    ../services/wireguard.nix
   ];
 
   # Bootloader.
