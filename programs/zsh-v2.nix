@@ -402,40 +402,6 @@
           # WORK-SPECIFIC FUNCTIONS (Kubernetes/Tekton/Infrastructure)
           # ============================================================================
 
-          cl() {
-            case "$1" in
-              n100) subdomain="n100"; cluster_name="n100"; workspaces=('infrastructure' 'argocd-infra' 'vault') ;;
-              hcp)  subdomain="hcp";  cluster_name="hcp";  workspaces=('vault') ;;
-              *) echo "Usage >> cl n100|hcp << " && return 1 ;;
-            esac
-
-            ${pkgs.kubectl}/bin/kubectl config use-context "''${cluster_name}"
-            export KUBE_TOKEN=$(${pkgs.yq-go}/bin/yq ".users[] | select(.name == \"''${cluster_name}\") | .user.token" "''${HOME}/.kube/config")
-            export KUBE_HOST=$(${pkgs.yq-go}/bin/yq ".clusters[] | select(.name == \"''${cluster_name}\") | .cluster.server" "''${HOME}/.kube/config")
-            export KUBE_INSECURE="true"
-            export TF_VAR_cloud="''${cluster_name}"
-            unset VAULT_ADDR
-            export VAULT_ADDR="https://openbao.''${subdomain}.v3nc.org"
-            ${pkgs.coreutils}/bin/ln -sf "''${HOME}/.vault-token-''${cluster_name}" "''${HOME}/.vault-token"
-            export AWS_ACCESS_KEY_ID=$(${pkgs.rbw}/bin/rbw get garage.n100.v3nc.org --field terraform_access_key)
-            export AWS_SECRET_ACCESS_KEY=$(${pkgs.rbw}/bin/rbw get garage.n100.v3nc.org --field terraform_secret_key)
-            export VAULT_TOKEN=$(${pkgs.rbw}/bin/rbw get openbao-''${cluster_name})
-
-            IaC="''${HOME}/Documents/git/jma/venc0r/IaC"
-            [[ ''${USER} == "jma" ]] && IaC="''${HOME}/Documents/git/gitea/devops/IaC"
-
-            if [[ $(pwd) != "''${IaC}" ]]; then
-              popme=$(pwd)
-              pushd "''${IaC}/terraform" > /dev/null
-            fi
-            for d in "''${workspaces[@]}"; do
-              pushd "''${IaC}/terraform/''${d}" > /dev/null
-              ${pkgs.opentofu}/bin/tofu init -reconfigure -upgrade > /dev/null
-              ${pkgs.opentofu}/bin/tofu workspace select "''${cluster_name}" || echo "failed to select workspace on ''${IaC}/terraform/''${d}"
-              popd > /dev/null
-            done
-            [[ -n "''${popme}" ]] && { popd > /dev/null || cd "''${popme}"; }
-          }
 
           runreno() {
             ${pkgs.kubectl}/bin/kubectl delete job renovateme -n renovate --context ''${2:-hcp-oidc} --ignore-not-found
