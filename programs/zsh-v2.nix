@@ -127,6 +127,7 @@
               background = "transparent";
               foreground = "#689d6a";
               template = " {{ .WorkspaceName }} <#928374></>";
+              options = { command = "tofu"; };
             }
             {
               type = "time";
@@ -224,8 +225,7 @@
       vpnup   = "nmcli connection up vpn --ask";
       vpndown = "nmcli connection down vpn";
 
-      op = "oc project";
-      oc = "kubectl";
+      ocp = "oc project";
       k  = "kubectl";
 
       pwaz   = "podman run -it -v homevol:/root --rm docker.io/venc0r/pwsh";
