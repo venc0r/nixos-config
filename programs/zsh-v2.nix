@@ -576,13 +576,17 @@
     EDITOR = "nvim";
     DOTNET_CLI_TELEMETRY_OPTOUT = "1";
 
-    LESS_TERMCAP_mb = "$(printf '\e[01;32m')";
-    LESS_TERMCAP_md = "$(printf '\e[01;32m')";
-    LESS_TERMCAP_me = "$(printf '\e[0m')";
-    LESS_TERMCAP_se = "$(printf '\e[0m')";
-    LESS_TERMCAP_so = "$(printf '\e[01;47;34m')";
-    LESS_TERMCAP_ue = "$(printf '\e[0m')";
-    LESS_TERMCAP_us = "$(printf '\e[01;36m')";
+    # groff >= 1.23 emits SGR escapes directly, which bypass LESS_TERMCAP_*.
+    # Force legacy overstrike output so less applies the colors below.
+    GROFF_NO_SGR = "1";
+
+    LESS_TERMCAP_mb = "$(printf '\\e[01;32m')";
+    LESS_TERMCAP_md = "$(printf '\\e[01;32m')";
+    LESS_TERMCAP_me = "$(printf '\\e[0m')";
+    LESS_TERMCAP_se = "$(printf '\\e[0m')";
+    LESS_TERMCAP_so = "$(printf '\\e[01;47;34m')";
+    LESS_TERMCAP_ue = "$(printf '\\e[0m')";
+    LESS_TERMCAP_us = "$(printf '\\e[01;36m')";
     LESS = "-R";
   };
 

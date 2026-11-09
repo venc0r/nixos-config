@@ -23,8 +23,9 @@
     [
       nerd-fonts.meslo-lg
 
-      # Password manager
+      # Password managers
       rbw
+      _1password-cli # provides `op`; NixOS hosts also get a setgid wrapper from programs._1password
 
       # Development tools
       checkov
@@ -44,6 +45,11 @@
       kubeconform
       kyverno
       velero
+      openshift # provides `oc`
+      fluxcd # provides `flux`; nixpkgs `flux` is an unrelated 2013 package
+      (callPackage ../pkgs/flux-local { }) # not in nixpkgs, see pkgs/flux-local
+      kubevirt # provides `virtctl`
+      butane
       go
       gopls
       s3cmd
@@ -53,8 +59,11 @@
       gh
       glab
       forgejo-cli
+      mark # markdown -> Confluence sync
       ansible
-      (azure-cli.withExtensions [ azure-cli.extensions.redisenterprise ])
+      ansible-lint
+      azure-cli
+      awscli2 # provides `aws`
       restic
       difftastic
       mtr
@@ -95,6 +104,9 @@
       jq
       yq-go
       dyff
+      awscli2 # provides `aws`
+      sops
+      age
 
       # Media
       mpv
@@ -104,15 +116,29 @@
       # File management
       ranger
 
-      # Markdown viewer
+      # Markdown viewer + slide deck rendering
       inlyne
+      marp-cli
 
       # Kubernetes schema generation
       (import ./scripts.nix { inherit pkgs; }).kube-schema-gen
       (import ./scripts.nix { inherit pkgs; }).tetra
 
       # Python + Node (globally available for Mason/tooling)
-      (python3.withPackages (ps: with ps; [ pip setuptools wheel pynvim ]))
+      # python-pptx + defusedxml drive the pptx skill; lxml and pillow come
+      # along as python-pptx dependencies.
+      # demjson3 is the only nixpkgs source of the `jsonlint` CLI.
+      (python3.withPackages (
+        ps: with ps; [
+          pip
+          setuptools
+          wheel
+          pynvim
+          python-pptx
+          defusedxml
+          demjson3
+        ]
+      ))
       nodejs
 
       openstackclient
@@ -123,7 +149,7 @@
     ++ lib.optionals pkgs.stdenv.isLinux [
       # Linux-specific pinentry for rbw
       pinentry-gnome3
-      gcr
+      gcr_3 # must match the ABI pinentry-gnome3 links against
     ]
     ++ lib.optionals (pkgs.stdenv.isLinux && !pkgs.stdenv.hostPlatform.isAarch64) [
       glances
@@ -136,7 +162,6 @@
     ];
 
   home.file = {
-    ".p10k.zsh".source = ../dotfiles/.p10k.zsh;
     ".tmux-cht-languages".source = ../dotfiles/.tmux-cht-languages;
 
     # Stable agent-socket paths so ssh_config is cross-platform.
@@ -264,6 +289,7 @@
     ../programs/fastfetch.nix
     ../programs/git.nix
     ../programs/krew.nix
+    ../programs/mise.nix
     ../programs/nvim.nix
     ../programs/tmux.nix
     ../programs/vim.nix

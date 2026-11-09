@@ -16,4 +16,5 @@
   tmux-sessionizer = import ../scripts/tmux-sessionizer.nix { inherit pkgs; };
   kube-schema-gen = import ../scripts/kube-schema-gen.nix { inherit pkgs; };
   tetra = import ../scripts/tetra.nix { inherit pkgs; };
+  macos-codesign-cert = import ../scripts/macos-codesign-cert.nix { inherit pkgs; };
 }

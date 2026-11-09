@@ -15,6 +15,28 @@ let
     done
     open -na "Zen Browser (Beta)" --args --profile "$HOME/Library/Application Support/zen/Profiles/$profile"
   '';
+
+  # A Citrix Viewer left over from a closed session stays alive as a windowless
+  # accessory process. Both `open -b` and System Events resolve the bundle id to that
+  # stale instance, so the hotkey would steal focus and show nothing. Activate by pid
+  # via NSRunningApplication, which bypasses the bundle lookup: the Viewer owning a
+  # session is the one with a regular activation policy. Fall back to LaunchServices
+  # only when none is running.
+  citrixFocusViewer = pkgs.writeShellScript "citrix-focus-viewer" ''
+    raised=$(/usr/bin/osascript -l JavaScript -e '
+      ObjC.import("AppKit");
+      const apps = $.NSRunningApplication.runningApplicationsWithBundleIdentifier("com.citrix.receiver.icaviewer.mac");
+      let raised = "no";
+      for (let i = 0; i < apps.count && raised === "no"; i++) {
+        const app = apps.objectAtIndex(i);
+        if (app.activationPolicy === $.NSApplicationActivationPolicyRegular) {
+          app.activateWithOptions($.NSApplicationActivateAllWindows);
+          raised = "yes";
+        }
+      }
+      raised;')
+    [ "$raised" = "yes" ] || open -b com.citrix.receiver.icaviewer.mac
+  '';
 in
 {
   services.skhd = {
@@ -28,7 +50,9 @@ in
       cmd - 1 : open -a "Microsoft Outlook"
       cmd - 2 : ${zenFocusProfile} default-release
       cmd - 3 : open -a "Alacritty"
-      cmd - 4 : open -a "UTM"
+      # Citrix Viewer.app sits in a versioned framework path that moves on update, so the
+      # fallback goes by bundle id. Stale-instance handling lives in citrixFocusViewer.
+      cmd - 4 : ${citrixFocusViewer}
       cmd - 5 : open -a "Supersonic"
       cmd - 6 : open -a "Microsoft Teams"
       cmd - 8 : ${zenFocusProfile} private

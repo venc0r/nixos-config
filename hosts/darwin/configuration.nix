@@ -20,6 +20,8 @@
     onActivation.autoUpdate = false;
     caskArgs.appdir = "/Applications";
     casks = [
+      "brave-browser"
+      "google-chrome" # headless renderer for mark mermaid/d2; chromedp only probes /Applications/{Chromium,Google Chrome}.app
       "stats"
       "betterdisplay"
       "podman-desktop"
@@ -54,7 +56,7 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
   nixpkgs.config.permittedInsecurePackages = [
-    "python3.13-ecdsa-0.19.2"
+    "python3.14-ecdsa-0.19.2"
   ];
 
   services.openssh.enable = true;
@@ -91,7 +93,9 @@
       chmod 644 /etc/hosts
       chown root:wheel /etc/hosts
 
-      /usr/bin/pmset -c sleep 0 disksleep 0
+      # On charger only: never sleep. displaysleep 0 keeps the lock screen lit;
+      # the battery profile keeps its own short timers.
+      /usr/bin/pmset -c sleep 0 disksleep 0 displaysleep 0
 
       if ! /usr/sbin/pkgutil --pkgs 2>/dev/null | /usr/bin/grep -qi citrix; then
         citrix_pkg=$(/usr/bin/find /opt/homebrew/Caskroom/citrix-workspace -maxdepth 2 -name '*.pkg' -print -quit 2>/dev/null)

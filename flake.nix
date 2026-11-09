@@ -1,7 +1,6 @@
 {
   inputs = {
-    # TEMP: pinned to fix commit for helm 4.2.0 (nixpkgs PR #530312, merged 2026-06-12). Revert to "nixos-unstable" once channel advances past this commit.
-    nixpkgs.url = "github:NixOS/nixpkgs/93271e22bcf9e7b575be78636cdd9c2604ebb50b";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -68,7 +67,7 @@
           pkgs = import nixpkgs {
             system = x86System;
             config.allowUnfree = true;
-            config.permittedInsecurePackages = [ "python3.13-ecdsa-0.19.2" ];
+            config.permittedInsecurePackages = [ "python3.14-ecdsa-0.19.2" ];
           };
           extraSpecialArgs = { inherit inputs; };
           modules = [ ./hosts/home-wsl.nix ];

@@ -9,7 +9,7 @@ in
       user = {
         email = "jmarkert@cloudpunks.de";
         name = "Jörg Markert";
-        signingkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIB+rbazDIe/KKcvewOonSS4xJu/a5JMmSrjNIsQ8su9R";
+        signingkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPDHF5t5xRiLE3W3sMQ0q5Mn0NCynpRWLEJuncNAd5AY";
       };
       gpg = {
         format = "ssh";

@@ -15,9 +15,8 @@ in
     escapeTime = 20;
     historyLimit = 10240;
     keyMode = "vi";
-    mouse = false;
+    mouse = true;
     terminal = "screen-256color";
-    prefix = "M-s";
 
     extraConfig = ''
       # Start windows and panes at 1
@@ -34,7 +33,7 @@ in
       set-option -g focus-events on
 
       # Prefix key
-      bind-key M-s send-prefix
+      bind-key C-b send-prefix
 
       # Split binds
       bind-key | split-window -h -c "#{pane_current_path}"
