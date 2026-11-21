@@ -57,7 +57,7 @@ in
       window = {
         decorations = if pkgs.stdenv.isDarwin then "Buttonless" else "none";
         opacity = 0.9;
-        option_as_alt = lib.mkIf pkgs.stdenv.isDarwin "Both";
+        option_as_alt = lib.mkIf pkgs.stdenv.isDarwin "OnlyLeft";
         padding = {
           x = 2;
           y = 2;

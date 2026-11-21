@@ -62,7 +62,7 @@
       mark # markdown -> Confluence sync
       ansible
       ansible-lint
-      azure-cli
+      (azure-cli.withExtensions [ azure-cli.extensions.fleet ])
       awscli2 # provides `aws`
       restic
       difftastic
