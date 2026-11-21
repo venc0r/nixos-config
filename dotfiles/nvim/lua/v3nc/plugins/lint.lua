@@ -50,7 +50,7 @@ return {
             name = 'shellcheck_j2',
             cmd = 'bash',
             stdin = false,
-            args = { '-c', 'j2 --undefined "$1" 2>/dev/null | shellcheck -s bash --format json -', '_' },
+            args = { '-c', 'jinja2 "$1" 2>/dev/null | shellcheck -s bash --format json -', '_' },
             ignore_exitcode = true,
             parser = function(output)
                 local decoded = vim.fn.json_decode(output)

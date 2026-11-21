@@ -29,7 +29,7 @@
 
       # Development tools
       checkov
-      j2cli
+      jinja2-cli
       cargo
       argocd
       hcloud
